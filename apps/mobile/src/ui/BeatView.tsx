@@ -3,12 +3,16 @@ import { StyleSheet, Text, View } from "react-native";
 import type { Pack, Minigame } from "@capy/content";
 import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
+import { speak } from "@/audio/voice";
 import { BigButton, Grid, IconCard, Sheet, SpeechBubble } from "./components";
 import { T } from "./theme";
+import { useAvatar } from "@/avatar/AvatarView";
+import { estimateMs } from "@/engine/lessonRunner";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Big text, one tap to advance (kids 4–6 don't read; audio leads).
 export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void }) {
+  const avatar = useAvatar();
   switch (step.kind) {
     case "say":
     case "repeat":
@@ -33,6 +37,7 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
                   label={o.label}
                   size="lg"
                   onPress={() => {
+                    avatar.send({ type: "mood", value: "happy" });
                     onAnswer?.(step.key, o.label);
                     onNext();
                   }}
@@ -77,9 +82,21 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
   const kid = useKid();
+  const avatar = useAvatar();
+  // Capy reacts: talks the prompt, celebrates a win, droops on a miss (GDD §4.2 "reacción de Capy").
+  useEffect(() => {
+    avatar.send({ type: "speak", durationMs: estimateMs(mg.prompt.text) * 2, clip: "think" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mg.id]);
   const finish = (line: string) => {
     setMsg(line);
-    setTimeout(onDone, 1300);
+    avatar.send({ type: "mood", value: "happy" });
+    avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "celebrate" });
+    setTimeout(onDone, 1600);
+  };
+  const retry = (line: string) => {
+    setMsg(line);
+    avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "sad" });
   };
 
   switch (mg.type) {
@@ -90,7 +107,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
           <Sheet>
             <Grid>
               {mg.cards.map((c) => (
-                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine.text) : setMsg(mg.retryLine.text))} />
+                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
               ))}
             </Grid>
           </Sheet>
@@ -158,7 +175,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
                     onPress={() => {
                       const n = [...picked, c.id];
                       if (mg.order[n.length - 1] !== c.id) {
-                        setMsg(mg.retryLine.text);
+                        retry(mg.retryLine.text);
                         setPicked([]);
                         return;
                       }
@@ -178,7 +195,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
           <Sheet>
             <Grid>
               {mg.options.map((o) => (
-                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine.text) : setMsg(mg.retryLine.text))} />
+                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
               ))}
             </Grid>
           </Sheet>
@@ -189,6 +206,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
 
 function PeoplePicker({ text, min, max, defaults, allowAdd, onDone }: { text: string; min: number; max: number; defaults: string[]; allowAdd: boolean; onDone: (ids: string[]) => void }) {
   const kid = useKid();
+  const avatar = useAvatar();
   const [picked, setPicked] = useState<string[]>([]);
   const options = kid.people.length ? kid.people : defaults.map((d) => ({ id: `default:${d}`, label: d, icon: "person", prayedCount: 0 }));
   return (
@@ -211,6 +229,8 @@ function PeoplePicker({ text, min, max, defaults, allowAdd, onDone }: { text: st
           disabled={picked.length < min}
           onPress={() => {
             if (allowAdd) for (const id of picked) if (id.startsWith("default:") && !kid.people.some((p) => p.label === id.slice(8))) kid.addPerson(id.slice(8));
+            avatar.send({ type: "mood", value: "happy" });
+            avatar.send({ type: "play", clip: "heart", loop: false });
             onDone(picked);
           }}
         />
@@ -221,6 +241,12 @@ function PeoplePicker({ text, min, max, defaults, allowAdd, onDone }: { text: st
 
 function ListenTimer({ seconds, text, onDone, dark }: { seconds: number; text: string; onDone: () => void; dark?: boolean }) {
   const [left, setLeft] = useState(seconds);
+  const avatar = useAvatar();
+  useEffect(() => {
+    if (!dark) return;
+    const h = speak(text, { onDone: () => avatar.send({ type: "lights_out" }) });
+    return () => h.cancel();
+  }, [dark, text, avatar]);
   useEffect(() => {
     const t = setInterval(() => setLeft((l) => l - 1), 1000);
     return () => clearInterval(t);

@@ -22,7 +22,7 @@ export type RunnerState = { beatIndex: number; lineIndex: number; step: Step; la
 
 export type AvatarEffect =
   | { type: "play"; clip: string; loop?: boolean }
-  | { type: "speak"; durationMs: number }
+  | { type: "speak"; durationMs: number; clip?: string }
   | { type: "mood"; value: "calm" | "happy" | "sad" | "sleepy" }
   | { type: "idle" }
   | { type: "lights_out" };
@@ -61,17 +61,18 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
   const effectsFor = (step: Step): AvatarEffect[] => {
     switch (step.kind) {
       case "say":
-        return [...(step.mood ? [{ type: "mood", value: step.mood } as AvatarEffect] : []), { type: "play", clip: step.clip, loop: false }, { type: "speak", durationMs: estimateMs(step.text) }];
+        return [...(step.mood ? [{ type: "mood", value: step.mood } as AvatarEffect] : []), { type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
       case "repeat":
-        return [{ type: "play", clip: step.clip, loop: true }, { type: "speak", durationMs: estimateMs(step.text) }];
+        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
       case "listen":
         return [{ type: "play", clip: "listen_nod", loop: true }];
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
       case "ask":
-        return [{ type: "play", clip: step.clip, loop: false }, { type: "speak", durationMs: estimateMs(step.text) }];
+        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
       case "lights_out":
-        return [{ type: "mood", value: "sleepy" }, { type: "lights_out" }];
+        // Capy says goodnight first; the screen triggers lights_out (yawn → lie down → sleep) when the voice ends
+        return [{ type: "mood", value: "sleepy" }, { type: "speak", durationMs: estimateMs(step.text) * 2 }];
       case "minigame":
       case "choose_people":
         return [{ type: "idle" }];

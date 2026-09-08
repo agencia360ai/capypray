@@ -4,7 +4,9 @@ export type Mood = "calm" | "happy" | "sad" | "sleepy";
 export type AvatarCommand =
   | { type: "load"; glb: string; skin?: string }
   | { type: "play"; clip: string; loop?: boolean; fade?: number }
-  | { type: "speak"; durationMs: number; visemes?: Array<{ t: number; v: number }> }
+  | { type: "speak"; durationMs: number; clip?: string; visemes?: Array<{ t: number; v: number }> }
+  /** Fractions (0..1) of the stage covered by UI at the top/bottom; Capy is framed in the free band. */
+  | { type: "viewport"; top: number; bottom: number }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }

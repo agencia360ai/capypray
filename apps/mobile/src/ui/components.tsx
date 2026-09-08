@@ -2,14 +2,24 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Animated, Pressable, StyleSheet, Text, View, type ViewStyle } from "react-native";
 import { T } from "./theme";
 import { glyph } from "./icons";
+import { useAvatar } from "@/avatar/AvatarView";
+import { speak } from "@/audio/voice";
 
 /** Capy's line, drawn as a speech bubble whose tail points up at the avatar. */
-export function SpeechBubble({ text, hint }: { text: string; hint?: string }) {
+export function SpeechBubble({ text, hint, mute }: { text: string; hint?: string; mute?: boolean }) {
   const pop = useRef(new Animated.Value(0.92)).current;
+  const avatar = useAvatar();
   useEffect(() => {
     pop.setValue(0.92);
     Animated.spring(pop, { toValue: 1, useNativeDriver: true, friction: 6 }).start();
   }, [text, pop]);
+  // Every bubble line is spoken (kids 4–6 don't read). The lesson runner already started the talk clip;
+  // when the voice ends, Capy goes back to idle so mouth and voice stay in sync.
+  useEffect(() => {
+    if (mute) return;
+    const h = speak(text, { onDone: () => avatar.send({ type: "idle" }) });
+    return () => h.cancel();
+  }, [text, mute, avatar]);
   return (
     <Animated.View style={[styles.bubbleWrap, { transform: [{ scale: pop }] }]}>
       <View style={styles.tail} />

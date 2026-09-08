@@ -57,6 +57,7 @@ export class CapyStateMachine {
 
   play(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
     if (!["yawn", "to_sleep", "sleep"].includes(clip)) this.sleepChain = false;
+    if (!this.speaking) window.clearTimeout(this.speakTimeout);
     const name = this.resolve(clip);
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
@@ -84,11 +85,14 @@ export class CapyStateMachine {
     this.play(clip, { loop: clip !== "munch" && clip !== "yawn" });
   }
 
-  speak(durationMs: number) {
+  /** Talk for durationMs. With a lead gesture (wave, think, heart…) play it once, then keep talking. */
+  speak(durationMs: number, lead?: string) {
     this.speaking = true;
-    this.play(pick(TALK), { loop: true });
     window.clearTimeout(this.speakTimeout);
     this.speakTimeout = window.setTimeout(() => this.idle(), durationMs);
+    const gesture = lead && this.resolve(lead) === lead && !TALK.includes(lead) && !LOOPS[lead] ? lead : undefined;
+    if (gesture) this.play(gesture, { loop: false }); // "finished" → talk loop while speaking
+    else this.play(pick(TALK), { loop: true });
   }
   private speakTimeout = 0;
 

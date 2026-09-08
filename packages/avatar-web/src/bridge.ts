@@ -6,7 +6,8 @@ export type Mood = "calm" | "happy" | "sad" | "sleepy";
 export type RNToWeb =
   | { type: "load"; glb: string; skin?: string }
   | { type: "play"; clip: string; loop?: boolean; fade?: number }
-  | { type: "speak"; durationMs: number; visemes?: Array<{ t: number; v: number }> }
+  | { type: "speak"; durationMs: number; clip?: string; visemes?: Array<{ t: number; v: number }> }
+  | { type: "viewport"; top: number; bottom: number }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }

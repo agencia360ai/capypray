@@ -12,7 +12,8 @@ describe("lessonRunner", () => {
     const first = r.start();
     expect(first.state.step.kind).toBe("say");
     expect((first.state.step as { text: string }).text).toContain("Hi Mia!");
-    expect(first.effects.map((e) => e.type)).toEqual(["mood", "play", "speak"]);
+    expect(first.effects.map((e) => e.type)).toEqual(["mood", "speak"]);
+    expect(first.effects[1]).toMatchObject({ type: "speak", clip: "wave_hello" });
 
     r.next(); // second say
     const rep1 = r.next();

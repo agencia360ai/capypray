@@ -56,6 +56,8 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
             {m}
           </button>
         ))}
+        <button onClick={() => handle.current?.send({ type: "viewport", top: 0.1, bottom: 0.55 })}>ui 55%</button>
+        <button onClick={() => handle.current?.send({ type: "viewport", top: 0, bottom: 0 })}>ui 0%</button>
         <button onClick={() => handle.current?.send({ type: "look", x: 0.6, y: 0.2 })}>look →</button>
         <button onClick={() => handle.current?.send({ type: "look", x: 0, y: 0 })}>look center</button>
       </div>

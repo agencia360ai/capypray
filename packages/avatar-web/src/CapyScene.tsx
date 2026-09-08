@@ -72,7 +72,10 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
             sm.play(m.clip, { loop: m.loop, fade: m.fade });
             break;
           case "speak":
-            sm.speak(m.durationMs);
+            sm.speak(m.durationMs, m.clip);
+            break;
+          case "viewport":
+            insets.current = { top: Math.max(0, Math.min(0.6, m.top)), bottom: Math.max(0, Math.min(0.8, m.bottom)) };
             break;
           case "idle":
             sm.idle();
@@ -95,6 +98,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
   }, [sm, onMessage, register]);
 
   const frame = useRef(0);
+  const insets = useRef({ top: 0.1, bottom: 0.45 });
   const bounds = useRef(new THREE.Box3());
   const target = useRef(new THREE.Vector3(0, 0.8, 0));
   const tmp = useMemo(() => new THREE.Vector3(), []);
@@ -115,11 +119,17 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
       const size = box.getSize(tmp);
       const center = box.getCenter(new THREE.Vector3());
       const persp = camera as THREE.PerspectiveCamera;
-      const fit = Math.max(size.y, size.x / persp.aspect, 1.8);
-      const dist = THREE.MathUtils.clamp(fit / (2 * Math.tan(THREE.MathUtils.degToRad(persp.fov) / 2)) * 1.15, 3.5, 8);
+      // frame Capy inside the band of the screen not covered by UI (RN sends viewport insets)
+      const { top, bottom } = insets.current;
+      const band = Math.max(0.3, 1 - top - bottom);
+      const tanHalf = Math.tan(THREE.MathUtils.degToRad(persp.fov) / 2);
+      const fit = Math.max(size.y, (size.x / persp.aspect) * band, 1.8);
+      const dist = THREE.MathUtils.clamp((fit / (2 * tanHalf * band)) * 1.12, 3.5, 12);
+      const ndcY = 1 - 2 * top - band; // band centre in NDC
+      const shift = ndcY * dist * tanHalf; // world units to move the look target down so Capy sits in the band
       const k = frame.current < 30 ? 1 : 0.08; // snap on load, then follow smoothly
-      target.current.lerp(center, k);
-      camera.position.lerp(tmp.set(target.current.x, target.current.y + 0.2, target.current.z + dist), k);
+      target.current.lerp(tmp.set(center.x, center.y - shift, center.z), k);
+      camera.position.lerp(tmp.set(target.current.x, target.current.y + 0.15, target.current.z + dist), k);
       camera.lookAt(target.current);
     }
     if (head.current) {

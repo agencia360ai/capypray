@@ -9,6 +9,7 @@ import { P } from "@/parent/strings";
 import { BigButton, Chip, LanternMeter, Sheet } from "@/ui/components";
 import { T } from "@/ui/theme";
 import { glyph } from "@/ui/icons";
+import { useStageInsets } from "@/ui/useStageInsets";
 
 // Home = Capy on the pond + today's Prayer Moment + the path. Kid-facing strings come from the pack.
 export default function Home() {
@@ -30,6 +31,7 @@ function KidHome() {
   const nextLesson = curriculum.find((l) => !completed[l.id]) ?? curriculum[curriculum.length - 1]!;
   const bedtime = pack.lessons.find((l) => l.id === pack.routines.bedtime.lessonId);
   const skill = (id: string) => pack.skills.find((s) => s.id === id);
+  const onBottomLayout = useStageInsets();
 
   useEffect(() => {
     setStage({ dark: false });
@@ -62,6 +64,7 @@ function KidHome() {
 
       <View style={styles.spacer} />
 
+      <View onLayout={onBottomLayout}>
       <Sheet>
         <Text style={styles.hello}>Hi {kidName || "friend"}!</Text>
         <Link href={href(nextLesson)} asChild>
@@ -101,6 +104,7 @@ function KidHome() {
           })}
         </ScrollView>
       </Sheet>
+      </View>
     </View>
   );
 }

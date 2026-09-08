@@ -7,6 +7,8 @@ import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { createRunner, type AvatarEffect, type RunnerState } from "@/engine/lessonRunner";
 import { BeatView } from "@/ui/BeatView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
+import { useStageInsets } from "@/ui/useStageInsets";
+import { stopSpeaking } from "@/audio/voice";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,6 +24,7 @@ export default function LessonScreen() {
     [pack, lesson, kid.kidName],
   );
   const [state, setState] = useState<RunnerState | null>(null);
+  const onBottomLayout = useStageInsets();
 
   const apply = (r: { state: RunnerState; effects: AvatarEffect[] }) => {
     for (const e of r.effects) avatar.send(e);
@@ -39,6 +42,7 @@ export default function LessonScreen() {
   if (!lesson || !runner || !state) return null;
 
   const finish = () => {
+    stopSpeaking();
     if (lesson.routine === "intro") kid.finishIntro();
     kid.completeLesson(lesson.routine === "any" ? lesson.id : `${lesson.id}:${new Date().toISOString().slice(0, 10)}`, runner.state.lanternsEarned);
     router.replace("/");
@@ -57,11 +61,20 @@ export default function LessonScreen() {
 
   return (
     <View style={styles.root}>
-      <Pressable style={styles.close} onPress={() => router.replace("/")} hitSlop={8}>
+      <Pressable
+        style={styles.close}
+        onPress={() => {
+          stopSpeaking();
+          router.replace("/");
+        }}
+        hitSlop={8}
+      >
         <Text style={styles.closeText}>×</Text>
       </Pressable>
       <View style={styles.spacer} />
-      <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />
+      <View onLayout={onBottomLayout}>
+        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />
+      </View>
     </View>
   );
 }
