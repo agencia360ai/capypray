@@ -129,11 +129,12 @@ export type Beat = z.infer<typeof Beat>;
 
 export const Lesson = z.object({
   id: ID,
-  week: ID,
-  day: z.number().int().min(1).max(7),
+  week: ID.optional(),
+  day: z.number().int().min(1).max(7).optional(),
   skillId: ID,
   title: z.string().max(60),
   free: z.boolean().default(false),
+  // "any" = curriculum lesson (needs week/day); "bedtime"/"morning" = routine, replayable daily
   routine: z.enum(["any", "morning", "bedtime"]).default("any"),
   beats: z.array(Beat).min(3).max(20),
 });
@@ -164,7 +165,7 @@ export const Pack = z.object({
   rewards: z.array(Reward),
   people: z.object({ defaults: z.array(z.string()).min(1) }),
   routines: z.object({
-    bedtime: z.object({ defaultHour: z.number().int().min(17).max(22), closingPrayerId: ID }),
+    bedtime: z.object({ defaultHour: z.number().int().min(17).max(22), closingPrayerId: ID, lessonId: ID.optional(), notificationText: z.string().max(80).optional() }),
     meal: z.object({ prayerId: ID }),
   }),
   calendar: z.array(z.object({ id: ID, start: z.string().date(), end: z.string().date(), lessonIds: z.array(ID) })).default([]),

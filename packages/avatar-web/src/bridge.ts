@@ -9,7 +9,8 @@ export type RNToWeb =
   | { type: "speak"; durationMs: number; visemes?: Array<{ t: number; v: number }> }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
-  | { type: "idle" };
+  | { type: "idle" }
+  | { type: "lights_out" };
 
 export type WebToRN =
   | { type: "ready"; clips: string[] }

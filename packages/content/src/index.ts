@@ -42,7 +42,10 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   for (const l of pack.lessons) {
     const at = `lessons.${l.id}`;
     if (!skills.has(l.skillId)) issues.push({ path: `${at}.skillId`, message: `unknown skill "${l.skillId}"` });
-    if (!weeks.has(l.week)) issues.push({ path: `${at}.week`, message: `week "${l.week}" is not in any world` });
+    if (l.routine === "any") {
+      if (!l.week || !l.day) issues.push({ path: at, message: "curriculum lesson needs week and day" });
+      else if (!weeks.has(l.week)) issues.push({ path: `${at}.week`, message: `week "${l.week}" is not in any world` });
+    }
     for (const [i, b] of l.beats.entries()) {
       const bat = `${at}.beats.${i}`;
       if (b.type === "avatar_say" && countWords(b.text) > 20) issues.push({ path: bat, message: "avatar_say text > 20 words; split the beat" });
@@ -61,6 +64,16 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   for (const m of pack.minigames) issues.push(...validateMinigame(m));
 
   if (!prayers.has(pack.routines.bedtime.closingPrayerId)) issues.push({ path: "routines.bedtime.closingPrayerId", message: "unknown prayer" });
+  const bedtimeLesson = pack.routines.bedtime.lessonId ? lessons.get(pack.routines.bedtime.lessonId) : undefined;
+  if (pack.routines.bedtime.lessonId && !bedtimeLesson) issues.push({ path: "routines.bedtime.lessonId", message: "unknown lesson" });
+  if (bedtimeLesson && bedtimeLesson.routine !== "bedtime") issues.push({ path: "routines.bedtime.lessonId", message: "lesson must have routine: bedtime" });
+  const slots = new Set<string>();
+  for (const l of pack.lessons) {
+    if (l.routine !== "any") continue;
+    const slot = `${l.week}d${l.day}`;
+    if (slots.has(slot)) issues.push({ path: `lessons.${l.id}`, message: `duplicate slot ${slot}` });
+    slots.add(slot);
+  }
   if (!prayers.has(pack.routines.meal.prayerId)) issues.push({ path: "routines.meal.prayerId", message: "unknown prayer" });
   for (const r of pack.rewards) if (r.unlock.lessonId && !lessons.has(r.unlock.lessonId)) issues.push({ path: `rewards.${r.id}`, message: `unknown lesson "${r.unlock.lessonId}"` });
   for (const c of pack.calendar) for (const id of c.lessonIds) if (!lessons.has(id)) issues.push({ path: `calendar.${c.id}`, message: `unknown lesson "${id}"` });

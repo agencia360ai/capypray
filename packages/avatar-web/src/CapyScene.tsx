@@ -69,6 +69,9 @@ function CapyModel({ glb, onMessage, register }: Omit<Props, "background">) {
           case "idle":
             sm.idle();
             break;
+          case "lights_out":
+            sm.lightsOut();
+            break;
           case "mood":
             sm.setMood(m.value);
             break;

@@ -7,7 +7,8 @@ export type AvatarCommand =
   | { type: "speak"; durationMs: number; visemes?: Array<{ t: number; v: number }> }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
-  | { type: "idle" };
+  | { type: "idle" }
+  | { type: "lights_out" };
 
 export type AvatarEvent = { type: "ready"; clips: string[] } | { type: "clipEnd"; clip: string } | { type: "error"; message: string };
 

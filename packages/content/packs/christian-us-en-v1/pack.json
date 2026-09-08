@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -14,7 +14,8 @@
     { "id": "please-help", "title": "Please Help", "icon": "hands-open", "anchor": "Please help me with…" },
     { "id": "others", "title": "Pray for Others", "icon": "people", "anchor": "Please be with…" },
     { "id": "listen", "title": "Listen", "icon": "ear", "anchor": "I'm listening, God." },
-    { "id": "shared", "title": "Prayers We Share", "icon": "book", "anchor": "Our Father…" }
+    { "id": "shared", "title": "Prayers We Share", "icon": "book", "anchor": "Our Father…" },
+    { "id": "review", "title": "Beacon Day", "icon": "beacon", "anchor": "Let's pray it all together!" }
   ],
   "worlds": [{ "id": "meadow", "title": "The Meadow", "weeks": ["w1", "w2", "w3", "w4"] }],
   "lessons": [
@@ -66,6 +67,82 @@
         { "type": "parent_prompt", "text": "Ask your child: \"Who did you pray for today?\" Capy will remember these names and ask about them later." },
         { "type": "avatar_say", "clip": "heart", "text": "Your prayer people live in the pond now. Bye!", "audio": "w1d3_07.mp3", "mood": "happy" }
       ]
+    },
+    {
+      "id": "w1d4",
+      "week": "w1",
+      "day": 4,
+      "skillId": "thank-you",
+      "title": "Noticing Good Things",
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! I found a yummy orange today. Thank you, God!", "audio": "w1d4_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_a", "text": "Good things are everywhere. Saying thank you is a prayer too.", "audio": "w1d4_02.mp3" },
+        { "type": "avatar_say", "clip": "think", "text": "What made you smile today? Let's tell God three things.", "audio": "w1d4_03.mp3" },
+        { "type": "repeat_after_me", "prayerId": "thank-you-v1" },
+        { "type": "minigame", "minigameId": "mg_w1d4_gratitude_garden" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "avatar_say", "clip": "munch", "text": "Thank you prayers make my tummy happy. Bye!", "audio": "w1d4_06.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "w1d5",
+      "week": "w1",
+      "day": 5,
+      "skillId": "thank-you",
+      "title": "Thank You Before We Eat",
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! Before I munch, I say a little thank you.", "audio": "w1d5_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_b", "text": "It's called grace. It's short and you can say it every meal.", "audio": "w1d5_02.mp3" },
+        { "type": "repeat_after_me", "prayerId": "grace-god-is-great" },
+        { "type": "minigame", "minigameId": "mg_w1d5_grace_order" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "parent_prompt", "text": "Try it tonight: let your child lead grace at the dinner table. Two lines is all it takes." },
+        { "type": "avatar_say", "clip": "munch", "text": "Now you can say grace at dinner. Munch munch!", "audio": "w1d5_06.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "w1d6",
+      "week": "w1",
+      "day": 6,
+      "skillId": "thank-you",
+      "title": "Thank You for People",
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! People are the best gift of all.", "audio": "w1d6_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_a", "text": "Pick two people you love. We'll thank God for them.", "audio": "w1d6_02.mp3" },
+        { "type": "minigame", "minigameId": "mg_w1d6_thank_people" },
+        { "type": "repeat_after_me", "prayerId": "thank-you-v1" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "avatar_say", "clip": "heart", "text": "They would love to know you prayed for them.", "audio": "w1d6_05.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "w1d7",
+      "week": "w1",
+      "day": 7,
+      "skillId": "review",
+      "title": "Beacon Day 1",
+      "beats": [
+        { "type": "avatar_say", "clip": "celebrate", "text": "{kidName}, it's Beacon Day! Seven lanterns light a beacon.", "audio": "w1d7_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_a", "text": "This week you learned Hello and Thank You. Let's pray both!", "audio": "w1d7_02.mp3" },
+        { "type": "repeat_after_me", "prayerId": "hello-thanks-review" },
+        { "type": "minigame", "minigameId": "mg_w1d7_review" },
+        { "type": "minigame", "minigameId": "mg_listen_30" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "avatar_say", "clip": "celebrate", "text": "The beacon is shining! You earned a flower for me.", "audio": "w1d7_06.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "bedtime-w1",
+      "skillId": "shared",
+      "title": "Bedtime Prayer",
+      "free": true,
+      "routine": "bedtime",
+      "beats": [
+        { "type": "avatar_say", "clip": "yawn", "text": "Hi {kidName}. It's sleepy time. Let's say goodnight to God.", "audio": "bed_01.mp3", "mood": "sleepy" },
+        { "type": "repeat_after_me", "prayerId": "bedtime-classic" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "lights_out", "seconds": 30, "text": "Goodnight, {kidName}. God is with you all night long.", "audio": "bed_03.mp3" }
+      ]
     }
   ],
   "prayers": [
@@ -101,6 +178,18 @@
         { "text": "Help me be kind to them. Amen.", "audio": "p_others_03.mp3" }
       ],
       "variables": ["person"]
+    },
+    {
+      "id": "hello-thanks-review",
+      "skillId": "review",
+      "title": "Hello and Thank You",
+      "lines": [
+        { "text": "Hi God, it's me, {kidName}.", "audio": "p_hello_01.mp3" },
+        { "text": "Thank you for {thankfulFor}.", "audio": "p_review_02.mp3" },
+        { "text": "Thank you for {person}.", "audio": "p_thanks_02.mp3" },
+        { "text": "I love you. Amen.", "audio": "p_hello_03.mp3" }
+      ],
+      "variables": ["kidName", "thankfulFor", "person"]
     },
     {
       "id": "grace-god-is-great",
@@ -162,16 +251,75 @@
       "allowAdd": true,
       "prayerId": "for-others-v1",
       "successLine": { "text": "They are lucky to have you.", "audio": "mg_w1d3_ok.mp3" }
+    },
+    {
+      "type": "collect",
+      "id": "mg_w1d4_gratitude_garden",
+      "prompt": { "text": "Gratitude Garden! Pick three things you're thankful for.", "audio": "mg_w1d4_prompt.mp3" },
+      "target": 3,
+      "items": [
+        { "id": "family", "label": "My family", "icon": "family" },
+        { "id": "food", "label": "Yummy food", "icon": "apple" },
+        { "id": "sun", "label": "Sunshine", "icon": "sun" },
+        { "id": "pet", "label": "My pet", "icon": "paw" },
+        { "id": "toys", "label": "My toys", "icon": "blocks" },
+        { "id": "friends", "label": "Friends", "icon": "friends" },
+        { "id": "home", "label": "My home", "icon": "house" },
+        { "id": "hugs", "label": "Hugs", "icon": "heart" }
+      ],
+      "successLine": { "text": "Look at your garden grow! Thank you, God.", "audio": "mg_w1d4_ok.mp3" }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w1d5_grace_order",
+      "prompt": { "text": "Put the grace in order.", "audio": "mg_w1d5_prompt.mp3" },
+      "cards": [
+        { "id": "great", "label": "God is great,", "icon": "text" },
+        { "id": "good", "label": "God is good.", "icon": "text" },
+        { "id": "thank", "label": "Let us thank Him", "icon": "text" },
+        { "id": "food", "label": "for our food. Amen.", "icon": "text" }
+      ],
+      "order": ["great", "good", "thank", "food"],
+      "successLine": { "text": "Perfect! You know grace by heart.", "audio": "mg_w1d5_ok.mp3" },
+      "retryLine": { "text": "Almost! Listen again and try once more.", "audio": "mg_w1d5_retry.mp3" }
+    },
+    {
+      "type": "people_picker",
+      "id": "mg_w1d6_thank_people",
+      "prompt": { "text": "Pick two people to thank God for.", "audio": "mg_w1d6_prompt.mp3" },
+      "min": 2,
+      "max": 2,
+      "allowAdd": true,
+      "prayerId": "thank-you-v1",
+      "successLine": { "text": "What a great pair to be thankful for!", "audio": "mg_w1d6_ok.mp3" }
+    },
+    {
+      "type": "fill_blank",
+      "id": "mg_w1d7_review",
+      "prompt": { "text": "Finish the prayer.", "audio": "mg_w1d7_prompt.mp3" },
+      "sentence": "Hi God, it's ___.",
+      "options": ["me", "a rock", "nobody"],
+      "answer": "me",
+      "successLine": { "text": "Yes! God loves hearing from you.", "audio": "mg_w1d7_ok.mp3" },
+      "retryLine": { "text": "Try again. Who is talking to God?", "audio": "mg_w1d7_retry.mp3" }
+    },
+    {
+      "type": "listen_timer",
+      "id": "mg_listen_30",
+      "prompt": { "text": "Breathe slowly with Capy. God is here.", "audio": "mg_listen_prompt.mp3" },
+      "seconds": 30,
+      "closingLine": { "text": "I'm listening, God.", "audio": "mg_listen_close.mp3" }
     }
   ],
   "rewards": [
     { "id": "hat-flower", "type": "skin", "title": "Flower", "unlock": { "beacons": 1 } },
     { "id": "lily-pad", "type": "pond_decoration", "title": "Lily Pad", "unlock": { "lessonId": "w1d3" } },
+    { "id": "sticker-grace", "type": "sticker", "title": "Grace Star", "unlock": { "lessonId": "w1d5" } },
     { "id": "badge-pond-keeper", "type": "badge", "title": "Pond Keeper", "unlock": { "beacons": 4 } }
   ],
   "people": { "defaults": ["Mom", "Dad", "Grandma", "Grandpa", "Sister", "Brother", "Friend", "Teacher", "Pet"] },
   "routines": {
-    "bedtime": { "defaultHour": 19, "closingPrayerId": "bedtime-classic" },
+    "bedtime": { "defaultHour": 19, "closingPrayerId": "bedtime-classic", "lessonId": "bedtime-w1", "notificationText": "Capy is ready for bedtime prayer 🌙" },
     "meal": { "prayerId": "grace-god-is-great" }
   },
   "calendar": []

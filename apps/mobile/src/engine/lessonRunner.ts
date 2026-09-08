@@ -18,7 +18,12 @@ export type Step =
 
 export type RunnerState = { beatIndex: number; lineIndex: number; step: Step; lanternsEarned: number; startedAt: number };
 
-export type AvatarEffect = { type: "play"; clip: string; loop?: boolean } | { type: "speak"; durationMs: number } | { type: "mood"; value: "calm" | "happy" | "sad" | "sleepy" } | { type: "idle" };
+export type AvatarEffect =
+  | { type: "play"; clip: string; loop?: boolean }
+  | { type: "speak"; durationMs: number }
+  | { type: "mood"; value: "calm" | "happy" | "sad" | "sleepy" }
+  | { type: "idle" }
+  | { type: "lights_out" };
 
 export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () => Date.now()) {
   const prayers = new Map(pack.prayers.map((p) => [p.id, p]));
@@ -59,7 +64,7 @@ export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () =>
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
       case "lights_out":
-        return [{ type: "mood", value: "sleepy" }, { type: "play", clip: "yawn", loop: false }];
+        return [{ type: "mood", value: "sleepy" }, { type: "lights_out" }];
       case "minigame":
       case "choose_people":
         return [{ type: "idle" }];

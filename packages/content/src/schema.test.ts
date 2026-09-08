@@ -9,7 +9,8 @@ describe("christian-us-en-v1", () => {
   it("validates", () => {
     const { pack, issues } = validatePack(load());
     expect(issues).toEqual([]);
-    expect(pack?.lessons.map((l) => l.id)).toEqual(["w1d1", "w1d2", "w1d3"]);
+    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual(["w1d1", "w1d2", "w1d3", "w1d4", "w1d5", "w1d6", "w1d7"]);
+    expect(pack?.routines.bedtime.lessonId).toBe("bedtime-w1");
   });
 
   it("lists audio refs", () => {
@@ -50,6 +51,20 @@ describe("validatePack referential checks", () => {
     raw.lessons[0].beats[0].text = Array.from({ length: 21 }, () => "hi").join(" ");
     const { issues } = validatePack(raw);
     expect(issues.some((i) => i.message.includes("> 20 words"))).toBe(true);
+  });
+});
+
+describe("week 1 curriculum (GDD §7.1)", () => {
+  it("uses all 6 minigame types across week 1 + bedtime", () => {
+    const { pack } = validatePack(load());
+    const types = new Set(pack!.minigames.map((m) => m.type));
+    expect([...types].sort()).toEqual(["collect", "fill_blank", "listen_timer", "people_picker", "sequence", "tap_choice"]);
+  });
+  it("bedtime routine ends with lights_out and is free", () => {
+    const { pack } = validatePack(load());
+    const bed = pack!.lessons.find((l) => l.id === "bedtime-w1")!;
+    expect(bed.free).toBe(true);
+    expect(bed.beats[bed.beats.length - 1]?.type).toBe("lights_out");
   });
 });
 

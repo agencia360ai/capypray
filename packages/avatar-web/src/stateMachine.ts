@@ -35,6 +35,11 @@ export class CapyStateMachine {
       const requested = this.oneShotClip ?? name;
       this.oneShotClip = undefined;
       this.onClipEnd?.(requested);
+      if (this.sleepChain) {
+        if (requested === "yawn") this.play("to_sleep", { loop: false });
+        else if (requested === "to_sleep") this.play("sleep", { loop: true });
+        return;
+      }
       if (this.speaking) this.play(pick(TALK), { loop: true });
       else this.idle();
     });
@@ -51,6 +56,7 @@ export class CapyStateMachine {
   }
 
   play(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
+    if (!["yawn", "to_sleep", "sleep"].includes(clip)) this.sleepChain = false;
     const name = this.resolve(clip);
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
@@ -72,6 +78,7 @@ export class CapyStateMachine {
 
   idle() {
     this.speaking = false;
+    this.sleepChain = false;
     const pool = IDLE_BY_MOOD[this.mood];
     const clip = Math.random() < 1 / 6 && this.actions.has("munch") ? "munch" : pick(pool);
     this.play(clip, { loop: clip !== "munch" && clip !== "yawn" });
@@ -92,12 +99,11 @@ export class CapyStateMachine {
 
   lightsOut() {
     this.speaking = false;
+    window.clearTimeout(this.speakTimeout);
+    this.sleepChain = true;
     this.play("yawn", { loop: false });
-    this.onClipEnd = (c) => {
-      if (c === "yawn") this.play("to_sleep", { loop: false });
-      else if (c === "to_sleep") this.play("sleep", { loop: true });
-    };
   }
+  private sleepChain = false;
 
   update(dt: number) {
     this.mixer.update(dt);

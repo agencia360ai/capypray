@@ -48,6 +48,7 @@ function Preview() {
         </label>
         <button onClick={() => handle.current?.send({ type: "speak", durationMs: 4000 })}>speak 4s</button>
         <button onClick={() => handle.current?.send({ type: "idle" })}>idle</button>
+        <button onClick={() => handle.current?.send({ type: "lights_out" })}>lights out</button>
         {(["calm", "happy", "sad", "sleepy"] as Mood[]).map((m) => (
           <button key={m} onClick={() => handle.current?.send({ type: "mood", value: m })}>
             {m}

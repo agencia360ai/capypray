@@ -32,7 +32,7 @@ export default function LessonScreen() {
     const r = runner.next();
     apply(r);
     if (r.state.step.kind === "done") {
-      kid.completeLesson(lesson.id, r.state.lanternsEarned);
+      kid.completeLesson(lesson.routine === "any" ? lesson.id : `${lesson.id}:${new Date().toISOString().slice(0, 10)}`, r.state.lanternsEarned);
       router.back();
     }
   };

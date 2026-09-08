@@ -115,12 +115,62 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "listen_timer":
       return <ListenTimer seconds={mg.seconds} text={mg.prompt.text} onDone={onDone} />;
     case "sequence":
-    case "fill_blank":
-      // S3: sequence + fill_blank UIs (GDD backlog #10). Until then, auto-pass with the success line.
       return (
         <Sheet>
-          <Text style={styles.subtitle}>{mg.successLine.text}</Text>
-          <Big label="Next" onPress={onDone} />
+          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
+          <View style={styles.slots}>
+            {mg.order.map((_, i) => (
+              <Text key={i} style={styles.slot}>
+                {picked[i] ? mg.cards.find((c) => c.id === picked[i])?.label : "…"}
+              </Text>
+            ))}
+          </View>
+          <View style={styles.grid}>
+            {mg.cards
+              .filter((c) => !picked.includes(c.id))
+              .map((c) => (
+                <Card
+                  key={c.id}
+                  label={c.label}
+                  onPress={() => {
+                    const n = [...picked, c.id];
+                    if (mg.order[n.length - 1] !== c.id) {
+                      setMsg(mg.retryLine.text);
+                      setPicked([]);
+                      return;
+                    }
+                    setPicked(n);
+                    if (n.length === mg.order.length) {
+                      setMsg(mg.successLine.text);
+                      setTimeout(onDone, 1200);
+                    }
+                  }}
+                />
+              ))}
+          </View>
+        </Sheet>
+      );
+    case "fill_blank":
+      return (
+        <Sheet>
+          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
+          <Text style={styles.sentence}>{mg.sentence.replace("___", picked[0] ?? "____")}</Text>
+          <View style={styles.grid}>
+            {mg.options.map((o) => (
+              <Card
+                key={o}
+                label={o}
+                selected={picked[0] === o}
+                onPress={() => {
+                  setPicked([o]);
+                  if (o === mg.answer) {
+                    setMsg(mg.successLine.text);
+                    setTimeout(onDone, 1200);
+                  } else setMsg(mg.retryLine.text);
+                }}
+              />
+            ))}
+          </View>
         </Sheet>
       );
   }
@@ -194,6 +244,9 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.4 },
   bigText: { fontSize: 22, fontWeight: "700", color: "#3b2a1a" },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
+  slots: { gap: 6 },
+  slot: { fontSize: 18, color: "#3b2a1a", textAlign: "center", padding: 8, borderRadius: 10, backgroundColor: "#fff5e0" },
+  sentence: { fontSize: 24, color: "#3b2a1a", textAlign: "center", fontWeight: "600" },
   card: { minWidth: 100, padding: 16, borderRadius: 18, backgroundColor: "#fff", borderWidth: 3, borderColor: "#f1e2c8", alignItems: "center" },
   cardSelected: { borderColor: "#FFB84D", backgroundColor: "#fff5e0" },
   cardText: { fontSize: 18, color: "#3b2a1a" },
