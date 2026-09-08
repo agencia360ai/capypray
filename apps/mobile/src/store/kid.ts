@@ -6,24 +6,46 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // swap to react-native-mmkv once we move to dev builds. Synced to Supabase in background (S2).
 const storage = createJSONStorage(() => AsyncStorage);
 
-export type PrayerPerson = { id: string; label: string; icon: string; prayedCount: number };
+export type PrayerPerson = { id: string; label: string; icon: string; prayedCount: number; note?: string };
+export type AgeBand = "4-8" | "9-11";
+export type Tradition = "christian" | "catholic-addon" | "jewish" | "muslim" | "secular";
+
+export type Profile = {
+  ageBand: AgeBand;
+  tradition: Tradition;
+  bedtimeHour: number;
+  reminder: boolean;
+  goal?: string;
+};
 
 type KidState = {
+  onboarded: boolean;
   kidName: string;
+  profile: Profile;
+  /** Mirrors the RevenueCat `premium` entitlement (see src/entitlements). Sandbox toggle in Parent Corner. */
+  premium: boolean;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
   lanterns: number;
   beacons: number;
   streak: { current: number; best: number; lastActive?: string; graceUsedWeek: number; weekStart?: string };
   setKidName: (n: string) => void;
+  setProfile: (p: Partial<Profile>) => void;
+  finishOnboarding: () => void;
+  setPremium: (v: boolean) => void;
   addPerson: (label: string, icon?: string) => void;
+  removePerson: (id: string) => void;
+  setPersonNote: (id: string, note: string) => void;
   prayedFor: (ids: string[]) => void;
   completeLesson: (lessonId: string, lanterns: number, today?: string) => void;
   reset: () => void;
 };
 
 const initial = {
+  onboarded: false,
   kidName: "",
+  profile: { ageBand: "4-8", tradition: "christian", bedtimeHour: 19, reminder: false } as Profile,
+  premium: false,
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
   lanterns: 0,
@@ -35,8 +57,14 @@ export const useKid = create<KidState>()(
   persist(
     (set, get) => ({
       ...initial,
-      setKidName: (kidName) => set({ kidName }),
-      addPerson: (label, icon = "person") => set((s) => ({ people: [...s.people, { id: `${Date.now()}`, label, icon, prayedCount: 0 }] })),
+      setKidName: (kidName) => set({ kidName: kidName.trim().slice(0, 20) }),
+      setProfile: (p) => set((s) => ({ profile: { ...s.profile, ...p } })),
+      finishOnboarding: () => set({ onboarded: true }),
+      setPremium: (premium) => set({ premium }),
+      addPerson: (label, icon = "person") =>
+        set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: `${Date.now()}`, label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
+      removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),
+      setPersonNote: (id, note) => set((s) => ({ people: s.people.map((p) => (p.id === id ? { ...p, note: note.trim().slice(0, 120) || undefined } : p)) })),
       prayedFor: (ids) => set((s) => ({ people: s.people.map((p) => (ids.includes(p.id) ? { ...p, prayedCount: p.prayedCount + 1 } : p)) })),
       completeLesson: (lessonId, lanterns, today = isoDate(new Date())) => {
         const s = get();
@@ -48,9 +76,10 @@ export const useKid = create<KidState>()(
           streak: bumpStreak(s.streak, today),
         });
       },
-      reset: () => set(initial),
+      /** Parent Corner "delete my child's data": everything about the kid, in one tap (GDD §11). */
+      reset: () => set({ ...initial, onboarded: false }),
     }),
-    { name: "kid", storage },
+    { name: "kid", storage, version: 2 },
   ),
 );
 

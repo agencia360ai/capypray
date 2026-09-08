@@ -29,9 +29,12 @@ Clip names come from `tools/avatar/clip-map.json`. Drop Mixamo FBX clips (export
 |---|---|
 | Avatar GLB (12 clips, 3.1 MB, face rig) | ✅ built from the existing Rigify FBX |
 | avatar-web viewer, RN bridge, /preview + screenshots | ✅ |
-| Content schema + validator + pack Week 1 (W1D1–D7) + bedtime routine | ✅ tests pass |
+| Content schema + validator + pack Weeks 1–2 (14 lessons) + bedtime routine | ✅ tests pass |
 | Mobile: AvatarView, lesson runner, all 6 minigame types, Pond screen, streak + Grace Days, lights_out | ✅ typecheck + Metro export pass |
 | Supabase schema + RLS, rc-webhook, weekly-report | ✅ migrations written, not yet applied |
 | Missing clips: wave_hello, pray_hands, kneel_pray, listen_nod, clap, heart, think, celebrate | ⏳ Mixamo step (manual) |
 | Audio (ElevenLabs) | ⏳ `tools/tts-batch.ts` ready, needs API key |
-| Paywall / RevenueCat, parent onboarding, Parent Corner | ⏳ S3 |
+| Parent onboarding, parental gate, Parent Corner (bedtime, reminder, people + notes, delete data) | ✅ |
+| Premium gating (`useEntitlement`, lock UI, sandbox switch) | ✅ · RevenueCat adapter on dev build (`apps/mobile/src/entitlements/revenuecat.md`) |
+| Kids Category / COPPA checklist | `docs/COMPLIANCE.md` |
+| Weeks 3–4, Supabase auth + sync, audio, Mixamo clips | ⏳ |

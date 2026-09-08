@@ -9,7 +9,7 @@ describe("christian-us-en-v1", () => {
   it("validates", () => {
     const { pack, issues } = validatePack(load());
     expect(issues).toEqual([]);
-    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual(["w1d1", "w1d2", "w1d3", "w1d4", "w1d5", "w1d6", "w1d7"]);
+    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual([...[1, 2].flatMap((w) => [1, 2, 3, 4, 5, 6, 7].map((d) => `w${w}d${d}`))]);
     expect(pack?.routines.bedtime.lessonId).toBe("bedtime-w1");
   });
 
@@ -59,6 +59,11 @@ describe("week 1 curriculum (GDD §7.1)", () => {
     const { pack } = validatePack(load());
     const types = new Set(pack!.minigames.map((m) => m.type));
     expect([...types].sort()).toEqual(["collect", "fill_blank", "listen_timer", "people_picker", "sequence", "tap_choice"]);
+  });
+  it("only W1 and bedtime are free (GDD §10.1: paywall B with bedtime escape)", () => {
+    const { pack } = validatePack(load());
+    const free = pack!.lessons.filter((l) => l.free).map((l) => l.id);
+    expect(free).toEqual(["w1d1", "bedtime-w1"]);
   });
   it("bedtime routine ends with lights_out and is free", () => {
     const { pack } = validatePack(load());

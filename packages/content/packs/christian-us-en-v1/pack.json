@@ -1,23 +1,86 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
-  "avatar": { "id": "capy-default", "glb": "avatars/capy-v1.glb", "skinIds": ["capy-default"] },
-  "voice": { "provider": "elevenlabs", "style": "warm-kid-friendly" },
-  "theme": { "primary": "#FFB84D", "pond": "meadow" },
+  "avatar": {
+    "id": "capy-default",
+    "glb": "avatars/capy-v1.glb",
+    "skinIds": [
+      "capy-default"
+    ]
+  },
+  "voice": {
+    "provider": "elevenlabs",
+    "style": "warm-kid-friendly"
+  },
+  "theme": {
+    "primary": "#FFB84D",
+    "pond": "meadow"
+  },
   "skills": [
-    { "id": "hello", "title": "Hello", "icon": "wave", "anchor": "Hi God, it's me!" },
-    { "id": "thank-you", "title": "Thank You", "icon": "sun", "anchor": "Thank you for…" },
-    { "id": "sorry", "title": "I'm Sorry", "icon": "heart-mend", "anchor": "I'm sorry for… please help me…" },
-    { "id": "please-help", "title": "Please Help", "icon": "hands-open", "anchor": "Please help me with…" },
-    { "id": "others", "title": "Pray for Others", "icon": "people", "anchor": "Please be with…" },
-    { "id": "listen", "title": "Listen", "icon": "ear", "anchor": "I'm listening, God." },
-    { "id": "shared", "title": "Prayers We Share", "icon": "book", "anchor": "Our Father…" },
-    { "id": "review", "title": "Beacon Day", "icon": "beacon", "anchor": "Let's pray it all together!" }
+    {
+      "id": "hello",
+      "title": "Hello",
+      "icon": "wave",
+      "anchor": "Hi God, it's me!"
+    },
+    {
+      "id": "thank-you",
+      "title": "Thank You",
+      "icon": "sun",
+      "anchor": "Thank you for…"
+    },
+    {
+      "id": "sorry",
+      "title": "I'm Sorry",
+      "icon": "heart-mend",
+      "anchor": "I'm sorry for… please help me…"
+    },
+    {
+      "id": "please-help",
+      "title": "Please Help",
+      "icon": "hands-open",
+      "anchor": "Please help me with…"
+    },
+    {
+      "id": "others",
+      "title": "Pray for Others",
+      "icon": "people",
+      "anchor": "Please be with…"
+    },
+    {
+      "id": "listen",
+      "title": "Listen",
+      "icon": "ear",
+      "anchor": "I'm listening, God."
+    },
+    {
+      "id": "shared",
+      "title": "Prayers We Share",
+      "icon": "book",
+      "anchor": "Our Father…"
+    },
+    {
+      "id": "review",
+      "title": "Beacon Day",
+      "icon": "beacon",
+      "anchor": "Let's pray it all together!"
+    }
   ],
-  "worlds": [{ "id": "meadow", "title": "The Meadow", "weeks": ["w1", "w2", "w3", "w4"] }],
+  "worlds": [
+    {
+      "id": "meadow",
+      "title": "The Meadow",
+      "weeks": [
+        "w1",
+        "w2",
+        "w3",
+        "w4"
+      ]
+    }
+  ],
   "lessons": [
     {
       "id": "w1d1",
@@ -27,12 +90,38 @@
       "title": "God Is Always Listening",
       "free": true,
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! I'm Capy. Guess what? God is always listening. Always!", "audio": "w1d1_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_a", "text": "Talking to God is called praying. It's just like talking to a friend.", "audio": "w1d1_02.mp3" },
-        { "type": "repeat_after_me", "prayerId": "hello-god-v1" },
-        { "type": "minigame", "minigameId": "mg_w1d1_who_listens" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "avatar_say", "clip": "celebrate", "text": "You just prayed! High five!", "audio": "w1d1_05.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! I'm Capy. Guess what? God is always listening. Always!",
+          "audio": "w1d1_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Talking to God is called praying. It's just like talking to a friend.",
+          "audio": "w1d1_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "hello-god-v1"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d1_who_listens"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "You just prayed! High five!",
+          "audio": "w1d1_05.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -42,13 +131,44 @@
       "skillId": "hello",
       "title": "You Can Pray Anywhere",
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi again, {kidName}! I prayed in the pond today. Splash!", "audio": "w1d2_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "think", "text": "You can pray anywhere. In bed, in the car, even in the bath.", "audio": "w1d2_02.mp3" },
-        { "type": "avatar_say", "clip": "talk_b", "text": "God hears you everywhere. Let's say hi from right here.", "audio": "w1d2_03.mp3" },
-        { "type": "repeat_after_me", "prayerId": "hello-god-v1" },
-        { "type": "minigame", "minigameId": "mg_w1d2_places" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "avatar_say", "clip": "heart", "text": "Another lantern for the pond! See you tomorrow.", "audio": "w1d2_06.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi again, {kidName}! I prayed in the pond today. Splash!",
+          "audio": "w1d2_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "think",
+          "text": "You can pray anywhere. In bed, in the car, even in the bath.",
+          "audio": "w1d2_02.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "God hears you everywhere. Let's say hi from right here.",
+          "audio": "w1d2_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "hello-god-v1"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d2_places"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Another lantern for the pond! See you tomorrow.",
+          "audio": "w1d2_06.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -58,14 +178,49 @@
       "skillId": "hello",
       "title": "Meet Your Prayer People",
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! Today we pick people to pray for.", "audio": "w1d3_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_a", "text": "I pray for my bird friend every day. Who do you love?", "audio": "w1d3_02.mp3" },
-        { "type": "choose_people", "min": 1, "max": 3, "text": "Tap three people you want to pray for.", "audio": "w1d3_03.mp3" },
-        { "type": "repeat_after_me", "prayerId": "for-others-v1" },
-        { "type": "minigame", "minigameId": "mg_w1d3_people" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "parent_prompt", "text": "Ask your child: \"Who did you pray for today?\" Capy will remember these names and ask about them later." },
-        { "type": "avatar_say", "clip": "heart", "text": "Your prayer people live in the pond now. Bye!", "audio": "w1d3_07.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Today we pick people to pray for.",
+          "audio": "w1d3_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "I pray for my bird friend every day. Who do you love?",
+          "audio": "w1d3_02.mp3"
+        },
+        {
+          "type": "choose_people",
+          "min": 1,
+          "max": 3,
+          "text": "Tap three people you want to pray for.",
+          "audio": "w1d3_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d3_people"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "parent_prompt",
+          "text": "Ask your child: \"Who did you pray for today?\" Capy will remember these names and ask about them later."
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Your prayer people live in the pond now. Bye!",
+          "audio": "w1d3_07.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -75,13 +230,44 @@
       "skillId": "thank-you",
       "title": "Noticing Good Things",
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! I found a yummy orange today. Thank you, God!", "audio": "w1d4_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_a", "text": "Good things are everywhere. Saying thank you is a prayer too.", "audio": "w1d4_02.mp3" },
-        { "type": "avatar_say", "clip": "think", "text": "What made you smile today? Let's tell God three things.", "audio": "w1d4_03.mp3" },
-        { "type": "repeat_after_me", "prayerId": "thank-you-v1" },
-        { "type": "minigame", "minigameId": "mg_w1d4_gratitude_garden" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "avatar_say", "clip": "munch", "text": "Thank you prayers make my tummy happy. Bye!", "audio": "w1d4_06.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! I found a yummy orange today. Thank you, God!",
+          "audio": "w1d4_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Good things are everywhere. Saying thank you is a prayer too.",
+          "audio": "w1d4_02.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "think",
+          "text": "What made you smile today? Let's tell God three things.",
+          "audio": "w1d4_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "thank-you-v1"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d4_gratitude_garden"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "munch",
+          "text": "Thank you prayers make my tummy happy. Bye!",
+          "audio": "w1d4_06.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -91,13 +277,42 @@
       "skillId": "thank-you",
       "title": "Thank You Before We Eat",
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! Before I munch, I say a little thank you.", "audio": "w1d5_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_b", "text": "It's called grace. It's short and you can say it every meal.", "audio": "w1d5_02.mp3" },
-        { "type": "repeat_after_me", "prayerId": "grace-god-is-great" },
-        { "type": "minigame", "minigameId": "mg_w1d5_grace_order" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "parent_prompt", "text": "Try it tonight: let your child lead grace at the dinner table. Two lines is all it takes." },
-        { "type": "avatar_say", "clip": "munch", "text": "Now you can say grace at dinner. Munch munch!", "audio": "w1d5_06.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Before I munch, I say a little thank you.",
+          "audio": "w1d5_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "It's called grace. It's short and you can say it every meal.",
+          "audio": "w1d5_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "grace-god-is-great"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d5_grace_order"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "parent_prompt",
+          "text": "Try it tonight: let your child lead grace at the dinner table. Two lines is all it takes."
+        },
+        {
+          "type": "avatar_say",
+          "clip": "munch",
+          "text": "Now you can say grace at dinner. Munch munch!",
+          "audio": "w1d5_06.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -107,12 +322,38 @@
       "skillId": "thank-you",
       "title": "Thank You for People",
       "beats": [
-        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! People are the best gift of all.", "audio": "w1d6_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_a", "text": "Pick two people you love. We'll thank God for them.", "audio": "w1d6_02.mp3" },
-        { "type": "minigame", "minigameId": "mg_w1d6_thank_people" },
-        { "type": "repeat_after_me", "prayerId": "thank-you-v1" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "avatar_say", "clip": "heart", "text": "They would love to know you prayed for them.", "audio": "w1d6_05.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! People are the best gift of all.",
+          "audio": "w1d6_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Pick two people you love. We'll thank God for them.",
+          "audio": "w1d6_02.mp3"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d6_thank_people"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "thank-you-v1"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "They would love to know you prayed for them.",
+          "audio": "w1d6_05.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -122,13 +363,368 @@
       "skillId": "review",
       "title": "Beacon Day 1",
       "beats": [
-        { "type": "avatar_say", "clip": "celebrate", "text": "{kidName}, it's Beacon Day! Seven lanterns light a beacon.", "audio": "w1d7_01.mp3", "mood": "happy" },
-        { "type": "avatar_say", "clip": "talk_a", "text": "This week you learned Hello and Thank You. Let's pray both!", "audio": "w1d7_02.mp3" },
-        { "type": "repeat_after_me", "prayerId": "hello-thanks-review" },
-        { "type": "minigame", "minigameId": "mg_w1d7_review" },
-        { "type": "minigame", "minigameId": "mg_listen_30" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "avatar_say", "clip": "celebrate", "text": "The beacon is shining! You earned a flower for me.", "audio": "w1d7_06.mp3", "mood": "happy" }
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "{kidName}, it's Beacon Day! Seven lanterns light a beacon.",
+          "audio": "w1d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "This week you learned Hello and Thank You. Let's pray both!",
+          "audio": "w1d7_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "hello-thanks-review"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d7_review"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_listen_30"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "The beacon is shining! You earned a flower for me.",
+          "audio": "w1d7_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d1",
+      "week": "w2",
+      "day": 1,
+      "skillId": "thank-you",
+      "title": "Thank You for My Body",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Wiggle your fingers. Blink your eyes. Amazing!",
+          "audio": "w2d1_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "God made your eyes, ears, nose, hands and tongue. Let's say thanks.",
+          "audio": "w2d1_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "thank-you-body",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d1_senses"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Your body is a gift. Take good care of it!",
+          "audio": "w2d1_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d2",
+      "week": "w2",
+      "day": 2,
+      "skillId": "thank-you",
+      "title": "Even Hard Days",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "sad",
+          "text": "Hi {kidName}. Today I dropped my orange in the mud. Yuck.",
+          "audio": "w2d2_01.mp3",
+          "mood": "sad"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "think",
+          "text": "But my bird friend shared his seeds. Even hard days have good bits.",
+          "audio": "w2d2_02.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "When something goes wrong, we can still find one thank you.",
+          "audio": "w2d2_03.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "thank-you-hard-day",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d2_bad_to_good"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "See? God is with you on hard days too.",
+          "audio": "w2d2_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d3",
+      "week": "w2",
+      "day": 3,
+      "skillId": "sorry",
+      "title": "Everyone Makes Mistakes",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. Can I tell you a secret? I make mistakes too.",
+          "audio": "w2d3_01.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "sad",
+          "text": "Yesterday I splashed my friend and he got cold. I felt bad.",
+          "audio": "w2d3_02.mp3",
+          "mood": "sad"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Everybody makes mistakes. Saying sorry is how we fix them.",
+          "audio": "w2d3_03.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sorry-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d3_after_mistake"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "God is glad when we say sorry. Well done.",
+          "audio": "w2d3_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d4",
+      "week": "w2",
+      "day": 4,
+      "skillId": "sorry",
+      "title": "God Forgives",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Remember my splashing mistake? Guess what happened.",
+          "audio": "w2d4_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "I said sorry to God. And God forgave me. Right away!",
+          "audio": "w2d4_02.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Forgive means: it's okay, let's try again. God always forgives.",
+          "audio": "w2d4_03.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sorry-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d4_sorry_forgiven"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Sorry, forgiven, try again. You've got it!",
+          "audio": "w2d4_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d5",
+      "week": "w2",
+      "day": 5,
+      "skillId": "sorry",
+      "title": "Saying Sorry to People Too",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. I said sorry to God. Then I said sorry to my friend.",
+          "audio": "w2d5_01.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Kind words fix things. Sorry. Thank you. I love you.",
+          "audio": "w2d5_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sorry-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d5_kind_words"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "parent_prompt",
+          "text": "Tonight, ask: \"Is there anyone you want to say sorry to?\" Keep it light. The goal is that sorry feels safe, not scary."
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Kind words make hearts warm. Goodnight!",
+          "audio": "w2d5_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w2d6",
+      "week": "w2",
+      "day": 6,
+      "skillId": "listen",
+      "title": "Quiet Time With God",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. Today we don't talk much. We listen.",
+          "audio": "w2d6_01.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "listen_nod",
+          "text": "Capybaras are very good at being still. Let's be still together.",
+          "audio": "w2d6_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 30,
+          "text": "Breathe in… breathe out… I'm listening, God.",
+          "audio": "w2d6_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "listen-v1",
+          "clip": "listen_nod"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "That was peaceful. God likes quiet time with you.",
+          "audio": "w2d6_05.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w2d7",
+      "week": "w2",
+      "day": 7,
+      "skillId": "review",
+      "title": "Beacon Day 2",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "{kidName}, Beacon Day! Hello, Thank You, and I'm Sorry.",
+          "audio": "w2d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Let's pray all three. I'll go first, you follow.",
+          "audio": "w2d7_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "review-w2",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d7_review"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_listen_30"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Two beacons shining! You earned a cozy scarf for me.",
+          "audio": "w2d7_06.mp3",
+          "mood": "happy"
+        }
       ]
     },
     {
@@ -138,10 +734,27 @@
       "free": true,
       "routine": "bedtime",
       "beats": [
-        { "type": "avatar_say", "clip": "yawn", "text": "Hi {kidName}. It's sleepy time. Let's say goodnight to God.", "audio": "bed_01.mp3", "mood": "sleepy" },
-        { "type": "repeat_after_me", "prayerId": "bedtime-classic" },
-        { "type": "reward", "lantern": 1 },
-        { "type": "lights_out", "seconds": 30, "text": "Goodnight, {kidName}. God is with you all night long.", "audio": "bed_03.mp3" }
+        {
+          "type": "avatar_say",
+          "clip": "yawn",
+          "text": "Hi {kidName}. It's sleepy time. Let's say goodnight to God.",
+          "audio": "bed_01.mp3",
+          "mood": "sleepy"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "bedtime-classic"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "lights_out",
+          "seconds": 30,
+          "text": "Goodnight, {kidName}. God is with you all night long.",
+          "audio": "bed_03.mp3"
+        }
       ]
     }
   ],
@@ -151,45 +764,95 @@
       "skillId": "hello",
       "title": "Hello Prayer",
       "lines": [
-        { "text": "Hi God, it's me, {kidName}.", "audio": "p_hello_01.mp3" },
-        { "text": "Thank you for listening.", "audio": "p_hello_02.mp3" },
-        { "text": "I love you. Amen.", "audio": "p_hello_03.mp3" }
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3"
+        },
+        {
+          "text": "Thank you for listening.",
+          "audio": "p_hello_02.mp3"
+        },
+        {
+          "text": "I love you. Amen.",
+          "audio": "p_hello_03.mp3"
+        }
       ],
-      "variables": ["kidName"]
+      "variables": [
+        "kidName"
+      ]
     },
     {
       "id": "thank-you-v1",
       "skillId": "thank-you",
       "title": "Thank You Prayer",
       "lines": [
-        { "text": "Dear God, thank you for {thankfulFor}.", "audio": "p_thanks_01.mp3" },
-        { "text": "Thank you for {person}.", "audio": "p_thanks_02.mp3" },
-        { "text": "Thank you for today. Amen.", "audio": "p_thanks_03.mp3" }
+        {
+          "text": "Dear God, thank you for {thankfulFor}.",
+          "audio": "p_thanks_01.mp3"
+        },
+        {
+          "text": "Thank you for {person}.",
+          "audio": "p_thanks_02.mp3"
+        },
+        {
+          "text": "Thank you for today. Amen.",
+          "audio": "p_thanks_03.mp3"
+        }
       ],
-      "variables": ["thankfulFor", "person"]
+      "variables": [
+        "thankfulFor",
+        "person"
+      ]
     },
     {
       "id": "for-others-v1",
       "skillId": "others",
       "title": "Prayer for Others",
       "lines": [
-        { "text": "God, please be with {person}.", "audio": "p_others_01.mp3" },
-        { "text": "Keep them safe and happy.", "audio": "p_others_02.mp3" },
-        { "text": "Help me be kind to them. Amen.", "audio": "p_others_03.mp3" }
+        {
+          "text": "God, please be with {person}.",
+          "audio": "p_others_01.mp3"
+        },
+        {
+          "text": "Keep them safe and happy.",
+          "audio": "p_others_02.mp3"
+        },
+        {
+          "text": "Help me be kind to them. Amen.",
+          "audio": "p_others_03.mp3"
+        }
       ],
-      "variables": ["person"]
+      "variables": [
+        "person"
+      ]
     },
     {
       "id": "hello-thanks-review",
       "skillId": "review",
       "title": "Hello and Thank You",
       "lines": [
-        { "text": "Hi God, it's me, {kidName}.", "audio": "p_hello_01.mp3" },
-        { "text": "Thank you for {thankfulFor}.", "audio": "p_review_02.mp3" },
-        { "text": "Thank you for {person}.", "audio": "p_thanks_02.mp3" },
-        { "text": "I love you. Amen.", "audio": "p_hello_03.mp3" }
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3"
+        },
+        {
+          "text": "Thank you for {thankfulFor}.",
+          "audio": "p_review_02.mp3"
+        },
+        {
+          "text": "Thank you for {person}.",
+          "audio": "p_thanks_02.mp3"
+        },
+        {
+          "text": "I love you. Amen.",
+          "audio": "p_hello_03.mp3"
+        }
       ],
-      "variables": ["kidName", "thankfulFor", "person"]
+      "variables": [
+        "kidName",
+        "thankfulFor",
+        "person"
+      ]
     },
     {
       "id": "grace-god-is-great",
@@ -197,8 +860,14 @@
       "title": "Mealtime Grace",
       "source": "traditional-pd",
       "lines": [
-        { "text": "God is great, God is good.", "audio": "p_grace_01.mp3" },
-        { "text": "Let us thank Him for our food. Amen.", "audio": "p_grace_02.mp3" }
+        {
+          "text": "God is great, God is good.",
+          "audio": "p_grace_01.mp3"
+        },
+        {
+          "text": "Let us thank Him for our food. Amen.",
+          "audio": "p_grace_02.mp3"
+        }
       ]
     },
     {
@@ -207,10 +876,128 @@
       "title": "Bedtime Prayer",
       "source": "traditional-pd",
       "lines": [
-        { "text": "Now I lay me down to sleep,", "audio": "p_bed_01.mp3" },
-        { "text": "I pray the Lord my soul to keep.", "audio": "p_bed_02.mp3" },
-        { "text": "Guide me safely through the night,", "audio": "p_bed_03.mp3" },
-        { "text": "and wake me with the morning light. Amen.", "audio": "p_bed_04.mp3" }
+        {
+          "text": "Now I lay me down to sleep,",
+          "audio": "p_bed_01.mp3"
+        },
+        {
+          "text": "I pray the Lord my soul to keep.",
+          "audio": "p_bed_02.mp3"
+        },
+        {
+          "text": "Guide me safely through the night,",
+          "audio": "p_bed_03.mp3"
+        },
+        {
+          "text": "and wake me with the morning light. Amen.",
+          "audio": "p_bed_04.mp3"
+        }
+      ]
+    },
+    {
+      "id": "thank-you-body",
+      "skillId": "thank-you",
+      "title": "Thank You for My Body",
+      "lines": [
+        {
+          "text": "Dear God, thank you for my eyes and ears.",
+          "audio": "p_body_01.mp3"
+        },
+        {
+          "text": "Thank you for my hands and feet.",
+          "audio": "p_body_02.mp3"
+        },
+        {
+          "text": "Help me use them for good. Amen.",
+          "audio": "p_body_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "thank-you-hard-day",
+      "skillId": "thank-you",
+      "title": "Thank You on a Hard Day",
+      "lines": [
+        {
+          "text": "God, today was hard.",
+          "audio": "p_hard_01.mp3"
+        },
+        {
+          "text": "But thank you for {thankfulFor}.",
+          "audio": "p_hard_02.mp3"
+        },
+        {
+          "text": "Thank you for staying with me. Amen.",
+          "audio": "p_hard_03.mp3"
+        }
+      ],
+      "variables": [
+        "thankfulFor"
+      ]
+    },
+    {
+      "id": "sorry-v1",
+      "skillId": "sorry",
+      "title": "I'm Sorry Prayer",
+      "lines": [
+        {
+          "text": "God, I'm sorry for {mistake}.",
+          "audio": "p_sorry_01.mp3"
+        },
+        {
+          "text": "Please forgive me and help me try again.",
+          "audio": "p_sorry_02.mp3"
+        },
+        {
+          "text": "Thank you for loving me. Amen.",
+          "audio": "p_sorry_03.mp3"
+        }
+      ],
+      "variables": [
+        "mistake"
+      ]
+    },
+    {
+      "id": "listen-v1",
+      "skillId": "listen",
+      "title": "Listening Prayer",
+      "lines": [
+        {
+          "text": "I'm listening, God.",
+          "audio": "p_listen_01.mp3"
+        },
+        {
+          "text": "Amen.",
+          "audio": "p_listen_02.mp3"
+        }
+      ]
+    },
+    {
+      "id": "review-w2",
+      "skillId": "review",
+      "title": "Hello, Thanks and Sorry",
+      "lines": [
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3"
+        },
+        {
+          "text": "Thank you for {thankfulFor}.",
+          "audio": "p_review_02.mp3"
+        },
+        {
+          "text": "I'm sorry for {mistake}. Please forgive me.",
+          "audio": "p_review_w2_03.mp3"
+        },
+        {
+          "text": "I love you. Amen.",
+          "audio": "p_hello_03.mp3"
+        }
+      ],
+      "variables": [
+        "kidName",
+        "thankfulFor",
+        "mistake"
       ]
     }
   ],
@@ -218,109 +1005,533 @@
     {
       "type": "tap_choice",
       "id": "mg_w1d1_who_listens",
-      "prompt": { "text": "Who can hear you when you pray?", "audio": "mg_w1d1_prompt.mp3" },
+      "prompt": {
+        "text": "Who can hear you when you pray?",
+        "audio": "mg_w1d1_prompt.mp3"
+      },
       "cards": [
-        { "id": "god", "label": "God", "icon": "sun-cloud", "correct": true },
-        { "id": "rock", "label": "A rock", "icon": "rock" },
-        { "id": "nobody", "label": "Nobody", "icon": "empty" }
+        {
+          "id": "god",
+          "label": "God",
+          "icon": "sun-cloud",
+          "correct": true
+        },
+        {
+          "id": "rock",
+          "label": "A rock",
+          "icon": "rock"
+        },
+        {
+          "id": "nobody",
+          "label": "Nobody",
+          "icon": "empty"
+        }
       ],
-      "successLine": { "text": "Yes! God always hears you.", "audio": "mg_w1d1_ok.mp3" },
-      "retryLine": { "text": "Hmm, try again. Who is always listening?", "audio": "mg_w1d1_retry.mp3" }
+      "successLine": {
+        "text": "Yes! God always hears you.",
+        "audio": "mg_w1d1_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Hmm, try again. Who is always listening?",
+        "audio": "mg_w1d1_retry.mp3"
+      }
     },
     {
       "type": "collect",
       "id": "mg_w1d2_places",
-      "prompt": { "text": "Drag three places where you can pray to Capy.", "audio": "mg_w1d2_prompt.mp3" },
+      "prompt": {
+        "text": "Drag three places where you can pray to Capy.",
+        "audio": "mg_w1d2_prompt.mp3"
+      },
       "target": 3,
       "items": [
-        { "id": "bed", "label": "My bed", "icon": "bed" },
-        { "id": "car", "label": "The car", "icon": "car" },
-        { "id": "park", "label": "The park", "icon": "tree" },
-        { "id": "bath", "label": "The bath", "icon": "bath" },
-        { "id": "school", "label": "School", "icon": "school" },
-        { "id": "table", "label": "Dinner table", "icon": "plate" }
+        {
+          "id": "bed",
+          "label": "My bed",
+          "icon": "bed"
+        },
+        {
+          "id": "car",
+          "label": "The car",
+          "icon": "car"
+        },
+        {
+          "id": "park",
+          "label": "The park",
+          "icon": "tree"
+        },
+        {
+          "id": "bath",
+          "label": "The bath",
+          "icon": "bath"
+        },
+        {
+          "id": "school",
+          "label": "School",
+          "icon": "school"
+        },
+        {
+          "id": "table",
+          "label": "Dinner table",
+          "icon": "plate"
+        }
       ],
-      "successLine": { "text": "Right! You can pray anywhere at all.", "audio": "mg_w1d2_ok.mp3" }
+      "successLine": {
+        "text": "Right! You can pray anywhere at all.",
+        "audio": "mg_w1d2_ok.mp3"
+      }
     },
     {
       "type": "people_picker",
       "id": "mg_w1d3_people",
-      "prompt": { "text": "Who will you pray for today?", "audio": "mg_w1d3_prompt.mp3" },
+      "prompt": {
+        "text": "Who will you pray for today?",
+        "audio": "mg_w1d3_prompt.mp3"
+      },
       "min": 1,
       "max": 3,
       "allowAdd": true,
       "prayerId": "for-others-v1",
-      "successLine": { "text": "They are lucky to have you.", "audio": "mg_w1d3_ok.mp3" }
+      "successLine": {
+        "text": "They are lucky to have you.",
+        "audio": "mg_w1d3_ok.mp3"
+      }
     },
     {
       "type": "collect",
       "id": "mg_w1d4_gratitude_garden",
-      "prompt": { "text": "Gratitude Garden! Pick three things you're thankful for.", "audio": "mg_w1d4_prompt.mp3" },
+      "prompt": {
+        "text": "Gratitude Garden! Pick three things you're thankful for.",
+        "audio": "mg_w1d4_prompt.mp3"
+      },
       "target": 3,
       "items": [
-        { "id": "family", "label": "My family", "icon": "family" },
-        { "id": "food", "label": "Yummy food", "icon": "apple" },
-        { "id": "sun", "label": "Sunshine", "icon": "sun" },
-        { "id": "pet", "label": "My pet", "icon": "paw" },
-        { "id": "toys", "label": "My toys", "icon": "blocks" },
-        { "id": "friends", "label": "Friends", "icon": "friends" },
-        { "id": "home", "label": "My home", "icon": "house" },
-        { "id": "hugs", "label": "Hugs", "icon": "heart" }
+        {
+          "id": "family",
+          "label": "My family",
+          "icon": "family"
+        },
+        {
+          "id": "food",
+          "label": "Yummy food",
+          "icon": "apple"
+        },
+        {
+          "id": "sun",
+          "label": "Sunshine",
+          "icon": "sun"
+        },
+        {
+          "id": "pet",
+          "label": "My pet",
+          "icon": "paw"
+        },
+        {
+          "id": "toys",
+          "label": "My toys",
+          "icon": "blocks"
+        },
+        {
+          "id": "friends",
+          "label": "Friends",
+          "icon": "friends"
+        },
+        {
+          "id": "home",
+          "label": "My home",
+          "icon": "house"
+        },
+        {
+          "id": "hugs",
+          "label": "Hugs",
+          "icon": "heart"
+        }
       ],
-      "successLine": { "text": "Look at your garden grow! Thank you, God.", "audio": "mg_w1d4_ok.mp3" }
+      "successLine": {
+        "text": "Look at your garden grow! Thank you, God.",
+        "audio": "mg_w1d4_ok.mp3"
+      }
     },
     {
       "type": "sequence",
       "id": "mg_w1d5_grace_order",
-      "prompt": { "text": "Put the grace in order.", "audio": "mg_w1d5_prompt.mp3" },
+      "prompt": {
+        "text": "Put the grace in order.",
+        "audio": "mg_w1d5_prompt.mp3"
+      },
       "cards": [
-        { "id": "great", "label": "God is great,", "icon": "text" },
-        { "id": "good", "label": "God is good.", "icon": "text" },
-        { "id": "thank", "label": "Let us thank Him", "icon": "text" },
-        { "id": "food", "label": "for our food. Amen.", "icon": "text" }
+        {
+          "id": "great",
+          "label": "God is great,",
+          "icon": "text"
+        },
+        {
+          "id": "good",
+          "label": "God is good.",
+          "icon": "text"
+        },
+        {
+          "id": "thank",
+          "label": "Let us thank Him",
+          "icon": "text"
+        },
+        {
+          "id": "food",
+          "label": "for our food. Amen.",
+          "icon": "text"
+        }
       ],
-      "order": ["great", "good", "thank", "food"],
-      "successLine": { "text": "Perfect! You know grace by heart.", "audio": "mg_w1d5_ok.mp3" },
-      "retryLine": { "text": "Almost! Listen again and try once more.", "audio": "mg_w1d5_retry.mp3" }
+      "order": [
+        "great",
+        "good",
+        "thank",
+        "food"
+      ],
+      "successLine": {
+        "text": "Perfect! You know grace by heart.",
+        "audio": "mg_w1d5_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Almost! Listen again and try once more.",
+        "audio": "mg_w1d5_retry.mp3"
+      }
     },
     {
       "type": "people_picker",
       "id": "mg_w1d6_thank_people",
-      "prompt": { "text": "Pick two people to thank God for.", "audio": "mg_w1d6_prompt.mp3" },
+      "prompt": {
+        "text": "Pick two people to thank God for.",
+        "audio": "mg_w1d6_prompt.mp3"
+      },
       "min": 2,
       "max": 2,
       "allowAdd": true,
       "prayerId": "thank-you-v1",
-      "successLine": { "text": "What a great pair to be thankful for!", "audio": "mg_w1d6_ok.mp3" }
+      "successLine": {
+        "text": "What a great pair to be thankful for!",
+        "audio": "mg_w1d6_ok.mp3"
+      }
     },
     {
       "type": "fill_blank",
       "id": "mg_w1d7_review",
-      "prompt": { "text": "Finish the prayer.", "audio": "mg_w1d7_prompt.mp3" },
+      "prompt": {
+        "text": "Finish the prayer.",
+        "audio": "mg_w1d7_prompt.mp3"
+      },
       "sentence": "Hi God, it's ___.",
-      "options": ["me", "a rock", "nobody"],
+      "options": [
+        "me",
+        "a rock",
+        "nobody"
+      ],
       "answer": "me",
-      "successLine": { "text": "Yes! God loves hearing from you.", "audio": "mg_w1d7_ok.mp3" },
-      "retryLine": { "text": "Try again. Who is talking to God?", "audio": "mg_w1d7_retry.mp3" }
+      "successLine": {
+        "text": "Yes! God loves hearing from you.",
+        "audio": "mg_w1d7_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Try again. Who is talking to God?",
+        "audio": "mg_w1d7_retry.mp3"
+      }
     },
     {
       "type": "listen_timer",
       "id": "mg_listen_30",
-      "prompt": { "text": "Breathe slowly with Capy. God is here.", "audio": "mg_listen_prompt.mp3" },
+      "prompt": {
+        "text": "Breathe slowly with Capy. God is here.",
+        "audio": "mg_listen_prompt.mp3"
+      },
       "seconds": 30,
-      "closingLine": { "text": "I'm listening, God.", "audio": "mg_listen_close.mp3" }
+      "closingLine": {
+        "text": "I'm listening, God.",
+        "audio": "mg_listen_close.mp3"
+      }
+    },
+    {
+      "type": "tap_choice",
+      "id": "mg_w2d1_senses",
+      "prompt": {
+        "text": "Which part of you can hear a bird sing?",
+        "audio": "mg_w2d1_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "ears",
+          "label": "My ears",
+          "icon": "ear",
+          "correct": true
+        },
+        {
+          "id": "feet",
+          "label": "My feet",
+          "icon": "foot"
+        },
+        {
+          "id": "tummy",
+          "label": "My tummy",
+          "icon": "tummy"
+        }
+      ],
+      "successLine": {
+        "text": "Yes! Ears are for hearing. Thank you, God!",
+        "audio": "mg_w2d1_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Hmm, listen again. What hears sounds?",
+        "audio": "mg_w2d1_retry.mp3"
+      }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w2d2_bad_to_good",
+      "prompt": {
+        "text": "Put Capy's day in order.",
+        "audio": "mg_w2d2_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "drop",
+          "label": "Orange falls in mud",
+          "icon": "mud"
+        },
+        {
+          "id": "sad",
+          "label": "Capy feels sad",
+          "icon": "sad"
+        },
+        {
+          "id": "share",
+          "label": "Friend shares seeds",
+          "icon": "seeds"
+        },
+        {
+          "id": "thanks",
+          "label": "Capy says thank you",
+          "icon": "heart"
+        }
+      ],
+      "order": [
+        "drop",
+        "sad",
+        "share",
+        "thanks"
+      ],
+      "successLine": {
+        "text": "From mud to thank you. That's a good day after all.",
+        "audio": "mg_w2d2_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Almost. What happened first?",
+        "audio": "mg_w2d2_retry.mp3"
+      }
+    },
+    {
+      "type": "tap_choice",
+      "id": "mg_w2d3_after_mistake",
+      "prompt": {
+        "text": "Capy splashed his friend. What should Capy do?",
+        "audio": "mg_w2d3_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "sorry",
+          "label": "Say sorry",
+          "icon": "heart-mend",
+          "correct": true
+        },
+        {
+          "id": "hide",
+          "label": "Hide",
+          "icon": "bush"
+        },
+        {
+          "id": "splash",
+          "label": "Splash again",
+          "icon": "water"
+        }
+      ],
+      "successLine": {
+        "text": "Yes! Sorry makes things better.",
+        "audio": "mg_w2d3_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Hmm. What would make your friend feel better?",
+        "audio": "mg_w2d3_retry.mp3"
+      }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w2d4_sorry_forgiven",
+      "prompt": {
+        "text": "Put the steps in order.",
+        "audio": "mg_w2d4_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "sorry",
+          "label": "I'm sorry",
+          "icon": "heart-mend"
+        },
+        {
+          "id": "forgiven",
+          "label": "God forgives me",
+          "icon": "sun"
+        },
+        {
+          "id": "again",
+          "label": "I try again",
+          "icon": "sprout"
+        }
+      ],
+      "order": [
+        "sorry",
+        "forgiven",
+        "again"
+      ],
+      "successLine": {
+        "text": "Sorry, forgiven, try again!",
+        "audio": "mg_w2d4_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Not quite. What do we say first?",
+        "audio": "mg_w2d4_retry.mp3"
+      }
+    },
+    {
+      "type": "collect",
+      "id": "mg_w2d5_kind_words",
+      "prompt": {
+        "text": "Collect three kind words for Capy.",
+        "audio": "mg_w2d5_prompt.mp3"
+      },
+      "target": 3,
+      "items": [
+        {
+          "id": "sorry",
+          "label": "I'm sorry",
+          "icon": "heart-mend"
+        },
+        {
+          "id": "thanks",
+          "label": "Thank you",
+          "icon": "sun"
+        },
+        {
+          "id": "love",
+          "label": "I love you",
+          "icon": "heart"
+        },
+        {
+          "id": "please",
+          "label": "Please",
+          "icon": "hands-open"
+        },
+        {
+          "id": "meanie",
+          "label": "You're a meanie",
+          "icon": "storm"
+        },
+        {
+          "id": "mine",
+          "label": "That's mine!",
+          "icon": "grab"
+        }
+      ],
+      "successLine": {
+        "text": "Kind words! Capy's heart is warm.",
+        "audio": "mg_w2d5_ok.mp3"
+      }
+    },
+    {
+      "type": "fill_blank",
+      "id": "mg_w2d7_review",
+      "prompt": {
+        "text": "Finish the prayer.",
+        "audio": "mg_w2d7_prompt.mp3"
+      },
+      "sentence": "Please ___ me and help me try again.",
+      "options": [
+        "forgive",
+        "tickle",
+        "forget"
+      ],
+      "answer": "forgive",
+      "successLine": {
+        "text": "Forgive! God always does.",
+        "audio": "mg_w2d7_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Try again. What do we ask God after sorry?",
+        "audio": "mg_w2d7_retry.mp3"
+      }
     }
   ],
   "rewards": [
-    { "id": "hat-flower", "type": "skin", "title": "Flower", "unlock": { "beacons": 1 } },
-    { "id": "lily-pad", "type": "pond_decoration", "title": "Lily Pad", "unlock": { "lessonId": "w1d3" } },
-    { "id": "sticker-grace", "type": "sticker", "title": "Grace Star", "unlock": { "lessonId": "w1d5" } },
-    { "id": "badge-pond-keeper", "type": "badge", "title": "Pond Keeper", "unlock": { "beacons": 4 } }
+    {
+      "id": "hat-flower",
+      "type": "skin",
+      "title": "Flower",
+      "unlock": {
+        "beacons": 1
+      }
+    },
+    {
+      "id": "scarf-cozy",
+      "type": "skin",
+      "title": "Cozy Scarf",
+      "unlock": {
+        "beacons": 2
+      }
+    },
+    {
+      "id": "lily-pad",
+      "type": "pond_decoration",
+      "title": "Lily Pad",
+      "unlock": {
+        "lessonId": "w1d3"
+      }
+    },
+    {
+      "id": "sticker-grace",
+      "type": "sticker",
+      "title": "Grace Star",
+      "unlock": {
+        "lessonId": "w1d5"
+      }
+    },
+    {
+      "id": "badge-pond-keeper",
+      "type": "badge",
+      "title": "Pond Keeper",
+      "unlock": {
+        "beacons": 4
+      }
+    }
   ],
-  "people": { "defaults": ["Mom", "Dad", "Grandma", "Grandpa", "Sister", "Brother", "Friend", "Teacher", "Pet"] },
+  "people": {
+    "defaults": [
+      "Mom",
+      "Dad",
+      "Grandma",
+      "Grandpa",
+      "Sister",
+      "Brother",
+      "Friend",
+      "Teacher",
+      "Pet"
+    ]
+  },
   "routines": {
-    "bedtime": { "defaultHour": 19, "closingPrayerId": "bedtime-classic", "lessonId": "bedtime-w1", "notificationText": "Capy is ready for bedtime prayer 🌙" },
-    "meal": { "prayerId": "grace-god-is-great" }
+    "bedtime": {
+      "defaultHour": 19,
+      "closingPrayerId": "bedtime-classic",
+      "lessonId": "bedtime-w1",
+      "notificationText": "Capy is ready for bedtime prayer 🌙"
+    },
+    "meal": {
+      "prayerId": "grace-god-is-great"
+    }
   },
   "calendar": []
 }

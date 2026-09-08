@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { useAvatar } from "@/avatar/AvatarView";
 import { createRunner, type AvatarEffect, type RunnerState } from "@/engine/lessonRunner";
 import { BeatView } from "@/ui/BeatView";
+import { isLessonLocked, useEntitlement } from "@/entitlements";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const pack = getPack();
   const lesson = pack.lessons.find((l) => l.id === id);
   const kid = useKid();
+  const { premium } = useEntitlement();
   const avatar = useAvatar();
   const runner = useMemo(() => (lesson ? createRunner(pack, lesson, { kidName: kid.kidName || "friend" }) : null), [pack, lesson, kid.kidName]);
   const [state, setState] = useState<RunnerState | null>(null);
@@ -26,6 +28,7 @@ export default function LessonScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner]);
 
+  if (lesson && isLessonLocked(lesson, premium)) return <Redirect href="/parent/gate?next=paywall" />;
   if (!lesson || !runner || !state) return null;
 
   const next = () => {

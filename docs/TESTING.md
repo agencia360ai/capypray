@@ -20,6 +20,7 @@ pnpm --filter @capy/mobile start       # scan the QR with Expo Go (iOS/Android)
 
 What to try:
 
+0. First launch opens the parent onboarding (6 quick questions) and a sandbox paywall. "Continue in sandbox" flips premium on; "Not now" keeps only W1D1 + Bedtime unlocked (🔒 on the rest). The 👤 button on Home opens the parental gate (arithmetic + hold 3 s) → Parent Corner.
 1. Home shows lanterns / beacons / streak and the list of Week 1 lessons. Tap the big card (next lesson).
 2. A lesson runs beat by beat: Capy talks (subtitle + tap Next), "repeat after me" line by line, one minigame, a lantern reward, closing line. All text comes from `packages/content/packs/christian-us-en-v1/pack.json`.
 3. W1D3 asks for Prayer People; they appear in the Pond (tap the counters on Home).
@@ -30,7 +31,7 @@ Known gaps while testing:
 
 - No audio yet (ElevenLabs batch not run). Timing uses an estimate of ~2.6 words/s.
 - Missing clips (`pray_hands`, `wave_hello`, `celebrate`, …) fall back to idle/talk clips.
-- Parent onboarding, parental gate, paywall and Parent Corner are S3; the kid name defaults to "friend".
+- The paywall is a placeholder until the RevenueCat dev build; the premium switch in Parent Corner simulates the entitlement.
 - Storage is AsyncStorage for Expo Go; MMKV comes back with dev builds.
 
 ## 3. Regenerate the avatar
