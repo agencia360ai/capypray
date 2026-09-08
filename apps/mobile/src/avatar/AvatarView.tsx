@@ -91,6 +91,6 @@ export function AvatarProvider({ children }: PropsWithChildren) {
 }
 
 const styles = StyleSheet.create({
-  stage: { ...StyleSheet.absoluteFillObject, backgroundColor: "#FFF3DC" },
+  stage: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#FFF3DC" },
   webview: { flex: 1, backgroundColor: "transparent" },
 });

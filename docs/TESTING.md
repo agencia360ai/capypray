@@ -15,7 +15,7 @@ git clone git@github.com:agencia360ai/capypray.git && cd capypray
 git checkout claude/proyecto-componentes-existentes-cb6o9p
 pnpm install
 pnpm --filter @capy/avatar-web build   # builds the WebView bundle into apps/mobile/assets/avatar
-pnpm --filter @capy/mobile start       # scan the QR with Expo Go (iOS/Android)
+pnpm --filter @capy/mobile start       # scan the QR with Expo Go (iOS/Android) — project targets Expo SDK 57
 ```
 
 What to try:
