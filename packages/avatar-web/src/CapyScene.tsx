@@ -2,20 +2,28 @@ import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { CapyStateMachine } from "./stateMachine";
 import type { RNToWeb, WebToRN } from "./bridge";
 
 export type CapyHandle = { send: (m: RNToWeb) => void };
 
 type Props = {
-  glb: string;
+  /** URL of a GLB (meshopt-compressed ok) … */
+  glb?: string;
+  /** …or an already-parsed GLTF (artifact/offline embedding). One of the two is required. */
+  gltf?: GLTF;
   onMessage: (m: WebToRN) => void;
   register: (h: CapyHandle) => void;
   background?: string;
 };
 
-function CapyModel({ glb, onMessage, register }: Omit<Props, "background">) {
+function CapyModelFromUrl({ glb, ...rest }: Omit<Props, "background" | "gltf"> & { glb: string }) {
   const gltf = useGLTF(glb, false, true); // meshopt decoder (EXT_meshopt_compression)
+  return <CapyModel gltf={gltf as unknown as GLTF} {...rest} />;
+}
+
+function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "glb"> & { gltf: GLTF }) {
   const group = useRef<THREE.Group>(null);
   const lookTarget = useRef(new THREE.Vector2(0, 0));
   const head = useRef<THREE.Object3D | null>(null);
@@ -143,7 +151,7 @@ export function CapyScene(props: Props) {
       <directionalLight position={[2.5, 4, 3]} intensity={2.2} castShadow shadow-mapSize={[1024, 1024]} />
       <directionalLight position={[-3, 2, -2]} intensity={0.6} color="#ffd9a8" />
       <Suspense fallback={null}>
-        <CapyModel {...props} />
+        {props.gltf ? <CapyModel gltf={props.gltf} onMessage={props.onMessage} register={props.register} /> : props.glb ? <CapyModelFromUrl glb={props.glb} onMessage={props.onMessage} register={props.register} /> : null}
         <ContactShadows position={[0, 0.001, 0]} opacity={0.35} scale={4} blur={2.2} far={2} />
       </Suspense>
     </Canvas>

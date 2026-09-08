@@ -14,3 +14,5 @@ test-results/
 tools/avatar/out/
 apps/mobile/assets/avatar/
 dist-single/
+packages/avatar-web/src/generated/
+packages/avatar-web/dist-*/
