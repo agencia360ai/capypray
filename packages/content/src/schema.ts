@@ -177,6 +177,10 @@ export const UiStrings = z.object({
   lanternsTitle: z.string().max(40),
   rewardsTitle: z.string().max(40),
   biomesTitle: z.string().max(40),
+  /** Capy's spoken hints when the kid stalls (audio-first guidance, GDD §3 "UX audio-first") */
+  nudgeTap: z.string().max(80),
+  nudgeRepeat: z.string().max(80),
+  nudgeChoose: z.string().max(80),
 });
 export type UiStrings = z.infer<typeof UiStrings>;
 

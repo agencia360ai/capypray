@@ -11,6 +11,8 @@ import { useStageInsets } from "@/ui/useStageInsets";
 import { stopSpeaking } from "@/audio/voice";
 import { track } from "@/backend/events";
 import { newlyUnlocked } from "@/store/rewards";
+import { LessonTrail } from "@/ui/LessonTrail";
+import { StageDecor } from "@/ui/StageDecor";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -87,7 +89,12 @@ export default function LessonScreen() {
       >
         <Text style={styles.closeText}>×</Text>
       </Pressable>
-      <View style={styles.spacer} />
+      <View style={styles.trail} pointerEvents="none">
+        <LessonTrail lesson={lesson} index={Math.min(state.beatIndex, lesson.beats.length - 1)} />
+      </View>
+      <View style={styles.spacer}>
+        <StageDecor night={state.step.kind === "lights_out"} />
+      </View>
       <View onLayout={onBottomLayout}>
         <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />
       </View>
@@ -98,6 +105,7 @@ export default function LessonScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   spacer: { flex: 1 },
+  trail: { paddingTop: 60 },
   close: { position: "absolute", top: 52, right: 20, zIndex: 2, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.85)", alignItems: "center", justifyContent: "center" },
   closeText: { fontSize: 26, color: "#6b4a2b", lineHeight: 30 },
 });

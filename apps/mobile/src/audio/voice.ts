@@ -1,13 +1,17 @@
 import * as Speech from "expo-speech";
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import { Platform } from "react-native";
+import { AUDIO } from "./manifest";
 
-// Capy's voice. v1 beta: on-device TTS (works in Expo Go, offline). When the pack ships pre-rendered
-// ElevenLabs audio (tools/tts-batch.ts) `play()` prefers the mp3 and falls back to TTS.
-// No child audio is ever recorded (GDD §11); this only speaks.
+// Capy's voice. Pre-rendered lines (pack `audio` refs → apps/mobile/assets/audio, see tools/tts-batch.ts,
+// tools/audio-fetch.mjs, tools/audio-manifest.mjs) play natively; anything without a file falls back to
+// on-device TTS so the app never goes silent. No child audio is ever recorded (GDD §11); this only speaks.
 
 let voiceId: string | undefined;
 let picked = false;
 let token = 0;
+let player: AudioPlayer | null = null;
+let modeSet = false;
 
 async function pickVoice(language: string) {
   if (picked) return;
@@ -15,59 +19,96 @@ async function pickVoice(language: string) {
   try {
     const voices = await Speech.getAvailableVoicesAsync();
     const lang = voices.filter((v) => v.language.toLowerCase().startsWith(language.slice(0, 2)));
-    const preferred = ["Samantha", "Karen", "Moira", "Ava", "Allison", "Zoe", "Nicky"];
-    const enhanced = lang.filter((v) => v.quality === Speech.VoiceQuality.Enhanced);
-    const byName = (list: typeof voices) => list.find((v) => preferred.some((n) => v.name.includes(n)));
-    voiceId = (byName(enhanced) ?? enhanced[0] ?? byName(lang) ?? lang[0])?.identifier;
+    // iOS ships robotic "compact" voices by default; premium/enhanced ones (Settings → Accessibility →
+    // Spoken Content → Voices) sound human. Prefer them whenever the parent downloaded one.
+    const rank = (v: (typeof voices)[number]) => (/premium/i.test(v.identifier) ? 3 : v.quality === Speech.VoiceQuality.Enhanced || /enhanced/i.test(v.identifier) ? 2 : 0) + (/Samantha|Ava|Zoe|Allison|Nicky|Karen|Moira|Evan|Tom/.test(v.name) ? 0.5 : 0);
+    voiceId = [...lang].sort((a, b) => rank(b) - rank(a))[0]?.identifier;
   } catch {
     voiceId = undefined;
   }
 }
 
 export type SpeakHandle = { cancel: () => void };
+type Opts = { language?: string; audio?: string; onStart?: () => void; onDone?: () => void };
 
 /** Speak one kid-facing line. onStart/onDone drive the avatar's talk animation. */
-export function speak(text: string, opts: { language?: string; onStart?: () => void; onDone?: () => void } = {}): SpeakHandle {
+export function speak(text: string, opts: Opts = {}): SpeakHandle {
   const clean = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim();
   const my = ++token;
-  if (!/[a-zA-Z]/.test(clean)) {
+  const done = () => {
+    if (my === token) opts.onDone?.();
+  };
+  const file = opts.audio ? AUDIO[opts.audio] : undefined;
+  if (!file && !/[a-zA-Z]/.test(clean)) {
     opts.onDone?.();
     return { cancel: () => {} };
   }
   (async () => {
+    stopAll();
+    if (file) {
+      try {
+        if (!modeSet) {
+          modeSet = true;
+          await setAudioModeAsync({ playsInSilentMode: true });
+        }
+        if (my !== token) return;
+        const p = createAudioPlayer(file);
+        player = p;
+        p.addListener("playbackStatusUpdate", (s) => {
+          if (s.didJustFinish) {
+            p.remove();
+            if (player === p) player = null;
+            done();
+          }
+        });
+        opts.onStart?.();
+        p.play();
+        return;
+      } catch {
+        // fall through to TTS
+      }
+    }
     await pickVoice(opts.language ?? "en-US");
     if (my !== token) return;
-    Speech.stop();
     Speech.speak(clean, {
       language: opts.language ?? "en-US",
       voice: voiceId,
-      rate: Platform.OS === "ios" ? 0.48 : 0.85, // slow and calm: Capy's whole personality (GDD §8.1)
-      pitch: 1.08,
+      rate: Platform.OS === "ios" ? 0.5 : 0.88, // calm, but not so slow that it drones (GDD §8.1)
+      pitch: 1.05,
       onStart: () => {
         if (my === token) opts.onStart?.();
       },
-      onDone: () => {
-        if (my === token) opts.onDone?.();
-      },
-      onStopped: () => {
-        if (my === token) opts.onDone?.();
-      },
-      onError: () => {
-        if (my === token) opts.onDone?.();
-      },
+      onDone: done,
+      onStopped: done,
+      onError: done,
     });
   })();
   return {
     cancel: () => {
       if (my === token) {
         token++;
-        Speech.stop();
+        stopAll();
       }
     },
   };
 }
 
+function stopAll() {
+  Speech.stop();
+  if (player) {
+    try {
+      player.remove();
+    } catch {
+      // already released
+    }
+    player = null;
+  }
+}
+
 export function stopSpeaking() {
   token++;
-  Speech.stop();
+  stopAll();
 }
+
+/** True when this line has a pre-rendered file (used to pick a talk clip length). */
+export const hasAudio = (file?: string) => !!file && file in AUDIO;

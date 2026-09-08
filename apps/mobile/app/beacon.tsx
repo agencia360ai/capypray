@@ -8,6 +8,7 @@ import { biomeFor } from "@/store/rewards";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { BigButton, Chip, Sheet, SpeechBubble } from "@/ui/components";
 import { Confetti } from "@/ui/Confetti";
+import { StageDecor } from "@/ui/StageDecor";
 import * as haptics from "@/ui/haptics";
 import { glyph } from "@/ui/icons";
 import { T } from "@/ui/theme";
@@ -39,7 +40,9 @@ export default function Beacon() {
   return (
     <View style={styles.root}>
       <Confetti trigger={1} count={28} />
-      <View style={styles.spacer} />
+      <View style={styles.spacer}>
+        <StageDecor />
+      </View>
       <View onLayout={onBottomLayout}>
         <SpeechBubble text={interpolate(pack.ui.beaconLine, { kidName: kidName || pack.ui.friend })} />
         <Sheet>

@@ -12,6 +12,7 @@ import { useStageInsets } from "@/ui/useStageInsets";
 import { startSync } from "@/backend/sync";
 import { biomeFor } from "@/store/rewards";
 import { Friends } from "@/ui/Friends";
+import { StageDecor } from "@/ui/StageDecor";
 import { interpolate } from "@capy/content";
 
 // Home = Capy on the pond + today's Prayer Moment + the path. Kid-facing strings come from the pack.
@@ -68,6 +69,7 @@ function KidHome() {
       </View>
 
       <View style={styles.spacer}>
+        <StageDecor />
         <View style={styles.friends}>
           <Friends />
         </View>

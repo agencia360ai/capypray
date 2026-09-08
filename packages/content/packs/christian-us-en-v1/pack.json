@@ -2987,7 +2987,10 @@
     "rewardsTitle": "Treasures",
     "biomesTitle": "Places",
     "hi": "Hi {kidName}!",
-    "friend": "friend"
+    "friend": "friend",
+    "nudgeTap": "Tap the big button when you're ready!",
+    "nudgeRepeat": "Say it out loud, then tap the button!",
+    "nudgeChoose": "Tap a picture to choose!"
   },
   "routines": {
     "bedtime": {
