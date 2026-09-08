@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173",
-    "build": "vite build && SINGLE=1 vite build --outDir dist-single && node scripts/copy-to-mobile.mjs",
+    "build": "node scripts/build.mjs",
     "preview": "vite preview --port 5173",
     "typecheck": "tsc --noEmit",
     "screenshot": "node scripts/screenshot.mjs"
