@@ -80,7 +80,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
         renderer.markReady();
       }
       if (msg.type === "error") fail(msg.message);
-      if (msg.type !== "boot") renderer.events.emit(msg);
+      renderer.events.emit(msg);
     } catch {
       fail("bad message from webview");
     }
