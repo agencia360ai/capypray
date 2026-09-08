@@ -1,14 +1,10 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { MMKV } from "react-native-mmkv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Offline-first local state (GDD §12.4). Synced to Supabase in background (S2).
-const mmkv = new MMKV({ id: "capy" });
-const storage = createJSONStorage(() => ({
-  getItem: (k) => mmkv.getString(k) ?? null,
-  setItem: (k, v) => mmkv.set(k, v),
-  removeItem: (k) => mmkv.delete(k),
-}));
+// Offline-first local state (GDD §12.4). AsyncStorage so the app runs in Expo Go during beta;
+// swap to react-native-mmkv once we move to dev builds. Synced to Supabase in background (S2).
+const storage = createJSONStorage(() => AsyncStorage);
 
 export type PrayerPerson = { id: string; label: string; icon: string; prayedCount: number };
 
