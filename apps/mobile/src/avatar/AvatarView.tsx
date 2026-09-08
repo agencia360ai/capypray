@@ -127,12 +127,12 @@ export function AvatarProvider({ children }: PropsWithChildren) {
             )}
           </ImageBackground>
         </View>
+        {children}
         {__DEV__ && status !== "ready" && (
           <View style={styles.debug} pointerEvents="none">
             <Text style={styles.debugText}>avatar: {status}</Text>
           </View>
         )}
-        {children}
       </StageCtx.Provider>
     </Ctx.Provider>
   );

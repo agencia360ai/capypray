@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { Stack } from "expo-router";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black } from "@expo-google-fonts/nunito";
@@ -8,10 +7,9 @@ import { AvatarProvider } from "@/avatar/AvatarView";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// The navigation container paints theme.colors.background over everything below it; the stage
-// (background + Capy WebView) lives under the Stack, so the theme background must be transparent.
-const stageTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: "transparent", card: "transparent" } };
-
+// Slot instead of a native Stack: native screens on iOS paint an opaque background over the stage
+// (meadow + Capy WebView) that lives under the navigator. Plain views keep the stage visible and
+// the single WebView mounted across screens (GDD §12.2). Route changes use router.replace/back.
 export default function RootLayout() {
   const [loaded] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black });
   useEffect(() => {
@@ -21,9 +19,7 @@ export default function RootLayout() {
   return (
     <AvatarProvider>
       <StatusBar style="dark" />
-      <ThemeProvider value={stageTheme}>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "transparent" }, animation: "fade" }} />
-      </ThemeProvider>
+      <Slot />
     </AvatarProvider>
   );
 }

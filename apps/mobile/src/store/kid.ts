@@ -88,7 +88,22 @@ export const useKid = create<KidState>()(
       /** Parent Corner "delete my child's data": everything about the kid, in one tap (GDD §11). */
       reset: () => set({ ...initial, onboarded: false }),
     }),
-    { name: "kid", storage, version: 2 },
+    {
+      name: "kid",
+      storage,
+      version: 3,
+      // v3: person ids were Date.now() and could collide; regenerate duplicates once.
+      migrate: (persisted) => {
+        const s = persisted as Partial<KidState>;
+        const seen = new Set<string>();
+        const people = (s.people ?? []).map((p) => {
+          const dup = seen.has(p.id);
+          seen.add(p.id);
+          return dup ? { ...p, id: uid() } : p;
+        });
+        return { ...s, people } as KidState;
+      },
+    },
   ),
 );
 
