@@ -4,7 +4,7 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Preview } from "./PreviewUI";
-import { CAPY_GLB_B64 } from "./generated/capy-glb";
+import { CAPY_GLB_B64 } from "./generated/capy-glb-artifact";
 
 (window as unknown as { createImageBitmap?: unknown }).createImageBitmap = undefined;
 

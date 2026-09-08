@@ -67,6 +67,11 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   const bedtimeLesson = pack.routines.bedtime.lessonId ? lessons.get(pack.routines.bedtime.lessonId) : undefined;
   if (pack.routines.bedtime.lessonId && !bedtimeLesson) issues.push({ path: "routines.bedtime.lessonId", message: "unknown lesson" });
   if (bedtimeLesson && bedtimeLesson.routine !== "bedtime") issues.push({ path: "routines.bedtime.lessonId", message: "lesson must have routine: bedtime" });
+  if (pack.routines.intro) {
+    const intro = lessons.get(pack.routines.intro.lessonId);
+    if (!intro) issues.push({ path: "routines.intro.lessonId", message: "unknown lesson" });
+    else if (intro.routine !== "intro") issues.push({ path: "routines.intro.lessonId", message: "lesson must have routine: intro" });
+  }
   const slots = new Set<string>();
   for (const l of pack.lessons) {
     if (l.routine !== "any") continue;

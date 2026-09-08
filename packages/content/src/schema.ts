@@ -122,6 +122,15 @@ export const Beat = z.discriminatedUnion("type", [
   z.object({ type: z.literal("listen_timer"), seconds: z.number().int().min(15).max(90), text: z.string().max(140), audio: Audio.optional() }),
   z.object({ type: z.literal("choose_people"), min: z.number().int().min(1).max(4), max: z.number().int().min(1).max(4), text: z.string().max(140), audio: Audio.optional() }),
   z.object({ type: z.literal("reward"), lantern: z.number().int().min(1).max(3).default(1) }),
+  // get-to-know-you: Capy asks, the kid taps a card; the answer is stored as a prayer variable (kid facts)
+  z.object({
+    type: z.literal("ask"),
+    key: z.enum(["thankfulFor", "person", "feeling", "need", "mistake", "favorite"]),
+    text: z.string().max(140),
+    audio: Audio.optional(),
+    clip: AvatarClip.default("think"),
+    options: z.array(z.object({ id: ID, label: z.string().max(30), icon: z.string() })).min(2).max(8),
+  }),
   z.object({ type: z.literal("parent_prompt"), text: z.string().max(400) }),
   z.object({ type: z.literal("lights_out"), seconds: z.number().int().min(10).max(120).default(30), text: z.string().max(140), audio: Audio.optional() }),
 ]);
@@ -135,7 +144,7 @@ export const Lesson = z.object({
   title: z.string().max(60),
   free: z.boolean().default(false),
   // "any" = curriculum lesson (needs week/day); "bedtime"/"morning" = routine, replayable daily
-  routine: z.enum(["any", "morning", "bedtime"]).default("any"),
+  routine: z.enum(["any", "morning", "bedtime", "intro"]).default("any"),
   beats: z.array(Beat).min(3).max(20),
 });
 export type Lesson = z.infer<typeof Lesson>;
@@ -167,6 +176,7 @@ export const Pack = z.object({
   routines: z.object({
     bedtime: z.object({ defaultHour: z.number().int().min(17).max(22), closingPrayerId: ID, lessonId: ID.optional(), notificationText: z.string().max(80).optional() }),
     meal: z.object({ prayerId: ID }),
+    intro: z.object({ lessonId: ID }).optional(),
   }),
   calendar: z.array(z.object({ id: ID, start: z.string().date(), end: z.string().date(), lessonIds: z.array(ID) })).default([]),
 });

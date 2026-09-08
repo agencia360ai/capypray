@@ -24,6 +24,9 @@ type KidState = {
   profile: Profile;
   /** Mirrors the RevenueCat `premium` entitlement (see src/entitlements). Sandbox toggle in Parent Corner. */
   premium: boolean;
+  /** Things Capy learned about the kid (get-to-know-you answers): thankfulFor, favorite, feeling… */
+  facts: Record<string, string>;
+  introDone: boolean;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
   lanterns: number;
@@ -33,6 +36,8 @@ type KidState = {
   setProfile: (p: Partial<Profile>) => void;
   finishOnboarding: () => void;
   setPremium: (v: boolean) => void;
+  setFact: (key: string, value: string) => void;
+  finishIntro: () => void;
   addPerson: (label: string, icon?: string) => void;
   removePerson: (id: string) => void;
   setPersonNote: (id: string, note: string) => void;
@@ -46,6 +51,8 @@ const initial = {
   kidName: "",
   profile: { ageBand: "4-8", tradition: "christian", bedtimeHour: 19, reminder: false } as Profile,
   premium: false,
+  facts: {} as Record<string, string>,
+  introDone: false,
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
   lanterns: 0,
@@ -61,6 +68,8 @@ export const useKid = create<KidState>()(
       setProfile: (p) => set((s) => ({ profile: { ...s.profile, ...p } })),
       finishOnboarding: () => set({ onboarded: true }),
       setPremium: (premium) => set({ premium }),
+      setFact: (key, value) => set((s) => ({ facts: { ...s.facts, [key]: value.trim().slice(0, 30) } })),
+      finishIntro: () => set({ introDone: true }),
       addPerson: (label, icon = "person") =>
         set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: `${Date.now()}`, label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
       removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),

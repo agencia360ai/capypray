@@ -3,7 +3,8 @@ import { interpolate } from "@capy/content";
 
 // Pure, testable lesson runner (GDD §4.1, §6.3). UI subscribes; avatar commands are emitted as effects.
 
-export type Vars = { kidName: string; person?: string; thankfulFor?: string; mistake?: string; feeling?: string; need?: string };
+export type Vars = { kidName: string; person?: string; thankfulFor?: string; mistake?: string; feeling?: string; need?: string; favorite?: string };
+export type AskKey = Exclude<keyof Vars, "kidName">;
 
 export type Step =
   | { kind: "say"; text: string; audio?: string; clip: string; mood?: string }
@@ -12,6 +13,7 @@ export type Step =
   | { kind: "listen"; seconds: number; text: string; audio?: string }
   | { kind: "choose_people"; min: number; max: number; text: string; audio?: string }
   | { kind: "reward"; lanterns: number }
+  | { kind: "ask"; key: AskKey; text: string; audio?: string; clip: string; options: { id: string; label: string; icon: string }[] }
   | { kind: "parent_prompt"; text: string }
   | { kind: "lights_out"; seconds: number; text: string; audio?: string }
   | { kind: "done" };
@@ -25,7 +27,8 @@ export type AvatarEffect =
   | { type: "idle" }
   | { type: "lights_out" };
 
-export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () => Date.now()) {
+export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now = () => Date.now()) {
+  const vars: Vars = { ...initialVars };
   const prayers = new Map(pack.prayers.map((p) => [p.id, p]));
   let state: RunnerState = { beatIndex: -1, lineIndex: 0, step: { kind: "done" }, lanternsEarned: 0, startedAt: now() };
 
@@ -46,6 +49,8 @@ export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () =>
         return { kind: "choose_people", min: beat.min, max: beat.max, text: beat.text, audio: beat.audio };
       case "reward":
         return { kind: "reward", lanterns: beat.lantern };
+      case "ask":
+        return { kind: "ask", key: beat.key, text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, options: beat.options };
       case "parent_prompt":
         return { kind: "parent_prompt", text: beat.text };
       case "lights_out":
@@ -63,6 +68,8 @@ export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () =>
         return [{ type: "play", clip: "listen_nod", loop: true }];
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
+      case "ask":
+        return [{ type: "play", clip: step.clip, loop: false }, { type: "speak", durationMs: estimateMs(step.text) }];
       case "lights_out":
         return [{ type: "mood", value: "sleepy" }, { type: "lights_out" }];
       case "minigame":
@@ -100,6 +107,13 @@ export function createRunner(pack: Pack, lesson: Lesson, vars: Vars, now = () =>
     },
     start: () => advance(),
     next: () => advance(),
+    /** Answer the current `ask` step: stored for later beats/prayers of this session. */
+    answer: (key: AskKey, value: string) => {
+      vars[key] = value;
+    },
+    get vars() {
+      return { ...vars };
+    },
     /** Session summary for progress/events. */
     summary: () => ({ lessonId: lesson.id, lanterns: state.lanternsEarned, durationMs: now() - state.startedAt, done: state.step.kind === "done" }),
   };

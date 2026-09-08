@@ -28,7 +28,9 @@
       "expo-asset",
       "expo-audio",
       "expo-notifications",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-font",
+      "expo-splash-screen"
     ],
     "experiments": {
       "typedRoutes": true

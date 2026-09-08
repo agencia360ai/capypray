@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 // and preview.html (dev tool with a clip dropdown, GDD §8.3 step 5).
 // SINGLE=1 builds index.html as one self-contained HTML (GLB stays a sibling file).
 const single = process.env.SINGLE === "1" || process.env.ARTIFACT === "1";
-const entry = process.env.ARTIFACT === "1" ? "artifact.html" : "index.html";
+const entry = process.env.ARTIFACT === "1" ? "artifact.html" : process.env.SINGLE === "1" ? "embedded.html" : "index.html";
 
 export default defineConfig({
   plugins: [react(), ...(single ? [viteSingleFile({ removeViteModuleLoader: true })] : [])],

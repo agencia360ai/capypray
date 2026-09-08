@@ -11,7 +11,7 @@ mkdirSync(tmp, { recursive: true });
 execSync(`pnpm dlx @gltf-transform/cli@4 optimize "${raw}" "${tmp}/nocomp.glb" --compress false --texture-compress webp --texture-size 1024 --simplify false`, { stdio: "inherit" });
 execSync(`node "${resolve(root, "scripts/glb-for-artifact.mjs")}" "${tmp}/nocomp.glb" "${tmp}/artifact.glb"`, { stdio: "inherit" });
 mkdirSync(resolve(root, "src/generated"), { recursive: true });
-writeFileSync(resolve(root, "src/generated/capy-glb.ts"), `export const CAPY_GLB_B64 = "${readFileSync(`${tmp}/artifact.glb`).toString("base64")}";\n`);
+writeFileSync(resolve(root, "src/generated/capy-glb-artifact.ts"), `export const CAPY_GLB_B64 = "${readFileSync(`${tmp}/artifact.glb`).toString("base64")}";\n`);
 execSync("pnpm exec vite build --outDir dist-artifact", { stdio: "inherit", cwd: root, env: { ...process.env, ARTIFACT: "1" } });
 // Fragment for the claude.ai Artifact host: no doctype/html/head/body, classic script after #root.
 // Never regex over the HTML: the minified JS contains "<meta", "<script>" etc. inside strings.

@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -82,6 +82,170 @@
     }
   ],
   "lessons": [
+    {
+      "id": "meet-capy",
+      "skillId": "hello",
+      "title": "Meet Capy",
+      "free": true,
+      "routine": "intro",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! I'm Capy. I live in this pond.",
+          "audio": "intro_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "I want to know you! Can I ask you some things?",
+          "audio": "intro_02.mp3"
+        },
+        {
+          "type": "ask",
+          "key": "favorite",
+          "clip": "think",
+          "text": "What do you love the most?",
+          "audio": "intro_03.mp3",
+          "options": [
+            {
+              "id": "dog",
+              "label": "Dogs",
+              "icon": "dog"
+            },
+            {
+              "id": "cat",
+              "label": "Cats",
+              "icon": "cat"
+            },
+            {
+              "id": "ice",
+              "label": "Ice cream",
+              "icon": "ice"
+            },
+            {
+              "id": "ball",
+              "label": "Playing ball",
+              "icon": "ball"
+            },
+            {
+              "id": "music",
+              "label": "Music",
+              "icon": "music"
+            },
+            {
+              "id": "rainbow",
+              "label": "Rainbows",
+              "icon": "rainbow"
+            }
+          ]
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "{favorite}! Me too. I love oranges and my bird friend.",
+          "audio": "intro_04.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "ask",
+          "key": "thankfulFor",
+          "clip": "think",
+          "text": "What made you happy today?",
+          "audio": "intro_05.mp3",
+          "options": [
+            {
+              "id": "family",
+              "label": "My family",
+              "icon": "family"
+            },
+            {
+              "id": "food",
+              "label": "Yummy food",
+              "icon": "apple"
+            },
+            {
+              "id": "friends",
+              "label": "My friends",
+              "icon": "friends"
+            },
+            {
+              "id": "sun",
+              "label": "Sunshine",
+              "icon": "sun"
+            },
+            {
+              "id": "toys",
+              "label": "My toys",
+              "icon": "blocks"
+            },
+            {
+              "id": "hugs",
+              "label": "Hugs",
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "type": "ask",
+          "key": "feeling",
+          "clip": "listen_nod",
+          "text": "How do you feel right now?",
+          "audio": "intro_06.mp3",
+          "options": [
+            {
+              "id": "happy",
+              "label": "Happy",
+              "icon": "happy"
+            },
+            {
+              "id": "calm",
+              "label": "Calm",
+              "icon": "calm"
+            },
+            {
+              "id": "sleepy",
+              "label": "Sleepy",
+              "icon": "sleepy"
+            },
+            {
+              "id": "scared",
+              "label": "A bit scared",
+              "icon": "scared"
+            }
+          ]
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "Thank you for telling me. Now I'll tell you my secret.",
+          "audio": "intro_07.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "I talk to God every day. It's called praying. Let's try together!",
+          "audio": "intro_08.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "first-prayer"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "You did it! Your first lantern is on the pond.",
+          "audio": "intro_10.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
     {
       "id": "w1d1",
       "week": "w1",
@@ -999,6 +1163,34 @@
         "thankfulFor",
         "mistake"
       ]
+    },
+    {
+      "id": "first-prayer",
+      "skillId": "hello",
+      "title": "My First Prayer",
+      "lines": [
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3"
+        },
+        {
+          "text": "Thank you for {thankfulFor}.",
+          "audio": "p_first_02.mp3"
+        },
+        {
+          "text": "I feel {feeling} today.",
+          "audio": "p_first_03.mp3"
+        },
+        {
+          "text": "Thank you for listening. Amen.",
+          "audio": "p_hello_02b.mp3"
+        }
+      ],
+      "variables": [
+        "kidName",
+        "thankfulFor",
+        "feeling"
+      ]
     }
   ],
   "minigames": [
@@ -1531,6 +1723,9 @@
     },
     "meal": {
       "prayerId": "grace-god-is-great"
+    },
+    "intro": {
+      "lessonId": "meet-capy"
     }
   },
   "calendar": []

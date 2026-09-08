@@ -32,8 +32,9 @@ describe("christian-us-en-v1", () => {
 describe("validatePack referential checks", () => {
   it("catches unknown prayer and minigame ids", () => {
     const raw = load();
-    raw.lessons[0].beats[2].prayerId = "nope";
-    raw.lessons[0].beats[3].minigameId = "nope";
+    const w1d1 = raw.lessons.find((l: { id: string }) => l.id === "w1d1");
+    w1d1.beats[2].prayerId = "nope";
+    w1d1.beats[3].minigameId = "nope";
     const { issues } = validatePack(raw);
     expect(issues.map((i) => i.message)).toEqual(expect.arrayContaining([expect.stringContaining('unknown prayer "nope"'), expect.stringContaining('unknown minigame "nope"')]));
   });
@@ -48,7 +49,7 @@ describe("validatePack referential checks", () => {
 
   it("rejects hardcoded-looking long beats", () => {
     const raw = load();
-    raw.lessons[0].beats[0].text = Array.from({ length: 21 }, () => "hi").join(" ");
+    raw.lessons.find((l: { id: string }) => l.id === "w1d1").beats[0].text = Array.from({ length: 21 }, () => "hi").join(" ");
     const { issues } = validatePack(raw);
     expect(issues.some((i) => i.message.includes("> 20 words"))).toBe(true);
   });
@@ -63,13 +64,24 @@ describe("week 1 curriculum (GDD §7.1)", () => {
   it("only W1 and bedtime are free (GDD §10.1: paywall B with bedtime escape)", () => {
     const { pack } = validatePack(load());
     const free = pack!.lessons.filter((l) => l.free).map((l) => l.id);
-    expect(free).toEqual(["w1d1", "bedtime-w1"]);
+    expect(free).toEqual(["meet-capy", "w1d1", "bedtime-w1"]);
   });
   it("bedtime routine ends with lights_out and is free", () => {
     const { pack } = validatePack(load());
     const bed = pack!.lessons.find((l) => l.id === "bedtime-w1")!;
     expect(bed.free).toBe(true);
     expect(bed.beats[bed.beats.length - 1]?.type).toBe("lights_out");
+  });
+});
+
+describe("Meet Capy intro (get-to-know-you)", () => {
+  it("asks 3 things and uses two of them in the first prayer", () => {
+    const { pack } = validatePack(load());
+    const intro = pack!.lessons.find((l) => l.id === pack!.routines.intro!.lessonId)!;
+    const asks = intro.beats.filter((b) => b.type === "ask");
+    expect(asks).toHaveLength(3);
+    const prayer = pack!.prayers.find((p) => p.id === "first-prayer")!;
+    expect(prayer.variables).toEqual(expect.arrayContaining(["thankfulFor", "feeling"]));
   });
 });
 

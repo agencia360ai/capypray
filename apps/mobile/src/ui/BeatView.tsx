@@ -1,24 +1,46 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { Pack, Minigame } from "@capy/content";
 import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
+import { BigButton, Grid, IconCard, Sheet, SpeechBubble } from "./components";
+import { T } from "./theme";
 
-// Renders the current beat. Big subtitles (kids 4–6 don't read; audio leads), one tap to advance.
-export function BeatView({ step, pack, onNext }: { step: Step; pack: Pack; onNext: () => void }) {
+// Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
+// Big text, one tap to advance (kids 4–6 don't read; audio leads).
+export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void }) {
   switch (step.kind) {
     case "say":
     case "repeat":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>{step.text}</Text>
-          {step.kind === "repeat" && (
-            <Text style={styles.hint}>
-              {step.lineIndex + 1} / {step.prayer.lines.length}
-            </Text>
-          )}
-          <Big label={step.kind === "repeat" ? "I said it!" : "Next"} onPress={onNext} />
-        </Sheet>
+        <>
+          <SpeechBubble text={step.text} hint={step.kind === "repeat" ? `${step.lineIndex + 1} / ${step.prayer.lines.length}` : undefined} />
+          <Sheet>
+            <BigButton label={step.kind === "repeat" ? "I said it!" : "Next"} onPress={onNext} />
+          </Sheet>
+        </>
+      );
+    case "ask":
+      return (
+        <>
+          <SpeechBubble text={step.text} />
+          <Sheet>
+            <Grid>
+              {step.options.map((o) => (
+                <IconCard
+                  key={o.id}
+                  icon={o.icon}
+                  label={o.label}
+                  size="lg"
+                  onPress={() => {
+                    onAnswer?.(step.key, o.label);
+                    onNext();
+                  }}
+                />
+              ))}
+            </Grid>
+          </Sheet>
+        </>
       );
     case "minigame": {
       const mg = pack.minigames.find((m) => m.id === step.minigameId)!;
@@ -30,16 +52,18 @@ export function BeatView({ step, pack, onNext }: { step: Step; pack: Pack; onNex
       return <PeoplePicker text={step.text} min={step.min} max={step.max} defaults={pack.people.defaults} allowAdd onDone={onNext} />;
     case "reward":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>🏮 +{step.lanterns}</Text>
-          <Big label="Yay!" onPress={onNext} />
-        </Sheet>
+        <>
+          <SpeechBubble text={`🏮 +${step.lanterns}`} />
+          <Sheet>
+            <BigButton label="Yay!" onPress={onNext} />
+          </Sheet>
+        </>
       );
     case "parent_prompt":
       return (
         <Sheet>
-          <Text style={styles.parent}>For grown-ups: {step.text}</Text>
-          <Big label="OK" onPress={onNext} />
+          <Text style={styles.parent}>For grown-ups · {step.text}</Text>
+          <BigButton label="OK" onPress={onNext} tone="ghost" />
         </Sheet>
       );
     case "lights_out":
@@ -53,50 +77,47 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
   const kid = useKid();
+  const finish = (line: string) => {
+    setMsg(line);
+    setTimeout(onDone, 1300);
+  };
 
   switch (mg.type) {
     case "tap_choice":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
-          <View style={styles.grid}>
-            {mg.cards.map((c) => (
-              <Card
-                key={c.id}
-                label={c.label}
-                onPress={() => {
-                  if (c.correct) {
-                    setMsg(mg.successLine.text);
-                    setTimeout(onDone, 1200);
-                  } else setMsg(mg.retryLine.text);
-                }}
-              />
-            ))}
-          </View>
-        </Sheet>
+        <>
+          <SpeechBubble text={msg ?? mg.prompt.text} />
+          <Sheet>
+            <Grid>
+              {mg.cards.map((c) => (
+                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine.text) : setMsg(mg.retryLine.text))} />
+              ))}
+            </Grid>
+          </Sheet>
+        </>
       );
     case "collect":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
-          <View style={styles.grid}>
-            {mg.items.map((c) => (
-              <Card
-                key={c.id}
-                label={c.label}
-                selected={picked.includes(c.id)}
-                onPress={() => {
-                  const n = picked.includes(c.id) ? picked.filter((x) => x !== c.id) : [...picked, c.id];
-                  setPicked(n);
-                  if (n.length >= mg.target) {
-                    setMsg(mg.successLine.text);
-                    setTimeout(onDone, 1200);
-                  }
-                }}
-              />
-            ))}
-          </View>
-        </Sheet>
+        <>
+          <SpeechBubble text={msg ?? mg.prompt.text} hint={`${picked.length} / ${mg.target}`} />
+          <Sheet>
+            <Grid>
+              {mg.items.map((c) => (
+                <IconCard
+                  key={c.id}
+                  icon={c.icon}
+                  label={c.label}
+                  selected={picked.includes(c.id)}
+                  onPress={() => {
+                    const n = picked.includes(c.id) ? picked.filter((x) => x !== c.id) : [...picked, c.id];
+                    setPicked(n);
+                    if (n.length >= mg.target) finish(mg.successLine.text);
+                  }}
+                />
+              ))}
+            </Grid>
+          </Sheet>
+        </>
       );
     case "people_picker":
       return (
@@ -116,62 +137,52 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
       return <ListenTimer seconds={mg.seconds} text={mg.prompt.text} onDone={onDone} />;
     case "sequence":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
-          <View style={styles.slots}>
-            {mg.order.map((_, i) => (
-              <Text key={i} style={styles.slot}>
-                {picked[i] ? mg.cards.find((c) => c.id === picked[i])?.label : "…"}
-              </Text>
-            ))}
-          </View>
-          <View style={styles.grid}>
-            {mg.cards
-              .filter((c) => !picked.includes(c.id))
-              .map((c) => (
-                <Card
-                  key={c.id}
-                  label={c.label}
-                  onPress={() => {
-                    const n = [...picked, c.id];
-                    if (mg.order[n.length - 1] !== c.id) {
-                      setMsg(mg.retryLine.text);
-                      setPicked([]);
-                      return;
-                    }
-                    setPicked(n);
-                    if (n.length === mg.order.length) {
-                      setMsg(mg.successLine.text);
-                      setTimeout(onDone, 1200);
-                    }
-                  }}
-                />
+        <>
+          <SpeechBubble text={msg ?? mg.prompt.text} />
+          <Sheet>
+            <View style={styles.slots}>
+              {mg.order.map((_, i) => (
+                <Text key={i} style={[styles.slot, picked[i] && styles.slotOn]}>
+                  {picked[i] ? mg.cards.find((c) => c.id === picked[i])?.label : "…"}
+                </Text>
               ))}
-          </View>
-        </Sheet>
+            </View>
+            <Grid>
+              {mg.cards
+                .filter((c) => !picked.includes(c.id))
+                .map((c) => (
+                  <IconCard
+                    key={c.id}
+                    icon={c.icon}
+                    label={c.label}
+                    onPress={() => {
+                      const n = [...picked, c.id];
+                      if (mg.order[n.length - 1] !== c.id) {
+                        setMsg(mg.retryLine.text);
+                        setPicked([]);
+                        return;
+                      }
+                      setPicked(n);
+                      if (n.length === mg.order.length) finish(mg.successLine.text);
+                    }}
+                  />
+                ))}
+            </Grid>
+          </Sheet>
+        </>
       );
     case "fill_blank":
       return (
-        <Sheet>
-          <Text style={styles.subtitle}>{msg ?? mg.prompt.text}</Text>
-          <Text style={styles.sentence}>{mg.sentence.replace("___", picked[0] ?? "____")}</Text>
-          <View style={styles.grid}>
-            {mg.options.map((o) => (
-              <Card
-                key={o}
-                label={o}
-                selected={picked[0] === o}
-                onPress={() => {
-                  setPicked([o]);
-                  if (o === mg.answer) {
-                    setMsg(mg.successLine.text);
-                    setTimeout(onDone, 1200);
-                  } else setMsg(mg.retryLine.text);
-                }}
-              />
-            ))}
-          </View>
-        </Sheet>
+        <>
+          <SpeechBubble text={msg ?? mg.prompt.text} hint={mg.sentence.replace("___", picked[0] ?? "____")} />
+          <Sheet>
+            <Grid>
+              {mg.options.map((o) => (
+                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine.text) : setMsg(mg.retryLine.text))} />
+              ))}
+            </Grid>
+          </Sheet>
+        </>
       );
   }
 }
@@ -181,27 +192,30 @@ function PeoplePicker({ text, min, max, defaults, allowAdd, onDone }: { text: st
   const [picked, setPicked] = useState<string[]>([]);
   const options = kid.people.length ? kid.people : defaults.map((d) => ({ id: `default:${d}`, label: d, icon: "person", prayedCount: 0 }));
   return (
-    <Sheet>
-      <Text style={styles.subtitle}>{text}</Text>
-      <View style={styles.grid}>
-        {options.map((p) => (
-          <Card
-            key={p.id}
-            label={p.label}
-            selected={picked.includes(p.id)}
-            onPress={() => setPicked((s) => (s.includes(p.id) ? s.filter((x) => x !== p.id) : s.length < max ? [...s, p.id] : s))}
-          />
-        ))}
-      </View>
-      <Big
-        label="Done"
-        disabled={picked.length < min}
-        onPress={() => {
-          if (allowAdd) for (const id of picked) if (id.startsWith("default:") && !kid.people.some((p) => p.label === id.slice(8))) kid.addPerson(id.slice(8));
-          onDone(picked);
-        }}
-      />
-    </Sheet>
+    <>
+      <SpeechBubble text={text} hint={`${picked.length} / ${max}`} />
+      <Sheet>
+        <Grid>
+          {options.map((p) => (
+            <IconCard
+              key={p.id}
+              icon={p.icon}
+              label={p.label}
+              selected={picked.includes(p.id)}
+              onPress={() => setPicked((s) => (s.includes(p.id) ? s.filter((x) => x !== p.id) : s.length < max ? [...s, p.id] : s))}
+            />
+          ))}
+        </Grid>
+        <BigButton
+          label="Done"
+          disabled={picked.length < min}
+          onPress={() => {
+            if (allowAdd) for (const id of picked) if (id.startsWith("default:") && !kid.people.some((p) => p.label === id.slice(8))) kid.addPerson(id.slice(8));
+            onDone(picked);
+          }}
+        />
+      </Sheet>
+    </>
   );
 }
 
@@ -214,44 +228,28 @@ function ListenTimer({ seconds, text, onDone, dark }: { seconds: number; text: s
   useEffect(() => {
     if (left <= 0) onDone();
   }, [left, onDone]);
-  const size = 120 + (1 - left / seconds) * 120; // GDD §6.5: circle that grows while breathing with Capy
+  const size = 110 + (1 - left / seconds) * 110; // GDD §6.5: circle that grows while breathing with Capy
   return (
-    <View style={[styles.timer, dark && styles.dark]}>
-      <Text style={[styles.subtitle, dark && styles.light]}>{text}</Text>
-      <View style={[styles.circle, { width: size, height: size, borderRadius: size / 2 }]} />
-    </View>
+    <>
+      {!dark && <SpeechBubble text={text} />}
+      <Sheet style={dark ? styles.dark : undefined}>
+        {dark && <Text style={styles.darkText}>{text}</Text>}
+        <View style={styles.circleWrap}>
+          <View style={[styles.circle, dark && styles.circleDark, { width: size, height: size, borderRadius: size / 2 }]} />
+        </View>
+      </Sheet>
+    </>
   );
 }
 
-const Sheet = ({ children }: { children: React.ReactNode }) => <View style={styles.sheet}>{children}</View>;
-const Big = ({ label, onPress, disabled }: { label: string; onPress: () => void; disabled?: boolean }) => (
-  <Pressable style={[styles.big, disabled && styles.disabled]} onPress={onPress} disabled={disabled}>
-    <Text style={styles.bigText}>{label}</Text>
-  </Pressable>
-);
-const Card = ({ label, onPress, selected }: { label: string; onPress: () => void; selected?: boolean }) => (
-  <Pressable style={[styles.card, selected && styles.cardSelected]} onPress={onPress}>
-    <Text style={styles.cardText}>{label}</Text>
-  </Pressable>
-);
-
 const styles = StyleSheet.create({
-  sheet: { padding: 20, gap: 14, backgroundColor: "rgba(255,255,255,0.9)", borderTopLeftRadius: 28, borderTopRightRadius: 28 },
-  subtitle: { fontSize: 26, fontWeight: "600", color: "#3b2a1a", textAlign: "center", lineHeight: 34 },
-  hint: { textAlign: "center", color: "#6b4a2b" },
-  parent: { fontSize: 16, color: "#6b4a2b" },
-  big: { backgroundColor: "#FFB84D", borderRadius: 24, padding: 18, alignItems: "center" },
-  disabled: { opacity: 0.4 },
-  bigText: { fontSize: 22, fontWeight: "700", color: "#3b2a1a" },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
+  parent: { fontFamily: T.font.regular, fontSize: 16, color: T.color.brown, lineHeight: 22 },
   slots: { gap: 6 },
-  slot: { fontSize: 18, color: "#3b2a1a", textAlign: "center", padding: 8, borderRadius: 10, backgroundColor: "#fff5e0" },
-  sentence: { fontSize: 24, color: "#3b2a1a", textAlign: "center", fontWeight: "600" },
-  card: { minWidth: 100, padding: 16, borderRadius: 18, backgroundColor: "#fff", borderWidth: 3, borderColor: "#f1e2c8", alignItems: "center" },
-  cardSelected: { borderColor: "#FFB84D", backgroundColor: "#fff5e0" },
-  cardText: { fontSize: 18, color: "#3b2a1a" },
-  timer: { padding: 20, gap: 20, alignItems: "center", backgroundColor: "rgba(255,255,255,0.9)", borderTopLeftRadius: 28, borderTopRightRadius: 28 },
-  dark: { backgroundColor: "#0b0a14", flex: 1 },
-  light: { color: "#eee" },
-  circle: { backgroundColor: "#ffd9a8" },
+  slot: { fontFamily: T.font.bold, fontSize: 18, color: T.color.brown, textAlign: "center", padding: 8, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.6)" },
+  slotOn: { color: T.color.ink, backgroundColor: T.color.paper },
+  circleWrap: { alignItems: "center", justifyContent: "center", height: 240 },
+  circle: { backgroundColor: T.color.primary, opacity: 0.85 },
+  circleDark: { backgroundColor: "#6b63b5", opacity: 0.6 },
+  dark: { backgroundColor: "rgba(20,17,45,0.92)" },
+  darkText: { fontFamily: T.font.bold, fontSize: 22, color: "#efeaff", textAlign: "center", lineHeight: 30 },
 });

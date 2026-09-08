@@ -20,7 +20,8 @@ pnpm --filter @capy/mobile start       # scan the QR with Expo Go (iOS/Android) 
 
 What to try:
 
-0. First launch opens the parent onboarding (6 quick questions) and a sandbox paywall. "Continue in sandbox" flips premium on; "Not now" keeps only W1D1 + Bedtime unlocked (🔒 on the rest). The 👤 button on Home opens the parental gate (arithmetic + hold 3 s) → Parent Corner.
+0. After onboarding, Capy runs "Meet Capy": he asks 3 things (favorite, what made you happy, how you feel) and uses the answers in the first prayer. Capy stands on the meadow background; the WebView embeds the model, so no file loading is involved.
+0b. First launch opens the parent onboarding (6 quick questions) and a sandbox paywall. "Continue in sandbox" flips premium on; "Not now" keeps only W1D1 + Bedtime unlocked (🔒 on the rest). The 👤 button on Home opens the parental gate (arithmetic + hold 3 s) → Parent Corner.
 1. Home shows lanterns / beacons / streak and the list of Week 1 lessons. Tap the big card (next lesson).
 2. A lesson runs beat by beat: Capy talks (subtitle + tap Next), "repeat after me" line by line, one minigame, a lantern reward, closing line. All text comes from `packages/content/packs/christian-us-en-v1/pack.json`.
 3. W1D3 asks for Prayer People; they appear in the Pond (tap the counters on Home).

@@ -37,4 +37,5 @@ Clip names come from `tools/avatar/clip-map.json`. Drop Mixamo FBX clips (export
 | Parent onboarding, parental gate, Parent Corner (bedtime, reminder, people + notes, delete data) | ✅ |
 | Premium gating (`useEntitlement`, lock UI, sandbox switch) | ✅ · RevenueCat adapter on dev build (`apps/mobile/src/entitlements/revenuecat.md`) |
 | Kids Category / COPPA checklist | `docs/COMPLIANCE.md` |
-| Weeks 3–4, Supabase auth + sync, audio, Mixamo clips | ⏳ |
+| Meet Capy intro (get-to-know-you `ask` beats → prayer variables), speech-bubble UI, Nunito, meadow background | ✅ |
+| Weeks 3–4, Supabase auth + sync, audio, Mixamo clips, Higgsfield backgrounds (see tools/art/README.md) | ⏳ |
