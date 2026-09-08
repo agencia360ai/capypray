@@ -9,7 +9,7 @@ describe("christian-us-en-v1", () => {
   it("validates", () => {
     const { pack, issues } = validatePack(load());
     expect(issues).toEqual([]);
-    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual([...[1, 2].flatMap((w) => [1, 2, 3, 4, 5, 6, 7].map((d) => `w${w}d${d}`))]);
+    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual([...[1, 2, 3, 4].flatMap((w) => [1, 2, 3, 4, 5, 6, 7].map((d) => `w${w}d${d}`))]);
     expect(pack?.routines.bedtime.lessonId).toBe("bedtime-w1");
   });
 
@@ -52,6 +52,18 @@ describe("validatePack referential checks", () => {
     raw.lessons.find((l: { id: string }) => l.id === "w1d1").beats[0].text = Array.from({ length: 21 }, () => "hi").join(" ");
     const { issues } = validatePack(raw);
     expect(issues.some((i) => i.message.includes("> 20 words"))).toBe(true);
+  });
+});
+
+describe("World 1 complete (GDD §7.1: 28 sessions)", () => {
+  it("covers every skill of §5.1 (1–6 + shared) across the 4 weeks", () => {
+    const { pack } = validatePack(load());
+    const skills = new Set(pack!.lessons.filter((l) => l.routine === "any").map((l) => l.skillId));
+    for (const s of ["hello", "thank-you", "sorry", "please-help", "others", "listen", "shared", "review"]) expect(skills.has(s)).toBe(true);
+  });
+  it("Beacon Days sit on day 7 of each week", () => {
+    const { pack } = validatePack(load());
+    for (const l of pack!.lessons.filter((l) => l.routine === "any")) expect(l.skillId === "review").toBe(l.day === 7);
   });
 });
 

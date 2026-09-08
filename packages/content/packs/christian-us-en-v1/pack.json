@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -892,6 +892,643 @@
       ]
     },
     {
+      "id": "w3d1",
+      "week": "w3",
+      "day": 1,
+      "skillId": "please-help",
+      "title": "God Cares About What You Need",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Today we learn to ask God for help.",
+          "audio": "w3d1_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "God cares about big things and tiny things. You can ask anything.",
+          "audio": "w3d1_02.mp3"
+        },
+        {
+          "type": "ask",
+          "key": "need",
+          "clip": "think",
+          "text": "What would you like help with?",
+          "audio": "w3d1_03.mp3",
+          "options": [
+            {
+              "id": "sleep",
+              "label": "Sleeping",
+              "icon": "sleepy"
+            },
+            {
+              "id": "brave",
+              "label": "Being brave",
+              "icon": "star"
+            },
+            {
+              "id": "share",
+              "label": "Sharing",
+              "icon": "friends"
+            },
+            {
+              "id": "kind",
+              "label": "Being kind",
+              "icon": "heart"
+            },
+            {
+              "id": "school",
+              "label": "School",
+              "icon": "school"
+            },
+            {
+              "id": "listen",
+              "label": "Listening",
+              "icon": "ear"
+            }
+          ]
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "please-help-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d1_help_with"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Asking for help is brave. God heard you.",
+          "audio": "w3d1_06.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w3d2",
+      "week": "w3",
+      "day": 2,
+      "skillId": "please-help",
+      "title": "When I'm Scared",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. Sometimes I get scared of thunder. Boom!",
+          "audio": "w3d2_01.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "When I'm scared, I breathe slowly and tell God.",
+          "audio": "w3d2_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Breathe in… breathe out… God is right here.",
+          "audio": "w3d2_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "scared-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_listen_30"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You are not alone. Never ever.",
+          "audio": "w3d2_06.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w3d3",
+      "week": "w3",
+      "day": 3,
+      "skillId": "please-help",
+      "title": "When I'm Sad",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "sad",
+          "text": "Hi {kidName}. Some days I feel sad and I don't know why.",
+          "audio": "w3d3_01.mp3",
+          "mood": "sad"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "It's okay to feel sad. God can hold sad feelings too.",
+          "audio": "w3d3_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sad-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d3_comfort"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Thank you for sharing your heart with God.",
+          "audio": "w3d3_05.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w3d4",
+      "week": "w3",
+      "day": 4,
+      "skillId": "please-help",
+      "title": "Before Something Big",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Tomorrow I visit the doctor. My tummy feels fluttery.",
+          "audio": "w3d4_01.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "think",
+          "text": "Before something big, we can pray: breathe, ask, and go.",
+          "audio": "w3d4_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "before-big-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d4_breathe_ask_go"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Breathe, ask, go! You can do big things.",
+          "audio": "w3d4_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w3d5",
+      "week": "w3",
+      "day": 5,
+      "skillId": "others",
+      "title": "Praying for Family",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Who lives in your home? Let's pray for them.",
+          "audio": "w3d5_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Pick two people from your family. Then we ask God to be with them.",
+          "audio": "w3d5_02.mp3"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d5_family"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Your family is loved. And so are you.",
+          "audio": "w3d5_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w3d6",
+      "week": "w3",
+      "day": 6,
+      "skillId": "others",
+      "title": "Praying for Friends",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! My bird friend and I pray for each other.",
+          "audio": "w3d6_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "Friends and teachers help us every day. Let's pray for them.",
+          "audio": "w3d6_02.mp3"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d6_friends"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Good friends pray for their friends. That's you!",
+          "audio": "w3d6_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w3d7",
+      "week": "w3",
+      "day": 7,
+      "skillId": "review",
+      "title": "Beacon Day 3",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "{kidName}, Beacon Day! Today: the Five-Finger Prayer.",
+          "audio": "w3d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Hold up your hand. Each finger reminds us who to pray for.",
+          "audio": "w3d7_02.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "Thumb: people close to you. Pointer: helpers. Tall: leaders. Ring: the sick. Pinky: you!",
+          "audio": "w3d7_03.mp3"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d7_fingers"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "five-finger-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Three beacons! Your hand is a prayer list now.",
+          "audio": "w3d7_07.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w4d1",
+      "week": "w4",
+      "day": 1,
+      "skillId": "others",
+      "title": "Praying for Someone Who Is Sick",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. My friend duck has a cold today. Achoo!",
+          "audio": "w4d1_01.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "When someone is sick, we ask God to be close and help them feel better.",
+          "audio": "w4d1_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d1_sick"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sick-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Your prayer is like a warm blanket for them.",
+          "audio": "w4d1_05.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w4d2",
+      "week": "w4",
+      "day": 2,
+      "skillId": "others",
+      "title": "Praying for the World",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! The world is big. God loves everyone in it.",
+          "audio": "w4d2_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "Lots of helpers keep people safe. Let's pray for them.",
+          "audio": "w4d2_02.mp3"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d2_world_helpers"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "world-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Your little prayer went all around the world!",
+          "audio": "w4d2_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w4d3",
+      "week": "w4",
+      "day": 3,
+      "skillId": "listen",
+      "title": "Listening With My Whole Body",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. Today we listen with our whole body.",
+          "audio": "w4d3_01.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "listen_nod",
+          "text": "Still hands. Still feet. Quiet mouth. Open heart.",
+          "audio": "w4d3_02.mp3",
+          "mood": "calm"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 45,
+          "text": "Breathe with me. I'm listening, God.",
+          "audio": "w4d3_03.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "listen-v1",
+          "clip": "listen_nod"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Being still is a prayer too. Well done.",
+          "audio": "w4d3_05.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w4d4",
+      "week": "w4",
+      "day": 4,
+      "skillId": "shared",
+      "title": "The Lord's Prayer, Part 1",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Jesus taught his friends a prayer. It's very old.",
+          "audio": "w4d4_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "People all over the world say it. Let's learn the first part.",
+          "audio": "w4d4_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "lords-prayer-1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d4_lords_1"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Our Father! You're learning a prayer we all share.",
+          "audio": "w4d4_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w4d5",
+      "week": "w4",
+      "day": 5,
+      "skillId": "shared",
+      "title": "The Lord's Prayer, Part 2",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Ready for part two? It's about bread and forgiving.",
+          "audio": "w4d5_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_b",
+          "text": "Daily bread means what we need today. Forgive means it's okay, try again.",
+          "audio": "w4d5_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "lords-prayer-2",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d5_lords_2"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You know the whole prayer now. Amazing!",
+          "audio": "w4d5_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w4d6",
+      "week": "w4",
+      "day": 6,
+      "skillId": "shared",
+      "title": "Bedtime Prayer Classic",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "yawn",
+          "text": "Hi {kidName}. Tonight's prayer is my favorite sleepy prayer.",
+          "audio": "w4d6_01.mp3",
+          "mood": "sleepy"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "bedtime-classic",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d6_bedtime_blank"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Sweet dreams are on the way.",
+          "audio": "w4d6_04.mp3",
+          "mood": "calm"
+        }
+      ]
+    },
+    {
+      "id": "w4d7",
+      "week": "w4",
+      "day": 7,
+      "skillId": "review",
+      "title": "Beacon Day 4 · World Complete",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "{kidName}, you did it! The whole Meadow is shining!",
+          "audio": "w4d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Hello, Thank You, I'm Sorry, Please Help, Others, Listen. You know them all!",
+          "audio": "w4d7_02.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "world-complete-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_listen_30"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Pond Keeper! A new river biome opens next.",
+          "audio": "w4d7_05.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
       "id": "bedtime-w1",
       "skillId": "shared",
       "title": "Bedtime Prayer",
@@ -1190,6 +1827,240 @@
         "kidName",
         "thankfulFor",
         "feeling"
+      ]
+    },
+    {
+      "id": "please-help-v1",
+      "skillId": "please-help",
+      "title": "Please Help Prayer",
+      "lines": [
+        {
+          "text": "God, I feel {feeling}.",
+          "audio": "p_help_01.mp3"
+        },
+        {
+          "text": "Please help me with {need}.",
+          "audio": "p_help_02.mp3"
+        },
+        {
+          "text": "I know you're with me. Amen.",
+          "audio": "p_help_03.mp3"
+        }
+      ],
+      "variables": [
+        "feeling",
+        "need"
+      ]
+    },
+    {
+      "id": "scared-v1",
+      "skillId": "please-help",
+      "title": "When I'm Scared",
+      "lines": [
+        {
+          "text": "God, I feel scared right now.",
+          "audio": "p_scared_01.mp3"
+        },
+        {
+          "text": "Please hold my hand.",
+          "audio": "p_scared_02.mp3"
+        },
+        {
+          "text": "You are bigger than my fear. Amen.",
+          "audio": "p_scared_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "sad-v1",
+      "skillId": "please-help",
+      "title": "When I'm Sad",
+      "lines": [
+        {
+          "text": "God, I feel sad today.",
+          "audio": "p_sad_01.mp3"
+        },
+        {
+          "text": "Please sit with me.",
+          "audio": "p_sad_02.mp3"
+        },
+        {
+          "text": "Thank you for loving me anyway. Amen.",
+          "audio": "p_sad_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "before-big-v1",
+      "skillId": "please-help",
+      "title": "Before Something Big",
+      "lines": [
+        {
+          "text": "God, something big is coming.",
+          "audio": "p_big_01.mp3"
+        },
+        {
+          "text": "Please be with me every step.",
+          "audio": "p_big_02.mp3"
+        },
+        {
+          "text": "Help me be brave. Amen.",
+          "audio": "p_big_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "five-finger-v1",
+      "skillId": "review",
+      "title": "Five-Finger Prayer",
+      "lines": [
+        {
+          "text": "God, bless the people close to me.",
+          "audio": "p_five_01.mp3"
+        },
+        {
+          "text": "Bless my helpers and teachers.",
+          "audio": "p_five_02.mp3"
+        },
+        {
+          "text": "Bless the leaders who guide us.",
+          "audio": "p_five_03.mp3"
+        },
+        {
+          "text": "Bless the sick and the sad.",
+          "audio": "p_five_04.mp3"
+        },
+        {
+          "text": "And bless me too. Amen.",
+          "audio": "p_five_05.mp3"
+        }
+      ]
+    },
+    {
+      "id": "sick-v1",
+      "skillId": "others",
+      "title": "For Someone Sick",
+      "lines": [
+        {
+          "text": "God, please be close to {person}.",
+          "audio": "p_sick_01.mp3"
+        },
+        {
+          "text": "Help them feel better soon.",
+          "audio": "p_sick_02.mp3"
+        },
+        {
+          "text": "Give them rest tonight. Amen.",
+          "audio": "p_sick_03.mp3"
+        }
+      ],
+      "variables": [
+        "person"
+      ]
+    },
+    {
+      "id": "world-v1",
+      "skillId": "others",
+      "title": "For the World",
+      "lines": [
+        {
+          "text": "God, you love the whole world.",
+          "audio": "p_world_01.mp3"
+        },
+        {
+          "text": "Please help the helpers.",
+          "audio": "p_world_02.mp3"
+        },
+        {
+          "text": "Bring peace everywhere. Amen.",
+          "audio": "p_world_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "lords-prayer-1",
+      "skillId": "shared",
+      "title": "The Lord's Prayer, Part 1",
+      "source": "traditional-pd",
+      "lines": [
+        {
+          "text": "Our Father, who art in heaven,",
+          "audio": "p_lp_01.mp3"
+        },
+        {
+          "text": "hallowed be thy name.",
+          "audio": "p_lp_02.mp3"
+        },
+        {
+          "text": "Thy kingdom come, thy will be done,",
+          "audio": "p_lp_03.mp3"
+        },
+        {
+          "text": "on earth as it is in heaven.",
+          "audio": "p_lp_04.mp3"
+        }
+      ]
+    },
+    {
+      "id": "lords-prayer-2",
+      "skillId": "shared",
+      "title": "The Lord's Prayer, Part 2",
+      "source": "traditional-pd",
+      "lines": [
+        {
+          "text": "Give us this day our daily bread,",
+          "audio": "p_lp_05.mp3"
+        },
+        {
+          "text": "and forgive us our trespasses,",
+          "audio": "p_lp_06.mp3"
+        },
+        {
+          "text": "as we forgive those who trespass against us.",
+          "audio": "p_lp_07.mp3"
+        },
+        {
+          "text": "Lead us not into temptation, but deliver us from evil. Amen.",
+          "audio": "p_lp_08.mp3"
+        }
+      ]
+    },
+    {
+      "id": "world-complete-v1",
+      "skillId": "review",
+      "title": "All Six Together",
+      "lines": [
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3"
+        },
+        {
+          "text": "Thank you for {thankfulFor}.",
+          "audio": "p_review_02.mp3"
+        },
+        {
+          "text": "I'm sorry for {mistake}.",
+          "audio": "p_wc_03.mp3"
+        },
+        {
+          "text": "Please help me with {need}.",
+          "audio": "p_help_02.mp3"
+        },
+        {
+          "text": "Please be with {person}.",
+          "audio": "p_others_01.mp3"
+        },
+        {
+          "text": "I'm listening, God. Amen.",
+          "audio": "p_wc_06.mp3"
+        }
+      ],
+      "variables": [
+        "kidName",
+        "thankfulFor",
+        "mistake",
+        "need",
+        "person"
       ]
     }
   ],
@@ -1657,6 +2528,349 @@
         "text": "Try again. What do we ask God after sorry?",
         "audio": "mg_w2d7_retry.mp3"
       }
+    },
+    {
+      "type": "tap_choice",
+      "id": "mg_w3d1_help_with",
+      "prompt": {
+        "text": "Which one can you ask God to help with?",
+        "audio": "mg_w3d1_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "all",
+          "label": "All of them!",
+          "icon": "star",
+          "correct": true
+        },
+        {
+          "id": "none",
+          "label": "Nothing",
+          "icon": "empty"
+        },
+        {
+          "id": "big",
+          "label": "Only big things",
+          "icon": "rock"
+        }
+      ],
+      "successLine": {
+        "text": "Yes! God cares about everything.",
+        "audio": "mg_w3d1_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Hmm. God cares about big and small things.",
+        "audio": "mg_w3d1_retry.mp3"
+      }
+    },
+    {
+      "type": "collect",
+      "id": "mg_w3d3_comfort",
+      "prompt": {
+        "text": "Pick three things that help when you're sad.",
+        "audio": "mg_w3d3_prompt.mp3"
+      },
+      "target": 3,
+      "items": [
+        {
+          "id": "hug",
+          "label": "A hug",
+          "icon": "heart"
+        },
+        {
+          "id": "talk",
+          "label": "Telling someone",
+          "icon": "people"
+        },
+        {
+          "id": "pray",
+          "label": "Praying",
+          "icon": "hands-open"
+        },
+        {
+          "id": "blanket",
+          "label": "A cozy blanket",
+          "icon": "bed"
+        },
+        {
+          "id": "song",
+          "label": "A soft song",
+          "icon": "music"
+        },
+        {
+          "id": "cry",
+          "label": "Crying a little",
+          "icon": "sad"
+        }
+      ],
+      "successLine": {
+        "text": "Those help. And God is always one of them.",
+        "audio": "mg_w3d3_ok.mp3"
+      }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w3d4_breathe_ask_go",
+      "prompt": {
+        "text": "Put the steps in order.",
+        "audio": "mg_w3d4_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "breathe",
+          "label": "Breathe",
+          "icon": "calm"
+        },
+        {
+          "id": "ask",
+          "label": "Ask God",
+          "icon": "hands-open"
+        },
+        {
+          "id": "go",
+          "label": "Go!",
+          "icon": "star"
+        }
+      ],
+      "order": [
+        "breathe",
+        "ask",
+        "go"
+      ],
+      "successLine": {
+        "text": "Breathe, ask, go. Perfect!",
+        "audio": "mg_w3d4_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Almost. What do we do first?",
+        "audio": "mg_w3d4_retry.mp3"
+      }
+    },
+    {
+      "type": "people_picker",
+      "id": "mg_w3d5_family",
+      "prompt": {
+        "text": "Pick two people from your family.",
+        "audio": "mg_w3d5_prompt.mp3"
+      },
+      "min": 2,
+      "max": 2,
+      "allowAdd": true,
+      "prayerId": "for-others-v1",
+      "successLine": {
+        "text": "God is with them tonight.",
+        "audio": "mg_w3d5_ok.mp3"
+      }
+    },
+    {
+      "type": "people_picker",
+      "id": "mg_w3d6_friends",
+      "prompt": {
+        "text": "Pick a friend or a teacher.",
+        "audio": "mg_w3d6_prompt.mp3"
+      },
+      "min": 1,
+      "max": 2,
+      "allowAdd": true,
+      "prayerId": "for-others-v1",
+      "successLine": {
+        "text": "They're lucky to have you.",
+        "audio": "mg_w3d6_ok.mp3"
+      }
+    },
+    {
+      "type": "tap_choice",
+      "id": "mg_w3d7_fingers",
+      "prompt": {
+        "text": "Which finger reminds us to pray for the sick?",
+        "audio": "mg_w3d7_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "thumb",
+          "label": "Thumb",
+          "icon": "hands-open"
+        },
+        {
+          "id": "ring",
+          "label": "Ring finger",
+          "icon": "heart-mend",
+          "correct": true
+        },
+        {
+          "id": "pinky",
+          "label": "Pinky",
+          "icon": "person"
+        }
+      ],
+      "successLine": {
+        "text": "Yes! The ring finger is the weakest, so we pray for the weak.",
+        "audio": "mg_w3d7_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Try again. It's the weakest finger.",
+        "audio": "mg_w3d7_retry.mp3"
+      }
+    },
+    {
+      "type": "people_picker",
+      "id": "mg_w4d1_sick",
+      "prompt": {
+        "text": "Do you know someone who is sick? Pick them.",
+        "audio": "mg_w4d1_prompt.mp3"
+      },
+      "min": 1,
+      "max": 2,
+      "allowAdd": true,
+      "prayerId": "sick-v1",
+      "successLine": {
+        "text": "Your prayer is on its way.",
+        "audio": "mg_w4d1_ok.mp3"
+      }
+    },
+    {
+      "type": "collect",
+      "id": "mg_w4d2_world_helpers",
+      "prompt": {
+        "text": "Collect four helpers to pray for.",
+        "audio": "mg_w4d2_prompt.mp3"
+      },
+      "target": 4,
+      "items": [
+        {
+          "id": "doctor",
+          "label": "Doctors",
+          "icon": "heart-mend"
+        },
+        {
+          "id": "teacher",
+          "label": "Teachers",
+          "icon": "school"
+        },
+        {
+          "id": "farmer",
+          "label": "Farmers",
+          "icon": "sprout"
+        },
+        {
+          "id": "firefighter",
+          "label": "Firefighters",
+          "icon": "water"
+        },
+        {
+          "id": "driver",
+          "label": "Drivers",
+          "icon": "car"
+        },
+        {
+          "id": "leader",
+          "label": "Leaders",
+          "icon": "star"
+        }
+      ],
+      "successLine": {
+        "text": "God bless the helpers!",
+        "audio": "mg_w4d2_ok.mp3"
+      }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w4d4_lords_1",
+      "prompt": {
+        "text": "Put the first lines in order.",
+        "audio": "mg_w4d4_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "father",
+          "label": "Our Father, who art in heaven,",
+          "icon": "text"
+        },
+        {
+          "id": "hallowed",
+          "label": "hallowed be thy name.",
+          "icon": "text"
+        },
+        {
+          "id": "kingdom",
+          "label": "Thy kingdom come,",
+          "icon": "text"
+        }
+      ],
+      "order": [
+        "father",
+        "hallowed",
+        "kingdom"
+      ],
+      "successLine": {
+        "text": "Perfect! You know how it starts.",
+        "audio": "mg_w4d4_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Almost. How does it begin?",
+        "audio": "mg_w4d4_retry.mp3"
+      }
+    },
+    {
+      "type": "sequence",
+      "id": "mg_w4d5_lords_2",
+      "prompt": {
+        "text": "Put the next lines in order.",
+        "audio": "mg_w4d5_prompt.mp3"
+      },
+      "cards": [
+        {
+          "id": "bread",
+          "label": "Give us this day our daily bread,",
+          "icon": "text"
+        },
+        {
+          "id": "forgive",
+          "label": "and forgive us our trespasses,",
+          "icon": "text"
+        },
+        {
+          "id": "as",
+          "label": "as we forgive others.",
+          "icon": "text"
+        }
+      ],
+      "order": [
+        "bread",
+        "forgive",
+        "as"
+      ],
+      "successLine": {
+        "text": "Yes! Bread, then forgiving.",
+        "audio": "mg_w4d5_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Almost. Bread comes first.",
+        "audio": "mg_w4d5_retry.mp3"
+      }
+    },
+    {
+      "type": "fill_blank",
+      "id": "mg_w4d6_bedtime_blank",
+      "prompt": {
+        "text": "Finish the bedtime prayer.",
+        "audio": "mg_w4d6_prompt.mp3"
+      },
+      "sentence": "Now I lay me down to ___.",
+      "options": [
+        "sleep",
+        "jump",
+        "sing"
+      ],
+      "answer": "sleep",
+      "successLine": {
+        "text": "Sleep! Goodnight prayer, done.",
+        "audio": "mg_w4d6_ok.mp3"
+      },
+      "retryLine": {
+        "text": "Try again. What do we do at bedtime?",
+        "audio": "mg_w4d6_retry.mp3"
+      }
     }
   ],
   "rewards": [
@@ -1696,6 +2910,30 @@
       "id": "badge-pond-keeper",
       "type": "badge",
       "title": "Pond Keeper",
+      "unlock": {
+        "beacons": 4
+      }
+    },
+    {
+      "id": "nightcap",
+      "type": "skin",
+      "title": "Sleepy Cap",
+      "unlock": {
+        "beacons": 3
+      }
+    },
+    {
+      "id": "verse-psalm23",
+      "type": "verse_card",
+      "title": "The Lord is my shepherd",
+      "unlock": {
+        "lessonId": "w3d2"
+      }
+    },
+    {
+      "id": "biome-river",
+      "type": "biome",
+      "title": "The River",
       "unlock": {
         "beacons": 4
       }
