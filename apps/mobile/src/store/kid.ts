@@ -71,7 +71,7 @@ export const useKid = create<KidState>()(
       setFact: (key, value) => set((s) => ({ facts: { ...s.facts, [key]: value.trim().slice(0, 30) } })),
       finishIntro: () => set({ introDone: true }),
       addPerson: (label, icon = "person") =>
-        set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: `${Date.now()}`, label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
+        set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: uid(), label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
       removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),
       setPersonNote: (id, note) => set((s) => ({ people: s.people.map((p) => (p.id === id ? { ...p, note: note.trim().slice(0, 120) || undefined } : p)) })),
       prayedFor: (ids) => set((s) => ({ people: s.people.map((p) => (ids.includes(p.id) ? { ...p, prayedCount: p.prayedCount + 1 } : p)) })),
@@ -109,6 +109,7 @@ export function bumpStreak(st: KidState["streak"], today: string): KidState["str
 }
 
 export const isoDate = (d: Date) => d.toISOString().slice(0, 10);
+const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 const daysBetween = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
 function startOfWeek(iso: string) {
   const d = new Date(iso);

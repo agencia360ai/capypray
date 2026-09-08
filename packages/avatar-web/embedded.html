@@ -11,6 +11,14 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        var post = function (m) { try { window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify(m)); } catch (e) {} };
+        window.addEventListener("error", function (e) { post({ type: "error", message: "page: " + (e.message || e) }); });
+        window.addEventListener("unhandledrejection", function (e) { post({ type: "error", message: "promise: " + (e.reason && e.reason.message || e.reason) }); });
+        post({ type: "boot" });
+      })();
+    </script>
     <script type="module" src="/src/embedded.tsx"></script>
   </body>
 </html>
