@@ -1,0 +1,19 @@
+{
+  "name": "capy-prayer",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "content:validate": "pnpm --filter @capy/content validate",
+    "avatar:build": "bash tools/avatar/build.sh",
+    "avatar:preview": "pnpm --filter @capy/avatar-web dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.6.0"
+  }
+}

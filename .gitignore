@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.turbo/
+.expo/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+coverage/
+playwright-report/
+test-results/
+tools/avatar/out/
+apps/mobile/assets/avatar/
+dist-single/

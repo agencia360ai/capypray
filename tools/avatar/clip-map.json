@@ -1,0 +1,78 @@
+{
+  "$comment": "GDD clip name -> FBX take name (+ optional end frame from the Unity import settings). Missing GDD clips fall back at runtime (see packages/avatar-web/src/stateMachine.ts).",
+  "clips": {
+    "idle_breathe": {
+      "take": "stand.idle.01",
+      "loop": true
+    },
+    "idle_look": {
+      "take": "stand.happy.idle",
+      "loop": true
+    },
+    "talk_a": {
+      "take": "stand.talking",
+      "loop": true,
+      "end": 126
+    },
+    "talk_b": {
+      "take": "stand.talking.01",
+      "loop": true,
+      "end": 190
+    },
+    "munch": {
+      "take": "stand.eating.01",
+      "loop": false,
+      "end": 131
+    },
+    "yawn": {
+      "take": "stand.tired.idle",
+      "loop": false
+    },
+    "to_sleep": {
+      "take": "Stand.to.sleep",
+      "loop": false
+    },
+    "sleep": {
+      "take": "Sleeping.01",
+      "loop": true
+    },
+    "wake": {
+      "take": "Sleep.to.stand",
+      "loop": false
+    },
+    "sad": {
+      "take": "stand.sad.idle",
+      "loop": true
+    },
+    "walk": {
+      "take": "walk",
+      "loop": true
+    },
+    "rise": {
+      "take": "rise",
+      "loop": false
+    }
+  },
+  "missing": [
+    "celebrate",
+    "chill_lie",
+    "clap",
+    "heart",
+    "kneel_pray",
+    "listen_nod",
+    "pray_hands",
+    "think",
+    "wave_hello"
+  ],
+  "fallbacks": {
+    "wave_hello": "idle_look",
+    "listen_nod": "idle_breathe",
+    "pray_hands": "idle_breathe",
+    "kneel_pray": "idle_breathe",
+    "clap": "idle_look",
+    "heart": "idle_look",
+    "think": "idle_breathe",
+    "chill_lie": "sleep",
+    "celebrate": "idle_look"
+  }
+}

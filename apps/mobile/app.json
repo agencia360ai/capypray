@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Capy Prayer",
+    "slug": "capy-prayer",
+    "scheme": "capyprayer",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": { "backgroundColor": "#FFF3DC" },
+    "ios": {
+      "bundleIdentifier": "com.looplab.capyprayer",
+      "supportsTablet": true,
+      "infoPlist": { "NSUserTrackingUsageDescription": "" }
+    },
+    "android": {
+      "package": "com.looplab.capyprayer",
+      "adaptiveIcon": { "backgroundColor": "#FFF3DC" }
+    },
+    "plugins": ["expo-router", "expo-asset", "expo-audio", "expo-notifications"],
+    "experiments": { "typedRoutes": true },
+    "extra": { "packId": "christian-us-en-v1" }
+  }
+}

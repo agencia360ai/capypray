@@ -1,0 +1,178 @@
+{
+  "id": "christian-us-en-v1",
+  "version": "0.1.0",
+  "locale": "en-US",
+  "tradition": "christian",
+  "ageBand": "4-8",
+  "avatar": { "id": "capy-default", "glb": "avatars/capy-v1.glb", "skinIds": ["capy-default"] },
+  "voice": { "provider": "elevenlabs", "style": "warm-kid-friendly" },
+  "theme": { "primary": "#FFB84D", "pond": "meadow" },
+  "skills": [
+    { "id": "hello", "title": "Hello", "icon": "wave", "anchor": "Hi God, it's me!" },
+    { "id": "thank-you", "title": "Thank You", "icon": "sun", "anchor": "Thank you for…" },
+    { "id": "sorry", "title": "I'm Sorry", "icon": "heart-mend", "anchor": "I'm sorry for… please help me…" },
+    { "id": "please-help", "title": "Please Help", "icon": "hands-open", "anchor": "Please help me with…" },
+    { "id": "others", "title": "Pray for Others", "icon": "people", "anchor": "Please be with…" },
+    { "id": "listen", "title": "Listen", "icon": "ear", "anchor": "I'm listening, God." },
+    { "id": "shared", "title": "Prayers We Share", "icon": "book", "anchor": "Our Father…" }
+  ],
+  "worlds": [{ "id": "meadow", "title": "The Meadow", "weeks": ["w1", "w2", "w3", "w4"] }],
+  "lessons": [
+    {
+      "id": "w1d1",
+      "week": "w1",
+      "day": 1,
+      "skillId": "hello",
+      "title": "God Is Always Listening",
+      "free": true,
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! I'm Capy. Guess what? God is always listening. Always!", "audio": "w1d1_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_a", "text": "Talking to God is called praying. It's just like talking to a friend.", "audio": "w1d1_02.mp3" },
+        { "type": "repeat_after_me", "prayerId": "hello-god-v1" },
+        { "type": "minigame", "minigameId": "mg_w1d1_who_listens" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "avatar_say", "clip": "celebrate", "text": "You just prayed! High five!", "audio": "w1d1_05.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "w1d2",
+      "week": "w1",
+      "day": 2,
+      "skillId": "hello",
+      "title": "You Can Pray Anywhere",
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi again, {kidName}! I prayed in the pond today. Splash!", "audio": "w1d2_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "think", "text": "You can pray anywhere. In bed, in the car, even in the bath.", "audio": "w1d2_02.mp3" },
+        { "type": "avatar_say", "clip": "talk_b", "text": "God hears you everywhere. Let's say hi from right here.", "audio": "w1d2_03.mp3" },
+        { "type": "repeat_after_me", "prayerId": "hello-god-v1" },
+        { "type": "minigame", "minigameId": "mg_w1d2_places" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "avatar_say", "clip": "heart", "text": "Another lantern for the pond! See you tomorrow.", "audio": "w1d2_06.mp3", "mood": "happy" }
+      ]
+    },
+    {
+      "id": "w1d3",
+      "week": "w1",
+      "day": 3,
+      "skillId": "hello",
+      "title": "Meet Your Prayer People",
+      "beats": [
+        { "type": "avatar_say", "clip": "wave_hello", "text": "Hi {kidName}! Today we pick people to pray for.", "audio": "w1d3_01.mp3", "mood": "happy" },
+        { "type": "avatar_say", "clip": "talk_a", "text": "I pray for my bird friend every day. Who do you love?", "audio": "w1d3_02.mp3" },
+        { "type": "choose_people", "min": 1, "max": 3, "text": "Tap three people you want to pray for.", "audio": "w1d3_03.mp3" },
+        { "type": "repeat_after_me", "prayerId": "for-others-v1" },
+        { "type": "minigame", "minigameId": "mg_w1d3_people" },
+        { "type": "reward", "lantern": 1 },
+        { "type": "parent_prompt", "text": "Ask your child: \"Who did you pray for today?\" Capy will remember these names and ask about them later." },
+        { "type": "avatar_say", "clip": "heart", "text": "Your prayer people live in the pond now. Bye!", "audio": "w1d3_07.mp3", "mood": "happy" }
+      ]
+    }
+  ],
+  "prayers": [
+    {
+      "id": "hello-god-v1",
+      "skillId": "hello",
+      "title": "Hello Prayer",
+      "lines": [
+        { "text": "Hi God, it's me, {kidName}.", "audio": "p_hello_01.mp3" },
+        { "text": "Thank you for listening.", "audio": "p_hello_02.mp3" },
+        { "text": "I love you. Amen.", "audio": "p_hello_03.mp3" }
+      ],
+      "variables": ["kidName"]
+    },
+    {
+      "id": "thank-you-v1",
+      "skillId": "thank-you",
+      "title": "Thank You Prayer",
+      "lines": [
+        { "text": "Dear God, thank you for {thankfulFor}.", "audio": "p_thanks_01.mp3" },
+        { "text": "Thank you for {person}.", "audio": "p_thanks_02.mp3" },
+        { "text": "Thank you for today. Amen.", "audio": "p_thanks_03.mp3" }
+      ],
+      "variables": ["thankfulFor", "person"]
+    },
+    {
+      "id": "for-others-v1",
+      "skillId": "others",
+      "title": "Prayer for Others",
+      "lines": [
+        { "text": "God, please be with {person}.", "audio": "p_others_01.mp3" },
+        { "text": "Keep them safe and happy.", "audio": "p_others_02.mp3" },
+        { "text": "Help me be kind to them. Amen.", "audio": "p_others_03.mp3" }
+      ],
+      "variables": ["person"]
+    },
+    {
+      "id": "grace-god-is-great",
+      "skillId": "thank-you",
+      "title": "Mealtime Grace",
+      "source": "traditional-pd",
+      "lines": [
+        { "text": "God is great, God is good.", "audio": "p_grace_01.mp3" },
+        { "text": "Let us thank Him for our food. Amen.", "audio": "p_grace_02.mp3" }
+      ]
+    },
+    {
+      "id": "bedtime-classic",
+      "skillId": "shared",
+      "title": "Bedtime Prayer",
+      "source": "traditional-pd",
+      "lines": [
+        { "text": "Now I lay me down to sleep,", "audio": "p_bed_01.mp3" },
+        { "text": "I pray the Lord my soul to keep.", "audio": "p_bed_02.mp3" },
+        { "text": "Guide me safely through the night,", "audio": "p_bed_03.mp3" },
+        { "text": "and wake me with the morning light. Amen.", "audio": "p_bed_04.mp3" }
+      ]
+    }
+  ],
+  "minigames": [
+    {
+      "type": "tap_choice",
+      "id": "mg_w1d1_who_listens",
+      "prompt": { "text": "Who can hear you when you pray?", "audio": "mg_w1d1_prompt.mp3" },
+      "cards": [
+        { "id": "god", "label": "God", "icon": "sun-cloud", "correct": true },
+        { "id": "rock", "label": "A rock", "icon": "rock" },
+        { "id": "nobody", "label": "Nobody", "icon": "empty" }
+      ],
+      "successLine": { "text": "Yes! God always hears you.", "audio": "mg_w1d1_ok.mp3" },
+      "retryLine": { "text": "Hmm, try again. Who is always listening?", "audio": "mg_w1d1_retry.mp3" }
+    },
+    {
+      "type": "collect",
+      "id": "mg_w1d2_places",
+      "prompt": { "text": "Drag three places where you can pray to Capy.", "audio": "mg_w1d2_prompt.mp3" },
+      "target": 3,
+      "items": [
+        { "id": "bed", "label": "My bed", "icon": "bed" },
+        { "id": "car", "label": "The car", "icon": "car" },
+        { "id": "park", "label": "The park", "icon": "tree" },
+        { "id": "bath", "label": "The bath", "icon": "bath" },
+        { "id": "school", "label": "School", "icon": "school" },
+        { "id": "table", "label": "Dinner table", "icon": "plate" }
+      ],
+      "successLine": { "text": "Right! You can pray anywhere at all.", "audio": "mg_w1d2_ok.mp3" }
+    },
+    {
+      "type": "people_picker",
+      "id": "mg_w1d3_people",
+      "prompt": { "text": "Who will you pray for today?", "audio": "mg_w1d3_prompt.mp3" },
+      "min": 1,
+      "max": 3,
+      "allowAdd": true,
+      "prayerId": "for-others-v1",
+      "successLine": { "text": "They are lucky to have you.", "audio": "mg_w1d3_ok.mp3" }
+    }
+  ],
+  "rewards": [
+    { "id": "hat-flower", "type": "skin", "title": "Flower", "unlock": { "beacons": 1 } },
+    { "id": "lily-pad", "type": "pond_decoration", "title": "Lily Pad", "unlock": { "lessonId": "w1d3" } },
+    { "id": "badge-pond-keeper", "type": "badge", "title": "Pond Keeper", "unlock": { "beacons": 4 } }
+  ],
+  "people": { "defaults": ["Mom", "Dad", "Grandma", "Grandpa", "Sister", "Brother", "Friend", "Teacher", "Pet"] },
+  "routines": {
+    "bedtime": { "defaultHour": 19, "closingPrayerId": "bedtime-classic" },
+    "meal": { "prayerId": "grace-god-is-great" }
+  },
+  "calendar": []
+}
