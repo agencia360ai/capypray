@@ -9,6 +9,8 @@
     <style>
       html, body, #root { margin: 0; height: 100%; background: #FFF3DC; overflow: hidden; font-family: "Nunito", "Segoe UI", system-ui, sans-serif; color: #3B2A1A; }
       canvas { display: block; }
+      .boot { margin: 0; padding: 24px; color: #8A6A48; font-weight: 700; }
+      #err { position: fixed; left: 14px; right: 14px; bottom: 60px; z-index: 9; margin: 0; padding: 10px 12px; border-radius: 10px; background: #3B2A1A; color: #FFD9A8; font-size: 12px; white-space: pre-wrap; }
       .brand { position: fixed; top: 14px; right: 14px; z-index: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; pointer-events: none; }
       .brand b { font-size: 15px; font-weight: 800; letter-spacing: 0.02em; }
       .brand span { font-size: 11px; color: #8A6A48; text-transform: uppercase; letter-spacing: 0.12em; }
@@ -22,7 +24,12 @@
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><p class="boot">Loading Capy…</p></div>
+    <pre id="err" hidden></pre>
+    <script>
+      window.addEventListener("error", function (e) { var el = document.getElementById("err"); el.hidden = false; el.textContent += (e.message || e) + "\n"; });
+      window.addEventListener("unhandledrejection", function (e) { var el = document.getElementById("err"); el.hidden = false; el.textContent += "promise: " + (e.reason && e.reason.message || e.reason) + "\n"; });
+    </script>
     <script type="module" src="/src/artifact.tsx"></script>
   </body>
 </html>

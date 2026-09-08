@@ -17,8 +17,9 @@ export default defineConfig({
     emptyOutDir: true,
     target: "es2020",
     chunkSizeWarningLimit: 20000,
+    modulePreload: !single ? undefined : false,
     rollupOptions: single
-      ? { input: resolve(__dirname, entry) }
+      ? { input: resolve(__dirname, entry), output: { format: process.env.ARTIFACT === "1" ? "iife" : "es", inlineDynamicImports: true } }
       : { input: { index: resolve(__dirname, "index.html"), preview: resolve(__dirname, "preview.html") } },
   },
 });
