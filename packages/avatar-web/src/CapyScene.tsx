@@ -100,8 +100,17 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
         }
       },
     });
+    (window as unknown as { __capy?: unknown }).__capy = { sm, scene }; // preview/debug handle
+    // preview-only axis probe: ?probe=DEF-upper_arm.R:0,0,60
+    const probe = new URLSearchParams(window.location.search).get("probe");
+    if (probe) {
+      const [bone, rot] = probe.split(":");
+      const [x, y, z] = (rot ?? "0,0,0").split(",").map(Number);
+      sm.play("idle_breathe", { loop: true });
+      sm.probe(scene, bone!, [x ?? 0, y ?? 0, z ?? 0]);
+    }
     onMessage({ type: "ready", clips: sm.clipNames });
-  }, [sm, skins, onMessage, register]);
+  }, [sm, skins, scene, onMessage, register]);
 
   const frame = useRef(0);
   const insets = useRef({ top: 0.1, bottom: 0.45 });

@@ -44,15 +44,16 @@ Bottom line: the two hard, expensive parts of GDD §8 (a rigged bipedal Capy wit
 | `walk` (extra) | `walk` | 24, loop | ✅ bonus, map navigation |
 | `celebrate` | `rise` | 75 | ⚠️ "rise" is a stand-up flourish; acceptable placeholder |
 | `capsule` (extra) | `capsule` | 160, loop | unused (Unity pet-capsule gimmick) |
-| `wave_hello` | — | — | ❌ missing |
-| `listen_nod` | — | — | ❌ missing |
-| `pray_hands` | — | — | ❌ missing (**most important**) |
-| `kneel_pray` | — | — | ❌ missing |
-| `clap` | — | — | ❌ missing |
-| `heart` | — | — | ❌ missing |
-| `think` | — | — | ❌ missing |
+| `wave_hello` | procedural | 1.8 s | ✅ additive gesture (`packages/avatar-web/src/gestures.ts`) |
+| `listen_nod` | procedural | 2.4 s | ✅ additive gesture |
+| `pray_hands` | procedural | 3.0 s | ✅ additive gesture (hands together, head bowed) |
+| `kneel_pray` | — | — | ❌ missing (needs a real clip: whole-body pose) |
+| `clap` | procedural | 1.6 s | ✅ additive gesture |
+| `heart` | procedural | 2.0 s | ✅ additive gesture |
+| `think` | procedural | 2.2 s | ✅ additive gesture (paw to chin, head tilt) |
+| `celebrate` | procedural | 1.6 s | ✅ additive gesture (arms up + hop) replaces the `rise` placeholder |
 
-Missing clips are produced with the pipeline in GDD §8.3 steps 3–4: upload the Rigify FBX to Mixamo (it auto-maps Rigify DEF bones), download "Praying", "Kneeling", "Waving", "Clapping", "Thinking", "Head Nod", and merge with `tools/avatar/export_capy.py`. Until then, the state machine falls back to `talk_a`/`idle_breathe` for any missing clip so lessons never break.
+The procedural gestures are keyframed in code on the Rigify DEF bones and played as **additive** three.js clips on top of `idle`/`talk`, so Capy can wave or press paws together while speaking (`speak { clip: "heart" }`). They are deliberately simple; a real Mixamo clip added to `tools/avatar/clip-map.json` under the same name wins automatically (GDD §8.3 steps 3–4: upload the Rigify FBX to Mixamo, download "Praying", "Kneeling", "Waving", "Clapping", "Thinking", "Head Nod", merge with `tools/avatar/export_capy.py`). Tune a gesture with the preview: `/preview?gesture=heart&bare=1`, learn a bone's axes with `?probe=DEF-upper_arm.R:0,0,-60`.
 
 ## 4. Textures
 

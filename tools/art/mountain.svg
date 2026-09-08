@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6C9C2"/>
+      <stop offset="0.45" stop-color="#FDE6CF"/>
+      <stop offset="1" stop-color="#FFF7E6"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FC8E8"/>
+      <stop offset="1" stop-color="#5C9FD0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFB84D" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFB84D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  <circle cx="800" cy="420" r="110" fill="#FFE29A"/>
+  <!-- mountains -->
+  <path d="M -50 1000 L 250 520 L 420 780 L 560 600 L 780 1000 Z" fill="#8FA3C2"/>
+  <path d="M 250 520 L 300 600 L 210 620 Z M 560 600 L 600 680 L 520 690 Z" fill="#FFFFFF"/>
+  <path d="M 540 1000 L 800 560 L 1130 1000 Z" fill="#A9B8D1"/>
+  <path d="M 800 560 L 850 650 L 760 650 Z" fill="#FFFFFF"/>
+  <!-- pines -->
+  <g fill="#4F8F5E">
+    <path d="M 120 1020 l 60 -140 l 60 140 z"/><path d="M 210 1040 l 50 -120 l 50 120 z"/><path d="M 880 1030 l 55 -130 l 55 130 z"/><path d="M 980 1050 l 45 -110 l 45 110 z"/>
+  </g>
+  <!-- lake -->
+  <ellipse cx="540" cy="1200" rx="900" ry="280" fill="#A9D67F"/>
+  <ellipse cx="540" cy="1250" rx="520" ry="170" fill="#3F86B8" opacity="0.35"/>
+  <ellipse cx="540" cy="1235" rx="500" ry="155" fill="url(#water)"/>
+  <ellipse cx="420" cy="1190" rx="170" ry="30" fill="#FFFFFF" opacity="0.25"/>
+  <!-- lanterns -->
+  <g>
+    <circle cx="720" cy="1230" r="60" fill="url(#glow)"/><rect x="702" y="1208" width="36" height="44" rx="10" fill="#FF9A5B"/><rect x="706" y="1214" width="28" height="32" rx="8" fill="#FFD27A"/>
+    <circle cx="340" cy="1260" r="60" fill="url(#glow)"/><rect x="322" y="1238" width="36" height="44" rx="10" fill="#FF9A5B"/><rect x="326" y="1244" width="28" height="32" rx="8" fill="#FFD27A"/>
+  </g>
+  <!-- front bank: stage -->
+  <ellipse cx="540" cy="1560" rx="820" ry="260" fill="#9BCF6E"/>
+  <ellipse cx="540" cy="1640" rx="700" ry="220" fill="#8CC66B"/>
+  <g fill="#C9C1B3"><ellipse cx="200" cy="1480" rx="46" ry="26"/><ellipse cx="900" cy="1500" rx="52" ry="28"/></g>
+  <g>
+    <g transform="translate(140 1600)"><circle r="12" fill="#B39DDB"/><circle cx="-13" r="8" fill="#FFF"/><circle cx="13" r="8" fill="#FFF"/><circle cy="-13" r="8" fill="#FFF"/><circle cy="13" r="8" fill="#FFF"/></g>
+    <g transform="translate(980 1640)"><circle r="12" fill="#FFB84D"/><circle cx="-13" r="8" fill="#FFF"/><circle cx="13" r="8" fill="#FFF"/><circle cy="-13" r="8" fill="#FFF"/><circle cy="13" r="8" fill="#FFF"/></g>
+  </g>
+</svg>

@@ -1,0 +1,30 @@
+import { chromium } from "playwright";
+import { createServer } from "node:http";
+import { readFile, stat } from "node:fs/promises";
+import { join, extname } from "node:path";
+const dist = "/home/user/capypray/packages/avatar-web/dist";
+const server = createServer(async (req, res) => { const p = join(dist, decodeURIComponent(new URL(req.url, "http://x").pathname)); try { await stat(p); res.writeHead(200, { "content-type": extname(p)===".html"?"text/html":extname(p)===".js"?"text/javascript":"application/octet-stream" }); res.end(await readFile(p)); } catch { res.writeHead(404).end(); } }).listen(0);
+const port = server.address().port;
+const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const page = await browser.newPage({ viewport: { width: 480, height: 800 } });
+page.on("pageerror", (e) => console.log("[pageerror]", e.message));
+await page.goto(`http://localhost:${port}/preview.html?bare=1&clip=idle_breathe&probe=DEF-spine.006:0,0,80`);
+await page.waitForFunction(() => window.__capyReady === true, null, { timeout: 60000 });
+await page.waitForTimeout(1500);
+const info = await page.evaluate(async () => {
+  const { sm, scene } = window.__capy;
+  const mixer = sm.mixer;
+  const acts = mixer._actions.map(a => ({ name: a.getClip().name, blend: a.blendMode, w: a.getEffectiveWeight(), t: a.time, running: a.isRunning(), tracks: a.getClip().tracks.length, bindings: a._propertyBindings.length }));
+  let head; scene.traverse(o => { if (o.name === "DEF-spine.006") head = o; });
+  const trackName = acts.find(a=>a.name.startsWith("probe"))?.name;
+  const probeAct = mixer._actions.find(a => a.getClip().name.startsWith("probe"));
+  const b = probeAct?._propertyBindings[0];
+  // is the skinned mesh driven by these scene bones at all?
+  let skinned; scene.traverse(o => { if (o.isSkinnedMesh && !skinned) skinned = o; });
+  const sameObj = skinned?.skeleton.bones.includes(head);
+  const probeAct2 = mixer._actions.find(a => a.getClip().name.startsWith("probe"));
+  const probe = probeAct2 ? { w: probeAct2.getEffectiveWeight(), running: probeAct2.isRunning(), t: probeAct2.time, enabled: probeAct2.enabled, bind: probeAct2._propertyBindings[0]?.binding?.node?.name, mixerCount: probeAct2._propertyBindings[0]?.useCount, addIndex: probeAct2._propertyBindings[0]?._addIndex, cumAdd: probeAct2._propertyBindings[0]?.cumulativeWeightAdditive } : null;
+  return { probe, sameObj, skeletonBones: skinned?.skeleton.bones.length, acts: acts.filter(a=>a.name.startsWith("probe")||a.name==="idle_breathe"), headQ: head?.quaternion.toArray(), headUuid: head?.uuid, trackPath: probeAct?.getClip().tracks[0].name, bindingNode: b?.binding?.node?.name, bindingOk: !!b?.binding?.node, interp: probeAct?._interpolants?.length, mixerBindings: mixer._bindings.length };
+});
+console.log(JSON.stringify(info, null, 1));
+await browser.close(); server.close();

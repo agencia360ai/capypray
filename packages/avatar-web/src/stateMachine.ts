@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import clipMap from "../../../tools/avatar/clip-map.json";
 import type { Mood } from "./bridge";
+import { buildGestureClips, buildProbeClip } from "./gestures";
 
 // GDD §8.2 state machine:
 // idle → (speak: talk_a|talk_b random, crossfade 0.25s) → idle
@@ -27,11 +28,27 @@ export class CapyStateMachine {
   private oneShotClip?: string;
   onClipEnd?: (clip: string) => void;
 
+  private gestures = new Map<string, THREE.AnimationAction>();
+  private gesture?: THREE.AnimationAction;
+
   constructor(root: THREE.Object3D, clips: THREE.AnimationClip[]) {
     this.mixer = new THREE.AnimationMixer(root);
     for (const c of clips) this.actions.set(c.name, this.mixer.clipAction(c));
+    // procedural additive gestures layer over the base clip (wave while talking, nod while listening…)
+    for (const c of buildGestureClips(root)) {
+      const a = this.mixer.clipAction(c);
+      a.blendMode = THREE.AdditiveAnimationBlendMode;
+      a.setLoop(THREE.LoopOnce, 1);
+      a.clampWhenFinished = false;
+      this.gestures.set(c.name, a);
+    }
     this.mixer.addEventListener("finished", (e) => {
       const name = (e.action as THREE.AnimationAction).getClip().name;
+      if (this.gestures.has(name)) {
+        if (this.gesture?.getClip().name === name) this.gesture = undefined;
+        this.onClipEnd?.(name);
+        return;
+      }
       const requested = this.oneShotClip ?? name;
       this.oneShotClip = undefined;
       this.onClipEnd?.(requested);
@@ -46,7 +63,41 @@ export class CapyStateMachine {
   }
 
   get clipNames() {
-    return [...this.actions.keys()];
+    return [...this.actions.keys(), ...this.gestures.keys()];
+  }
+
+  isGesture(clip: string) {
+    return this.gestures.has(clip);
+  }
+
+  /** Play a gesture on top of the current base clip. */
+  gesturePlay(name: string, opts: { loop?: boolean } = {}) {
+    const g = this.gestures.get(name);
+    if (!g) return false;
+    if (this.gesture && this.gesture !== g) this.gesture.fadeOut(0.2);
+    g.reset();
+    g.setLoop(opts.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
+    g.setEffectiveWeight(1);
+    g.fadeIn(0.15);
+    g.play();
+    this.gesture = g;
+    return true;
+  }
+
+  /** Debug only: hold an additive rotation on a bone (see gestures.ts). */
+  probe(root: THREE.Object3D, bone: string, rot: [number, number, number]) {
+    const clip = buildProbeClip(root, bone, rot);
+    if (!clip) return false;
+    const a = this.mixer.clipAction(clip);
+    a.blendMode = THREE.AdditiveAnimationBlendMode;
+    a.setLoop(THREE.LoopRepeat, Infinity);
+    a.play();
+    return true;
+  }
+
+  gestureStop() {
+    this.gesture?.fadeOut(0.25);
+    this.gesture = undefined;
   }
 
   resolve(clip: string): string {
@@ -58,6 +109,12 @@ export class CapyStateMachine {
   play(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
     if (!["yawn", "to_sleep", "sleep"].includes(clip)) this.sleepChain = false;
     if (!this.speaking) window.clearTimeout(this.speakTimeout);
+    if (this.gestures.has(clip)) {
+      // gesture: keep the base (or start an idle if none) and layer the gesture on top
+      if (!this.current) this.idle();
+      this.gesturePlay(clip, { loop: opts.loop });
+      return clip;
+    }
     const name = this.resolve(clip);
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
@@ -80,6 +137,7 @@ export class CapyStateMachine {
   idle() {
     this.speaking = false;
     this.sleepChain = false;
+    this.gestureStop();
     const pool = IDLE_BY_MOOD[this.mood];
     const clip = Math.random() < 1 / 6 && this.actions.has("munch") ? "munch" : pick(pool);
     this.play(clip, { loop: clip !== "munch" && clip !== "yawn" });
@@ -87,6 +145,15 @@ export class CapyStateMachine {
 
   /** Talk for durationMs. With a lead gesture (wave, think, heart…) play it once, then keep talking. */
   speak(durationMs: number, lead?: string) {
+    if (lead && this.gestures.has(lead)) {
+      this.speaking = true;
+      this.sleepChain = false;
+      window.clearTimeout(this.speakTimeout);
+      this.speakTimeout = window.setTimeout(() => this.idle(), durationMs);
+      this.play(pick(TALK), { loop: true });
+      this.gesturePlay(lead);
+      return;
+    }
     this.speaking = true;
     window.clearTimeout(this.speakTimeout);
     this.speakTimeout = window.setTimeout(() => this.idle(), durationMs);

@@ -5,12 +5,14 @@ import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
-import { P } from "@/parent/strings";
 import { BigButton, Chip, LanternMeter, Sheet } from "@/ui/components";
 import { T } from "@/ui/theme";
 import { glyph } from "@/ui/icons";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { startSync } from "@/backend/sync";
+import { biomeFor } from "@/store/rewards";
+import { Friends } from "@/ui/Friends";
+import { interpolate } from "@capy/content";
 
 // Home = Capy on the pond + today's Prayer Moment + the path. Kid-facing strings come from the pack.
 export default function Home() {
@@ -24,7 +26,7 @@ export default function Home() {
 
 function KidHome() {
   const pack = getPack();
-  const { completed, lanterns, beacons, streak, kidName, skinId } = useKid();
+  const { completed, lanterns, beacons, streak, kidName, skinId, biomeId } = useKid();
   const { premium } = useEntitlement();
   const avatar = useAvatar();
   const { setStage } = useStage();
@@ -35,7 +37,7 @@ function KidHome() {
   const onBottomLayout = useStageInsets();
 
   useEffect(() => {
-    setStage({ dark: false });
+    setStage({ dark: false, biome: biomeFor(pack, { beacons, completed, biomeId }) });
     avatar.send({ type: "skin", id: skinId });
     avatar.send({ type: "mood", value: "calm" });
     avatar.send({ type: "idle" });
@@ -65,11 +67,15 @@ function KidHome() {
         </View>
       </View>
 
-      <View style={styles.spacer} />
+      <View style={styles.spacer}>
+        <View style={styles.friends}>
+          <Friends />
+        </View>
+      </View>
 
       <View onLayout={onBottomLayout}>
       <Sheet>
-        <Text style={styles.hello}>Hi {kidName || "friend"}!</Text>
+        <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
         <Link href={href(nextLesson)} asChild>
           <Pressable style={({ pressed }) => [styles.today, pressed && styles.todayPressed]}>
             <Text style={styles.todayIcon}>{glyph(skill(nextLesson.skillId)?.icon)}</Text>
@@ -114,7 +120,8 @@ function KidHome() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  spacer: { flex: 1 },
+  spacer: { flex: 1, justifyContent: "flex-end" },
+  friends: { marginBottom: -6 },
   top: { paddingTop: 56, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   meter: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.75)", borderRadius: T.radius.pill, paddingVertical: 6, paddingHorizontal: 10 },
   topRight: { flexDirection: "row", alignItems: "center", gap: 8 },

@@ -5,6 +5,9 @@ import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
 import { speak } from "@/audio/voice";
 import { BigButton, Grid, IconCard, Sheet, SpeechBubble } from "./components";
+import { Confetti } from "./Confetti";
+import * as haptics from "./haptics";
+import { getPack } from "@/content/pack";
 import { T } from "./theme";
 import { useAvatar } from "@/avatar/AvatarView";
 import { estimateMs } from "@/engine/lessonRunner";
@@ -21,7 +24,7 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
         <>
           <SpeechBubble text={step.text} hint={step.kind === "repeat" ? `${step.lineIndex + 1} / ${step.prayer.lines.length}` : undefined} />
           <Sheet>
-            <BigButton label={step.kind === "repeat" ? "I said it!" : "Next"} onPress={onNext} />
+            <BigButton label={step.kind === "repeat" ? pack.ui.iSaidIt : pack.ui.next} onPress={onNext} />
           </Sheet>
         </>
       );
@@ -57,19 +60,14 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
     case "choose_people":
       return <PeoplePicker text={step.text} min={step.min} max={step.max} defaults={pack.people.defaults} allowAdd onDone={onNext} />;
     case "reward":
-      return (
-        <>
-          <SpeechBubble text={`🏮 +${step.lanterns}`} />
-          <Sheet>
-            <BigButton label="Yay!" onPress={onNext} />
-          </Sheet>
-        </>
-      );
+      return <RewardBeat lanterns={step.lanterns} label={pack.ui.yay} onNext={onNext} />;
     case "parent_prompt":
       return (
         <Sheet>
-          <Text style={styles.parent}>For grown-ups · {step.text}</Text>
-          <BigButton label="OK" onPress={onNext} tone="ghost" />
+          <Text style={styles.parent}>
+            {pack.ui.forGrownUps} · {step.text}
+          </Text>
+          <BigButton label={pack.ui.ok} onPress={onNext} tone="ghost" />
         </Sheet>
       );
     case "lights_out":
@@ -79,9 +77,26 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
   }
 }
 
+function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: string; onNext: () => void }) {
+  useEffect(() => {
+    void haptics.success();
+  }, []);
+  return (
+    <>
+      <Confetti trigger={1} />
+      <SpeechBubble text={`🏮 +${lanterns}`} />
+      <Sheet>
+        <BigButton label={label} onPress={onNext} />
+      </Sheet>
+    </>
+  );
+}
+
 function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
+  const [burst, setBurst] = useState(0);
+  const [shake, setShake] = useState(0);
   const kid = useKid();
   const avatar = useAvatar();
   // Capy reacts: talks the prompt, celebrates a win, droops on a miss (GDD §4.2 "reacción de Capy").
@@ -94,21 +109,31 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const finish = (line: string) => {
     setMsg(line);
     void track("minigame_complete", { type: mg.type, id: mg.id, score: Math.max(0, 3 - misses), durationMs: Date.now() - startedAt });
+    setBurst((b) => b + 1);
+    void haptics.success();
     avatar.send({ type: "mood", value: "happy" });
     avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "celebrate" });
-    setTimeout(onDone, 1600);
+    setTimeout(onDone, 1900);
   };
   const retry = (line: string) => {
     setMsg(line);
     setMisses((m) => m + 1);
+    setShake((n) => n + 1);
+    void haptics.nope();
     avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "sad" });
   };
+  const bubble = (text: string, hint?: string) => (
+    <>
+      <Confetti trigger={burst} />
+      <SpeechBubble text={text} hint={hint} shake={shake} />
+    </>
+  );
 
   switch (mg.type) {
     case "tap_choice":
       return (
         <>
-          <SpeechBubble text={msg ?? mg.prompt.text} />
+          {bubble(msg ?? mg.prompt.text)}
           <Sheet>
             <Grid>
               {mg.cards.map((c) => (
@@ -121,7 +146,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "collect":
       return (
         <>
-          <SpeechBubble text={msg ?? mg.prompt.text} hint={`${picked.length} / ${mg.target}`} />
+          {bubble(msg ?? mg.prompt.text, `${picked.length} / ${mg.target}`)}
           <Sheet>
             <Grid>
               {mg.items.map((c) => (
@@ -160,7 +185,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "sequence":
       return (
         <>
-          <SpeechBubble text={msg ?? mg.prompt.text} />
+          {bubble(msg ?? mg.prompt.text)}
           <Sheet>
             <View style={styles.slots}>
               {mg.order.map((_, i) => (
@@ -196,7 +221,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "fill_blank":
       return (
         <>
-          <SpeechBubble text={msg ?? mg.prompt.text} hint={mg.sentence.replace("___", picked[0] ?? "____")} />
+          {bubble(msg ?? mg.prompt.text, mg.sentence.replace("___", picked[0] ?? "____"))}
           <Sheet>
             <Grid>
               {mg.options.map((o) => (
@@ -230,10 +255,11 @@ function PeoplePicker({ text, min, max, defaults, allowAdd, onDone }: { text: st
           ))}
         </Grid>
         <BigButton
-          label="Done"
+          label={getPack().ui.done}
           disabled={picked.length < min}
           onPress={() => {
             if (allowAdd) for (const id of picked) if (id.startsWith("default:") && !kid.people.some((p) => p.label === id.slice(8))) kid.addPerson(id.slice(8));
+            void haptics.success();
             avatar.send({ type: "mood", value: "happy" });
             avatar.send({ type: "play", clip: "heart", loop: false });
             onDone(picked);

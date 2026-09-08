@@ -1,5 +1,5 @@
 {
-  "$comment": "GDD clip name -> FBX take name (+ optional end frame from the Unity import settings). Missing GDD clips fall back at runtime (see packages/avatar-web/src/stateMachine.ts).",
+  "$comment": "GDD clip name -> FBX take name (+ optional end frame from the Unity import settings). GDD clips the rig lacks (wave_hello, listen_nod, think, heart, clap, pray_hands, celebrate) are built at runtime as additive procedural gestures (packages/avatar-web/src/gestures.ts); add a take here to replace any of them with a real animation.",
   "clips": {
     "idle_breathe": {
       "take": "stand.idle.01",

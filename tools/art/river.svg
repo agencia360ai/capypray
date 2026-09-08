@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BFE3F5"/>
+      <stop offset="0.5" stop-color="#E4F3FA"/>
+      <stop offset="1" stop-color="#FFF7E6"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7FD0D8"/>
+      <stop offset="1" stop-color="#4FAFC0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFB84D" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFB84D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  <circle cx="260" cy="330" r="100" fill="#FFF0B8"/>
+  <g fill="#FFFFFF" opacity="0.9">
+    <ellipse cx="760" cy="260" rx="120" ry="50"/><ellipse cx="840" cy="240" rx="90" ry="58"/>
+    <ellipse cx="420" cy="180" rx="80" ry="36"/>
+  </g>
+  <!-- far hills + trees -->
+  <ellipse cx="300" cy="880" rx="640" ry="240" fill="#BFDDA0"/>
+  <ellipse cx="900" cy="900" rx="520" ry="220" fill="#A9CF8A"/>
+  <g fill="#7FB66A">
+    <ellipse cx="120" cy="760" rx="60" ry="90"/><ellipse cx="200" cy="740" rx="70" ry="110"/><ellipse cx="960" cy="770" rx="65" ry="100"/><ellipse cx="1040" cy="750" rx="60" ry="95"/>
+  </g>
+  <g fill="#6B5237"><rect x="112" y="820" width="16" height="60"/><rect x="192" y="830" width="16" height="60"/><rect x="952" y="850" width="16" height="60"/><rect x="1032" y="830" width="16" height="60"/></g>
+  <!-- meadow banks -->
+  <ellipse cx="540" cy="1120" rx="900" ry="300" fill="#9BCF6E"/>
+  <!-- river winding from the hills to the front -->
+  <path d="M 380 900 C 520 980, 700 1000, 640 1150 S 300 1320, 520 1460 S 900 1560, 760 1760 L 1080 1920 L 0 1920 L 0 1800 C 200 1700, 320 1600, 380 1500 S 200 1300, 300 1180 S 380 980, 380 900 Z" fill="#4FAFC0" opacity="0.35"/>
+  <path d="M 400 900 C 540 980, 690 1000, 630 1150 S 320 1320, 540 1460 S 880 1560, 740 1760 L 1080 1900 L 60 1900 L 30 1800 C 220 1700, 340 1600, 400 1500 S 220 1300, 320 1180 S 400 980, 400 900 Z" fill="url(#water)"/>
+  <g fill="#FFFFFF" opacity="0.3"><ellipse cx="520" cy="1100" rx="90" ry="14"/><ellipse cx="560" cy="1420" rx="120" ry="16"/><ellipse cx="680" cy="1700" rx="110" ry="14"/></g>
+  <!-- stones -->
+  <g fill="#C9C1B3"><ellipse cx="240" cy="1380" rx="46" ry="26"/><ellipse cx="880" cy="1240" rx="40" ry="22"/><ellipse cx="920" cy="1520" rx="52" ry="28"/></g>
+  <!-- lanterns floating downstream -->
+  <g>
+    <circle cx="600" cy="1230" r="60" fill="url(#glow)"/><rect x="582" y="1208" width="36" height="44" rx="10" fill="#FF9A5B"/><rect x="586" y="1214" width="28" height="32" rx="8" fill="#FFD27A"/>
+    <circle cx="500" cy="1480" r="60" fill="url(#glow)"/><rect x="482" y="1458" width="36" height="44" rx="10" fill="#FF9A5B"/><rect x="486" y="1464" width="28" height="32" rx="8" fill="#FFD27A"/>
+  </g>
+  <!-- front bank: stage -->
+  <ellipse cx="540" cy="1640" rx="700" ry="200" fill="#8CC66B"/>
+  <g>
+    <g transform="translate(150 1560)"><circle r="13" fill="#FFB84D"/><circle cx="-14" r="9" fill="#FFF"/><circle cx="14" r="9" fill="#FFF"/><circle cy="-14" r="9" fill="#FFF"/><circle cy="14" r="9" fill="#FFF"/></g>
+    <g transform="translate(960 1600)"><circle r="11" fill="#FF8A5B"/><circle cx="-12" r="8" fill="#FFE0EC"/><circle cx="12" r="8" fill="#FFE0EC"/><circle cy="-12" r="8" fill="#FFE0EC"/><circle cy="12" r="8" fill="#FFE0EC"/></g>
+  </g>
+  <g stroke="#6FB35A" stroke-width="10" stroke-linecap="round" fill="none"><path d="M120 1720 q10 -40 30 -60"/><path d="M150 1725 q0 -40 -10 -70"/><path d="M900 1700 q10 -40 30 -60"/></g>
+</svg>

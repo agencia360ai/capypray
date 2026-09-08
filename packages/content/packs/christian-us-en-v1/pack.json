@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -2936,7 +2936,17 @@
       "title": "The River",
       "unlock": {
         "beacons": 4
-      }
+      },
+      "biome": "river"
+    },
+    {
+      "id": "biome-mountain",
+      "type": "biome",
+      "title": "Mountain Lake",
+      "unlock": {
+        "beacons": 8
+      },
+      "biome": "mountain"
     }
   ],
   "people": {
@@ -2950,7 +2960,34 @@
       "Friend",
       "Teacher",
       "Pet"
+    ],
+    "friends": [
+      "bird",
+      "duck",
+      "frog",
+      "turtle",
+      "bunny",
+      "fish",
+      "hedgehog",
+      "otter"
     ]
+  },
+  "ui": {
+    "next": "Next",
+    "iSaidIt": "I said it!",
+    "yay": "Yay!",
+    "done": "Done",
+    "ok": "OK",
+    "forGrownUps": "For grown-ups",
+    "beaconTitle": "A new beacon!",
+    "beaconLine": "Wow, {kidName}! Our pond shines brighter tonight.",
+    "newUnlock": "New!",
+    "friendsTitle": "Prayer friends",
+    "lanternsTitle": "Lanterns",
+    "rewardsTitle": "Treasures",
+    "biomesTitle": "Places",
+    "hi": "Hi {kidName}!",
+    "friend": "friend"
   },
   "routines": {
     "bedtime": {

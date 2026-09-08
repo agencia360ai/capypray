@@ -155,7 +155,30 @@ export const Reward = z.object({
   title: z.string().max(40),
   unlock: z.object({ beacons: z.number().int().min(0).optional(), lessonId: ID.optional(), streak: z.number().int().optional() }),
   asset: z.string().optional(),
+  /** type "biome": stage background id (apps/mobile/src/ui/backgrounds.ts) */
+  biome: ID.optional(),
 });
+
+/** Kid-facing chrome strings (buttons, greetings). Lives in the pack so nothing kid-visible is hardcoded. */
+export const UiStrings = z.object({
+  next: z.string().max(20),
+  iSaidIt: z.string().max(20),
+  yay: z.string().max(20),
+  done: z.string().max(20),
+  ok: z.string().max(20),
+  forGrownUps: z.string().max(30),
+  hi: z.string().max(40),
+  /** fallback for {kidName} when the parent skipped the name */
+  friend: z.string().max(20),
+  beaconTitle: z.string().max(40),
+  beaconLine: z.string().max(140),
+  newUnlock: z.string().max(40),
+  friendsTitle: z.string().max(40),
+  lanternsTitle: z.string().max(40),
+  rewardsTitle: z.string().max(40),
+  biomesTitle: z.string().max(40),
+});
+export type UiStrings = z.infer<typeof UiStrings>;
 
 export const Pack = z.object({
   id: ID,
@@ -172,7 +195,8 @@ export const Pack = z.object({
   prayers: z.array(Prayer).min(1),
   minigames: z.array(Minigame),
   rewards: z.array(Reward),
-  people: z.object({ defaults: z.array(z.string()).min(1) }),
+  people: z.object({ defaults: z.array(z.string()).min(1), friends: z.array(z.string()).min(1).default(["bird", "duck", "frog", "turtle", "bunny", "fish"]) }),
+  ui: UiStrings,
   routines: z.object({
     bedtime: z.object({ defaultHour: z.number().int().min(17).max(22), closingPrayerId: ID, lessonId: ID.optional(), notificationText: z.string().max(80).optional() }),
     meal: z.object({ prayerId: ID }),

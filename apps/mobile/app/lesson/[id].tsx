@@ -10,6 +10,7 @@ import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { stopSpeaking } from "@/audio/voice";
 import { track } from "@/backend/events";
+import { newlyUnlocked } from "@/store/rewards";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,7 +21,7 @@ export default function LessonScreen() {
   const avatar = useAvatar();
   const { setStage } = useStage();
   const runner = useMemo(
-    () => (lesson ? createRunner(pack, lesson, { kidName: kid.kidName || "friend", ...kid.facts }) : null),
+    () => (lesson ? createRunner(pack, lesson, { kidName: kid.kidName || pack.ui.friend, ...kid.facts }) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pack, lesson, kid.kidName],
   );
@@ -50,7 +51,15 @@ export default function LessonScreen() {
     const sum = runner.summary();
     void track("lesson_complete", { lessonId: lesson.id, routine: lesson.routine, lanterns: sum.lanterns, durationMs: sum.durationMs });
     if (lesson.routine === "intro") kid.finishIntro();
+    const before = { beacons: kid.beacons, completed: kid.completed };
     kid.completeLesson(lesson.routine === "any" ? lesson.id : `${lesson.id}:${new Date().toISOString().slice(0, 10)}`, runner.state.lanternsEarned);
+    const after = useKid.getState();
+    const unlocks = newlyUnlocked(pack, before, after);
+    if (after.beacons > before.beacons || unlocks.length) {
+      void track("beacon", { beacons: after.beacons, unlocks });
+      router.replace({ pathname: "/beacon", params: { n: String(after.beacons), unlocks: unlocks.join(",") } });
+      return;
+    }
     router.replace("/");
   };
 

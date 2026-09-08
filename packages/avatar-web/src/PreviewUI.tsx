@@ -19,6 +19,8 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
       if (c) handle.current?.send({ type: "play", clip: c, loop: true });
       const sk = q.get("skin");
       if (sk) handle.current?.send({ type: "skin", id: sk });
+      const g = q.get("gesture");
+      if (g) setTimeout(() => handle.current?.send({ type: "play", clip: g }), 300);
       handle.current?.send({ type: "viewport", top: 0, bottom: 0 });
       (window as unknown as { __capyReady: boolean }).__capyReady = true;
     }

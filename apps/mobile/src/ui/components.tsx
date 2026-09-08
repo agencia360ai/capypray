@@ -1,18 +1,26 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { Children, useEffect, useRef, type ReactNode } from "react";
 import { Animated, Pressable, StyleSheet, Text, View, type ViewStyle } from "react-native";
 import { T } from "./theme";
 import { glyph } from "./icons";
 import { useAvatar } from "@/avatar/AvatarView";
 import { speak } from "@/audio/voice";
+import * as haptics from "./haptics";
 
 /** Capy's line, drawn as a speech bubble whose tail points up at the avatar. */
-export function SpeechBubble({ text, hint, mute }: { text: string; hint?: string; mute?: boolean }) {
+export function SpeechBubble({ text, hint, mute, shake }: { text: string; hint?: string; mute?: boolean; shake?: number }) {
   const pop = useRef(new Animated.Value(0.92)).current;
+  const wobble = useRef(new Animated.Value(0)).current;
   const avatar = useAvatar();
   useEffect(() => {
     pop.setValue(0.92);
     Animated.spring(pop, { toValue: 1, useNativeDriver: true, friction: 6 }).start();
   }, [text, pop]);
+  // wrong answer: a gentle "no-no" head shake of the bubble, never a harsh buzz
+  useEffect(() => {
+    if (!shake) return;
+    wobble.setValue(0);
+    Animated.sequence([-1, 1, -0.6, 0.6, 0].map((v) => Animated.timing(wobble, { toValue: v, duration: 55, useNativeDriver: true }))).start();
+  }, [shake, wobble]);
   // Every bubble line is spoken (kids 4–6 don't read). The lesson runner already started the talk clip;
   // when the voice ends, Capy goes back to idle so mouth and voice stay in sync.
   useEffect(() => {
@@ -21,7 +29,7 @@ export function SpeechBubble({ text, hint, mute }: { text: string; hint?: string
     return () => h.cancel();
   }, [text, mute, avatar]);
   return (
-    <Animated.View style={[styles.bubbleWrap, { transform: [{ scale: pop }] }]}>
+    <Animated.View style={[styles.bubbleWrap, { transform: [{ scale: pop }, { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-10, 10] }) }] }]}>
       <View style={styles.tail} />
       <View style={styles.bubble}>
         <Text style={styles.bubbleText}>{text}</Text>
@@ -35,7 +43,10 @@ export function SpeechBubble({ text, hint, mute }: { text: string; hint?: string
 export function BigButton({ label, onPress, disabled, tone = "primary" }: { label: string; onPress: () => void; disabled?: boolean; tone?: "primary" | "night" | "ghost" }) {
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => {
+        void haptics.tap();
+        onPress();
+      }}
       disabled={disabled}
       style={({ pressed }) => [
         styles.big,
@@ -53,7 +64,13 @@ export function BigButton({ label, onPress, disabled, tone = "primary" }: { labe
 /** Tappable picture card (minigames, get-to-know-you, people). */
 export function IconCard({ icon, label, onPress, selected, size = "md" }: { icon?: string; label: string; onPress: () => void; selected?: boolean; size?: "md" | "lg" }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.card, size === "lg" && styles.cardLg, selected && styles.cardOn, pressed && styles.cardPressed]}>
+    <Pressable
+      onPress={() => {
+        void haptics.tap();
+        onPress();
+      }}
+      style={({ pressed }) => [styles.card, size === "lg" && styles.cardLg, selected && styles.cardOn, pressed && styles.cardPressed]}
+    >
       <Text style={[styles.cardIcon, size === "lg" && styles.cardIconLg]}>{glyph(icon)}</Text>
       <Text style={styles.cardLabel} numberOfLines={2}>
         {label}
@@ -89,8 +106,26 @@ export function Sheet({ children, style }: { children: ReactNode; style?: ViewSt
   return <View style={[styles.sheet, style]}>{children}</View>;
 }
 
+/** Cards pop in one after another (toy-box feel). Re-runs when the set of children changes. */
 export function Grid({ children }: { children: ReactNode }) {
-  return <View style={styles.grid}>{children}</View>;
+  const items = Children.toArray(children);
+  return (
+    <View style={styles.grid}>
+      {items.map((c, i) => (
+        <PopIn key={(c as { key?: string | null }).key ?? i} delay={i * 70}>
+          {c}
+        </PopIn>
+      ))}
+    </View>
+  );
+}
+
+function PopIn({ children, delay }: { children: ReactNode; delay: number }) {
+  const v = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.spring(v, { toValue: 1, delay, useNativeDriver: true, friction: 5, tension: 90 }).start();
+  }, [v, delay]);
+  return <Animated.View style={{ opacity: v, transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }] }}>{children}</Animated.View>;
 }
 
 const styles = StyleSheet.create({
