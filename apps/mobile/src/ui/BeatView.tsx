@@ -8,6 +8,7 @@ import { BigButton, Grid, IconCard, Sheet, SpeechBubble } from "./components";
 import { T } from "./theme";
 import { useAvatar } from "@/avatar/AvatarView";
 import { estimateMs } from "@/engine/lessonRunner";
+import { track } from "@/backend/events";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Big text, one tap to advance (kids 4–6 don't read; audio leads).
@@ -88,14 +89,18 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     avatar.send({ type: "speak", durationMs: estimateMs(mg.prompt.text) * 2, clip: "think" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mg.id]);
+  const [startedAt] = useState(() => Date.now());
+  const [misses, setMisses] = useState(0);
   const finish = (line: string) => {
     setMsg(line);
+    void track("minigame_complete", { type: mg.type, id: mg.id, score: Math.max(0, 3 - misses), durationMs: Date.now() - startedAt });
     avatar.send({ type: "mood", value: "happy" });
     avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "celebrate" });
     setTimeout(onDone, 1600);
   };
   const retry = (line: string) => {
     setMsg(line);
+    setMisses((m) => m + 1);
     avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "sad" });
   };
 

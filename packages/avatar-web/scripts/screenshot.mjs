@@ -25,12 +25,13 @@ const port = server.address().port;
 // PLAYWRIGHT_CHROMIUM lets CI / remote sandboxes point at a pre-installed Chromium.
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM || undefined;
 const browser = await chromium.launch({ executablePath, args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
-const page = await browser.newPage({ viewport: { width: 540, height: 720 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({ viewport: { width: 640, height: 1000 }, deviceScaleFactor: 1 });
 page.on("console", (m) => m.type() === "error" && console.error("[page]", m.text()));
 page.on("pageerror", (e) => console.error("[pageerror]", e.message));
 
 for (const clip of clips) {
-  await page.goto(`http://localhost:${port}/preview.html?clip=${clip}`);
+  const [c, skin] = clip.split("+");
+  await page.goto(`http://localhost:${port}/preview.html?bare=1&clip=${c}${skin ? `&skin=${skin}` : ""}`);
   await page.waitForFunction(() => window.__capyReady === true, null, { timeout: 60_000 });
   await page.waitForTimeout(1500);
   const file = join(out, `${clip}.png`);

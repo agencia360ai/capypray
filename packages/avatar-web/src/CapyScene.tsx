@@ -4,6 +4,7 @@ import { useGLTF, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { CapyStateMachine } from "./stateMachine";
+import { SkinManager } from "./skins";
 import type { RNToWeb, WebToRN } from "./bridge";
 
 export type CapyHandle = { send: (m: RNToWeb) => void };
@@ -57,8 +58,10 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
     const scale = 1.6 / size.y;
     s.scale.setScalar(scale);
     s.position.set(-((box.min.x + box.max.x) / 2) * scale, -box.min.y * scale, 0);
+    s.userData.capyScale = scale;
     return s;
   }, [gltf]);
+  const skins = useMemo(() => new SkinManager(scene, scene.userData.capyScale as number), [scene]);
 
   const sm = useMemo(() => new CapyStateMachine(scene, gltf.animations), [scene, gltf.animations]);
 
@@ -83,6 +86,9 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
           case "lights_out":
             sm.lightsOut();
             break;
+          case "skin":
+            skins.equip(m.id);
+            break;
           case "mood":
             sm.setMood(m.value);
             break;
@@ -95,7 +101,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
       },
     });
     onMessage({ type: "ready", clips: sm.clipNames });
-  }, [sm, onMessage, register]);
+  }, [sm, skins, onMessage, register]);
 
   const frame = useRef(0);
   const insets = useRef({ top: 0.1, bottom: 0.45 });

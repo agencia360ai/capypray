@@ -3,11 +3,20 @@ import { router } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { unlockedRewards } from "@/store/rewards";
+import { useAvatar } from "@/avatar/AvatarView";
 
 // Capy's Pond (GDD §9): lanterns → beacons → unlocks. Nothing ever withers.
 export default function Pond() {
   const pack = getPack();
-  const { lanterns, beacons, completed, people } = useKid();
+  const { lanterns, beacons, completed, people, skinId, setSkin } = useKid();
+  const avatar = useAvatar();
+  const equip = (id: string) => {
+    const next = skinId === id ? undefined : id;
+    setSkin(next);
+    avatar.send({ type: "skin", id: next });
+    avatar.send({ type: "mood", value: "happy" });
+    avatar.send({ type: "play", clip: "celebrate", loop: false });
+  };
   const unlocked = unlockedRewards(pack, { beacons, completed });
   const inProgress = lanterns % 7;
 
@@ -38,9 +47,12 @@ export default function Pond() {
         </View>
         <View style={styles.row}>
           {pack.rewards.map((r) => (
-            <View key={r.id} style={[styles.reward, !unlocked.has(r.id) && styles.dim]}>
-              <Text style={styles.rewardLabel}>{r.title}</Text>
-            </View>
+            <Pressable key={r.id} disabled={!unlocked.has(r.id) || r.type !== "skin"} onPress={() => equip(r.id)} style={[styles.reward, !unlocked.has(r.id) && styles.dim, skinId === r.id && styles.rewardOn]}>
+              <Text style={styles.rewardLabel}>
+                {r.type === "skin" ? "🎀 " : ""}
+                {r.title}
+              </Text>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
@@ -64,5 +76,6 @@ const styles = StyleSheet.create({
   friendLabel: { fontSize: 13, color: "#3b2a1a" },
   friendCount: { fontSize: 11, color: "#6b4a2b" },
   reward: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14, backgroundColor: "#fff5e0", borderWidth: 2, borderColor: "#FFB84D" },
+  rewardOn: { backgroundColor: "#FFB84D" },
   rewardLabel: { color: "#3b2a1a" },
 });

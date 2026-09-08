@@ -10,6 +10,7 @@ import { BigButton, Chip, LanternMeter, Sheet } from "@/ui/components";
 import { T } from "@/ui/theme";
 import { glyph } from "@/ui/icons";
 import { useStageInsets } from "@/ui/useStageInsets";
+import { startSync } from "@/backend/sync";
 
 // Home = Capy on the pond + today's Prayer Moment + the path. Kid-facing strings come from the pack.
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
 
 function KidHome() {
   const pack = getPack();
-  const { completed, lanterns, beacons, streak, kidName } = useKid();
+  const { completed, lanterns, beacons, streak, kidName, skinId } = useKid();
   const { premium } = useEntitlement();
   const avatar = useAvatar();
   const { setStage } = useStage();
@@ -35,8 +36,10 @@ function KidHome() {
 
   useEffect(() => {
     setStage({ dark: false });
+    avatar.send({ type: "skin", id: skinId });
     avatar.send({ type: "mood", value: "calm" });
     avatar.send({ type: "idle" });
+    startSync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 

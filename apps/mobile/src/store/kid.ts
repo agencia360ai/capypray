@@ -27,6 +27,8 @@ type KidState = {
   /** Things Capy learned about the kid (get-to-know-you answers): thankfulFor, favorite, feeling… */
   facts: Record<string, string>;
   introDone: boolean;
+  /** Equipped reward skin id (pack.rewards type "skin"); undefined = default Capy. */
+  skinId?: string;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
   lanterns: number;
@@ -38,6 +40,7 @@ type KidState = {
   setPremium: (v: boolean) => void;
   setFact: (key: string, value: string) => void;
   finishIntro: () => void;
+  setSkin: (id?: string) => void;
   addPerson: (label: string, icon?: string) => void;
   removePerson: (id: string) => void;
   setPersonNote: (id: string, note: string) => void;
@@ -70,6 +73,7 @@ export const useKid = create<KidState>()(
       setPremium: (premium) => set({ premium }),
       setFact: (key, value) => set((s) => ({ facts: { ...s.facts, [key]: value.trim().slice(0, 30) } })),
       finishIntro: () => set({ introDone: true }),
+      setSkin: (skinId) => set({ skinId }),
       addPerson: (label, icon = "person") =>
         set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: uid(), label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
       removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),

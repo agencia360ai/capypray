@@ -29,7 +29,7 @@ Clip names come from `tools/avatar/clip-map.json`. Drop Mixamo FBX clips (export
 |---|---|
 | Avatar GLB (12 clips, 3.1 MB, face rig) | ✅ built from the existing Rigify FBX |
 | avatar-web viewer, RN bridge, /preview + screenshots | ✅ |
-| Content schema + validator + pack Weeks 1–2 (14 lessons) + bedtime routine | ✅ tests pass |
+| Content: World 1 complete (28 sessions), Meet Capy intro, bedtime routine, 22 prayers, 25 minigames | ✅ tests pass |
 | Mobile: AvatarView, lesson runner, all 6 minigame types, Pond screen, streak + Grace Days, lights_out | ✅ typecheck + Metro export pass |
 | Supabase schema + RLS, rc-webhook, weekly-report | ✅ migrations written, not yet applied |
 | Missing clips: wave_hello, pray_hands, kneel_pray, listen_nod, clap, heart, think, celebrate | ⏳ Mixamo step (manual) |

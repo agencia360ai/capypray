@@ -6,6 +6,7 @@ import { useKid } from "@/store/kid";
 import { gate } from "@/parent/gate";
 import { P } from "@/parent/strings";
 import { cancelBedtimeReminder, scheduleBedtimeReminder } from "@/notifications/bedtime";
+import { BackupCard } from "@/parent/BackupCard";
 
 // Parent Corner v1 (GDD §9, §11): bedtime, prayer people + notes, delete data, sandbox premium.
 export default function ParentCorner() {
@@ -104,6 +105,8 @@ function Corner() {
           <Text style={styles.pillText}>+</Text>
         </Pressable>
       </View>
+
+      <BackupCard />
 
       <View style={styles.rowBetween}>
         <Text style={styles.label}>{P.corner.premium}</Text>

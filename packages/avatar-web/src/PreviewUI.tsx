@@ -14,8 +14,12 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
     setLog((l) => [JSON.stringify(m), ...l].slice(0, 6));
     if (m.type === "ready") {
       setAvailable(m.clips);
-      const c = new URLSearchParams(location.search).get("clip");
+      const q = new URLSearchParams(location.search);
+      const c = q.get("clip");
       if (c) handle.current?.send({ type: "play", clip: c, loop: true });
+      const sk = q.get("skin");
+      if (sk) handle.current?.send({ type: "skin", id: sk });
+      handle.current?.send({ type: "viewport", top: 0, bottom: 0 });
       (window as unknown as { __capyReady: boolean }).__capyReady = true;
     }
   }, []);
@@ -24,6 +28,7 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
     handle.current = h;
   }, []);
 
+  const bare = new URLSearchParams(location.search).has("bare");
   const play = (c: string) => {
     setClip(c);
     handle.current?.send({ type: "play", clip: c, loop: true });
@@ -32,6 +37,8 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
   return (
     <>
       <CapyScene glb={glb} gltf={gltf} onMessage={onMessage} register={register} background="#fff3dc" />
+      {!bare && (
+      <>
       <div className="brand">
         <b>Capy Preview</b>
         <span>rig v1 · 12 clips</span>
@@ -56,12 +63,20 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
             {m}
           </button>
         ))}
+        {["hat-flower", "scarf-cozy", "nightcap"].map((id) => (
+          <button key={id} onClick={() => handle.current?.send({ type: "skin", id })}>
+            {id}
+          </button>
+        ))}
+        <button onClick={() => handle.current?.send({ type: "skin" })}>no skin</button>
         <button onClick={() => handle.current?.send({ type: "viewport", top: 0.1, bottom: 0.55 })}>ui 55%</button>
         <button onClick={() => handle.current?.send({ type: "viewport", top: 0, bottom: 0 })}>ui 0%</button>
         <button onClick={() => handle.current?.send({ type: "look", x: 0.6, y: 0.2 })}>look →</button>
         <button onClick={() => handle.current?.send({ type: "look", x: 0, y: 0 })}>look center</button>
       </div>
       <div className="status">{log.join("\n")}</div>
+      </>
+      )}
     </>
   );
 }

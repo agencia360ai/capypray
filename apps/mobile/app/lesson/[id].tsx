@@ -9,6 +9,7 @@ import { BeatView } from "@/ui/BeatView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { stopSpeaking } from "@/audio/voice";
+import { track } from "@/backend/events";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -33,7 +34,10 @@ export default function LessonScreen() {
   };
 
   useEffect(() => {
-    if (runner) apply(runner.start());
+    if (runner) {
+      apply(runner.start());
+      void track("lesson_start", { lessonId: lesson?.id, routine: lesson?.routine });
+    }
     return () => setStage({ dark: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner]);
@@ -43,6 +47,8 @@ export default function LessonScreen() {
 
   const finish = () => {
     stopSpeaking();
+    const sum = runner.summary();
+    void track("lesson_complete", { lessonId: lesson.id, routine: lesson.routine, lanterns: sum.lanterns, durationMs: sum.durationMs });
     if (lesson.routine === "intro") kid.finishIntro();
     kid.completeLesson(lesson.routine === "any" ? lesson.id : `${lesson.id}:${new Date().toISOString().slice(0, 10)}`, runner.state.lanternsEarned);
     router.replace("/");
@@ -57,6 +63,7 @@ export default function LessonScreen() {
   const answer = (key: string, value: string) => {
     runner.answer(key as never, value);
     kid.setFact(key, value); // Capy remembers across sessions
+    void track("ask_answer", { lessonId: lesson.id, key, value });
   };
 
   return (

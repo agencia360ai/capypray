@@ -28,9 +28,13 @@ What to try:
 4. 🌙 Bedtime Prayer: 4 lines, then 30 s of dark screen while Capy lies down and sleeps.
 5. Finish 7 lessons → first beacon → "Flower" reward unlocks in the Pond.
 
+6. Capy talks (device voice). Every bubble line is spoken; the mouth moves while the voice plays and stops when it ends. Minigames: celebrate on a win, droop on a miss.
+7. Weeks 1–4 are all there (28 lessons). Beacon 1 unlocks the Flower, Beacon 2 the Scarf, Beacon 3 the Sleepy Cap: tap them in the Pond to put them on Capy.
+8. Parent Corner → "Back up progress" appears only when `apps/mobile/.env` has Supabase keys (see `.env.example`); otherwise it says backup is off.
+
 Known gaps while testing:
 
-- No audio yet (ElevenLabs batch not run). Timing uses an estimate of ~2.6 words/s.
+- Voice is the phone's TTS for now (English). ElevenLabs pre-rendered audio replaces it once `tools/tts-batch.ts` runs.
 - Missing clips (`pray_hands`, `wave_hello`, `celebrate`, …) fall back to idle/talk clips.
 - The paywall is a placeholder until the RevenueCat dev build; the premium switch in Parent Corner simulates the entitlement.
 - Storage is AsyncStorage for Expo Go; MMKV comes back with dev builds.

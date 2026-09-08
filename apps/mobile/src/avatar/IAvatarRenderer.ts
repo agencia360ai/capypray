@@ -10,7 +10,9 @@ export type AvatarCommand =
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }
-  | { type: "lights_out" };
+  | { type: "lights_out" }
+  /** Equip a reward skin (procedural accessory on the head/neck bone); id undefined = none. */
+  | { type: "skin"; id?: string };
 
 export type AvatarEvent = { type: "ready"; clips: string[] } | { type: "clipEnd"; clip: string } | { type: "error"; message: string };
 
