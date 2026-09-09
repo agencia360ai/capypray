@@ -19,11 +19,15 @@ def _mirror(rot):
 
 # paws pressed together under the chin
 ARMS_PRAY = {
-    # elbows forward and in, paws meet in front of the belly (found with a pose search against the body mesh)
-    "DEF-upper_arm.R": {"rot": (110, 0, -40)},
-    "DEF-forearm.R": {"rot": (15, 0, 35)},
-    "DEF-upper_arm.L": {"rot": (110, 0, 40)},
-    "DEF-forearm.L": {"rot": (15, 0, -35)},
+    # elbows forward and in, forearms turned so the paws meet fingertip to fingertip in front of the chest
+    # (joint search over shoulder/elbow/wrist angles against the body mesh; palms-together needs a wrist
+    # twist this rig cannot do cleanly)
+    "DEF-upper_arm.R": {"rot": (105, 0, -40)},
+    "DEF-forearm.R": {"rot": (40, 90, 60)},
+    "DEF-hand.R": {"rot": (25, 0, 0)},
+    "DEF-upper_arm.L": {"rot": (105, 0, 40)},
+    "DEF-forearm.L": {"rot": (40, -90, -60)},
+    "DEF-hand.L": {"rot": (25, 0, 0)},
 }
 # paws crossed over the heart, right on top
 ARMS_HEART = {
@@ -33,11 +37,6 @@ ARMS_HEART = {
     "DEF-upper_arm.L": {"rot": (120, 0, 40)},
     "DEF-forearm.L": {"rot": (60, 0, -20)},
 }
-FINGER_CURL = {}
-for side in ("L", "R"):
-    for f in ("f_index", "f_middle", "f_pinky"):
-        for seg in ("01", "02", "03"):
-            FINGER_CURL[f"DEF-{f}.{seg}.{side}"] = {"rot": (20, 0, 0)}
 
 # t0..t1: ease in, t2..t3: ease out (seconds). Bones without timing use the pose defaults.
 POSES = {
@@ -47,9 +46,8 @@ POSES = {
         "timing": (0.0, 0.55, 2.5, 3.0),
         "bones": {
             **ARMS_PRAY,
-            **FINGER_CURL,
-            "DEF-spine.006": {"rot": (22, 0, 0)},
-            "DEF-spine.004": {"rot": (6, 0, 0)},
+            "DEF-spine.006": {"rot": (12, 0, 0)},
+            "DEF-spine.004": {"rot": (4, 0, 0)},
         },
     },
     "heart_full": {
@@ -78,9 +76,8 @@ POSES = {
             "DEF-foot.R": {"rot": (-40, 0, 0)},
             # hands join a beat later, head bows last
             **{k: {**v, "timing": (0.5, 1.2, 6.6, 7.4)} for k, v in ARMS_PRAY.items()},
-            **{k: {**v, "timing": (0.5, 1.2, 6.6, 7.4)} for k, v in FINGER_CURL.items()},
-            "DEF-spine.006": {"rot": (26, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
-            "DEF-spine.004": {"rot": (8, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
+            "DEF-spine.006": {"rot": (14, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
+            "DEF-spine.004": {"rot": (4, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
         },
     },
 }
