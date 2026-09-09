@@ -46,12 +46,14 @@ Bottom line: the two hard, expensive parts of GDD §8 (a rigged bipedal Capy wit
 | `capsule` (extra) | `capsule` | 160, loop | unused (Unity pet-capsule gimmick) |
 | `wave_hello` | procedural | 1.8 s | ✅ additive gesture (`packages/avatar-web/src/gestures.ts`) |
 | `listen_nod` | procedural | 2.4 s | ✅ additive gesture |
-| `pray_hands` | procedural | 3.0 s | ✅ additive gesture (hands together, head bowed) |
-| `kneel_pray` | — | — | ❌ missing (needs a real clip: whole-body pose) |
+| `pray_hands` | procedural + `pray_hands_full` (Blender) | 3.0 s | ✅ additive gesture while talking; baked full-body pose otherwise |
+| `kneel_pray` | Blender `tools/avatar/poses.py` | 8.0 s | ✅ kneels, paws together, head bowed; loops as a breathing prayer on listen beats |
 | `clap` | procedural | 1.6 s | ✅ additive gesture |
-| `heart` | procedural | 2.0 s | ✅ additive gesture |
+| `heart` | procedural + `heart_full` (Blender) | 2.0 s | ✅ additive gesture while talking; baked paws-over-heart pose otherwise |
 | `think` | procedural | 2.2 s | ✅ additive gesture (paw to chin, head tilt) |
 | `celebrate` | procedural | 1.6 s | ✅ additive gesture (arms up + hop) replaces the `rise` placeholder |
+
+Baked poses live in `tools/avatar/poses.py`: bone-local offsets layered on the idle take inside Blender (with the ORG twins so face, ears and shoulders follow), exported through the normal `pnpm avatar:build`. Fast iteration: `CAPY_ONLY_CLIPS=idle_breathe,kneel_pray blender -b --python tools/avatar/export_capy.py -- …` then `node scripts/shot.mjs "clip=kneel_pray&t=3" out.png` in `packages/avatar-web` (the `t=` scrub matters: software GL renders too slowly to trust wall-clock waits).
 
 The procedural gestures are keyframed in code on the Rigify DEF bones and played as **additive** three.js clips on top of `idle`/`talk`, so Capy can wave or press paws together while speaking (`speak { clip: "heart" }`). They are deliberately simple; a real Mixamo clip added to `tools/avatar/clip-map.json` under the same name wins automatically (GDD §8.3 steps 3–4: upload the Rigify FBX to Mixamo, download "Praying", "Kneeling", "Waving", "Clapping", "Thinking", "Head Nod", merge with `tools/avatar/export_capy.py`). Tune a gesture with the preview: `/preview?gesture=heart&bare=1`, learn a bone's axes with `?probe=DEF-upper_arm.R:0,0,-60`.
 

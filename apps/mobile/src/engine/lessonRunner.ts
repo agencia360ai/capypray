@@ -10,7 +10,7 @@ export type Step =
   | { kind: "say"; text: string; audio?: string; clip: string; mood?: string }
   | { kind: "repeat"; prayer: Prayer; lineIndex: number; text: string; audio?: string; clip: string }
   | { kind: "minigame"; minigameId: string }
-  | { kind: "listen"; seconds: number; text: string; audio?: string }
+  | { kind: "listen"; seconds: number; text: string; audio?: string; clip: string }
   | { kind: "choose_people"; min: number; max: number; text: string; audio?: string }
   | { kind: "reward"; lanterns: number }
   | { kind: "ask"; key: AskKey; text: string; audio?: string; clip: string; options: { id: string; label: string; icon: string }[] }
@@ -44,7 +44,7 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
       case "minigame":
         return { kind: "minigame", minigameId: beat.minigameId };
       case "listen_timer":
-        return { kind: "listen", seconds: beat.seconds, text: beat.text, audio: beat.audio };
+        return { kind: "listen", seconds: beat.seconds, text: beat.text, audio: beat.audio, clip: beat.clip };
       case "choose_people":
         return { kind: "choose_people", min: beat.min, max: beat.max, text: beat.text, audio: beat.audio };
       case "reward":
@@ -65,7 +65,7 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
       case "repeat":
         return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
       case "listen":
-        return [{ type: "play", clip: "listen_nod", loop: true }];
+        return [{ type: "play", clip: step.clip, loop: true }];
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
       case "ask":

@@ -109,13 +109,14 @@ export class CapyStateMachine {
   play(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
     if (!["yawn", "to_sleep", "sleep"].includes(clip)) this.sleepChain = false;
     if (!this.speaking) window.clearTimeout(this.speakTimeout);
-    if (this.gestures.has(clip)) {
+    if (this.gestures.has(clip) && !this.actions.has(clip)) {
       // gesture: keep the base (or start an idle if none) and layer the gesture on top
       if (!this.current) this.idle();
       this.gesturePlay(clip, { loop: opts.loop });
       return clip;
     }
-    const name = this.resolve(clip);
+    // a baked full-body version of a gesture (Blender poses.py) wins when Capy is not talking
+    const name = this.resolve(!this.speaking && this.actions.has(clip + "_full") ? clip + "_full" : clip);
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
     const fade = opts.fade ?? 0.25;

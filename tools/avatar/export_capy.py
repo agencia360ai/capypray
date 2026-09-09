@@ -26,6 +26,9 @@ import sys
 import bpy
 from mathutils import Matrix
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from poses import build_pose_actions  # noqa: E402
+
 TEX_DIR = None
 
 
@@ -255,6 +258,13 @@ def main():
         for o in [o for o in bpy.data.objects if o.type == "ARMATURE" and o != arm]:
             bpy.data.objects.remove(o, do_unlink=True)
 
+    fps = bpy.context.scene.render.fps
+    for name, act in build_pose_actions(arm, fps, log).items():
+        clips[name] = {"take": act.name}
+    only = os.environ.get("CAPY_ONLY_CLIPS")
+    if only:
+        clips = {k: v for k, v in clips.items() if k in only.split(",")}
+    log(f"fps={fps} clips={list(clips)}")
     recorded = record_takes(arm, clips)
     for act in list(bpy.data.actions):
         bpy.data.actions.remove(act)

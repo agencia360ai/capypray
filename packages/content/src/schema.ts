@@ -119,7 +119,7 @@ export const Beat = z.discriminatedUnion("type", [
   z.object({ type: z.literal("avatar_say"), clip: AvatarClip.default("talk_a"), text: z.string().max(140), audio: Audio.optional(), mood: Mood.optional() }),
   z.object({ type: z.literal("repeat_after_me"), prayerId: ID, clip: AvatarClip.default("pray_hands") }),
   z.object({ type: z.literal("minigame"), minigameId: ID }),
-  z.object({ type: z.literal("listen_timer"), seconds: z.number().int().min(15).max(90), text: z.string().max(140), audio: Audio.optional() }),
+  z.object({ type: z.literal("listen_timer"), seconds: z.number().int().min(15).max(90), text: z.string().max(140), audio: Audio.optional(), clip: AvatarClip.default("listen_nod") }),
   z.object({ type: z.literal("choose_people"), min: z.number().int().min(1).max(4), max: z.number().int().min(1).max(4), text: z.string().max(140), audio: Audio.optional() }),
   z.object({ type: z.literal("reward"), lantern: z.number().int().min(1).max(3).default(1) }),
   // get-to-know-you: Capy asks, the kid taps a card; the answer is stored as a prayer variable (kid facts)

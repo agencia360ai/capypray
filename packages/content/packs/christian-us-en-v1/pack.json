@@ -825,7 +825,8 @@
           "type": "listen_timer",
           "seconds": 30,
           "text": "Breathe in… breathe out… I'm listening, God.",
-          "audio": "w2d6_03.mp3"
+          "audio": "w2d6_03.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "repeat_after_me",
@@ -996,7 +997,8 @@
           "type": "listen_timer",
           "seconds": 20,
           "text": "Breathe in… breathe out… God is right here.",
-          "audio": "w3d2_03.mp3"
+          "audio": "w3d2_03.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "repeat_after_me",
@@ -1346,7 +1348,8 @@
           "type": "listen_timer",
           "seconds": 45,
           "text": "Breathe with me. I'm listening, God.",
-          "audio": "w4d3_03.mp3"
+          "audio": "w4d3_03.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "repeat_after_me",

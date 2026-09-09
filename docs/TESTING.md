@@ -44,4 +44,7 @@ Known gaps while testing:
 ```bash
 pnpm avatar:build        # needs Blender ≥ 4.0 + numpy on PATH
 pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chromium if Playwright has no browser
+# one pose at an exact clip time (software GL is slow, so scrub instead of waiting):
+#   cd packages/avatar-web && node scripts/shot.mjs "clip=kneel_pray&t=3" out.png
+# dump bone values over a clip: node scripts/dbg-clip.mjs kneel_pray
 ```
