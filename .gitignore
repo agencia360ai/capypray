@@ -17,3 +17,4 @@ dist-single/
 packages/avatar-web/src/generated/
 packages/avatar-web/dist-*/
 apps/mobile/.env
+__pycache__/
