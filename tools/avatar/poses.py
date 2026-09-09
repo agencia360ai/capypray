@@ -19,27 +19,25 @@ def _mirror(rot):
 
 # paws pressed together under the chin
 ARMS_PRAY = {
-    "DEF-upper_arm.R": {"rot": (48, 0, 26)},
-    "DEF-forearm.R": {"rot": (126, 0, -36)},
-    "DEF-hand.R": {"rot": (0, 0, -30)},
-    "DEF-upper_arm.L": {"rot": (48, 0, -26)},
-    "DEF-forearm.L": {"rot": (126, 0, 36)},
-    "DEF-hand.L": {"rot": (0, 0, 30)},
+    # elbows forward and in, paws meet in front of the belly (found with a pose search against the body mesh)
+    "DEF-upper_arm.R": {"rot": (110, 0, -40)},
+    "DEF-forearm.R": {"rot": (15, 0, 35)},
+    "DEF-upper_arm.L": {"rot": (110, 0, 40)},
+    "DEF-forearm.L": {"rot": (15, 0, -35)},
 }
 # paws crossed over the heart, right on top
 ARMS_HEART = {
-    "DEF-upper_arm.R": {"rot": (78, 0, 34)},
-    "DEF-forearm.R": {"rot": (128, 0, -52)},
-    "DEF-hand.R": {"rot": (20, 0, -20)},
-    "DEF-upper_arm.L": {"rot": (72, 0, -30)},
-    "DEF-forearm.L": {"rot": (118, 0, 48)},
-    "DEF-hand.L": {"rot": (20, 0, 20)},
+    # paws crossed over the chest, resting on the surface
+    "DEF-upper_arm.R": {"rot": (120, 0, -40)},
+    "DEF-forearm.R": {"rot": (60, 0, 20)},
+    "DEF-upper_arm.L": {"rot": (120, 0, 40)},
+    "DEF-forearm.L": {"rot": (60, 0, -20)},
 }
 FINGER_CURL = {}
 for side in ("L", "R"):
     for f in ("f_index", "f_middle", "f_pinky"):
         for seg in ("01", "02", "03"):
-            FINGER_CURL[f"DEF-{f}.{seg}.{side}"] = {"rot": (35, 0, 0)}
+            FINGER_CURL[f"DEF-{f}.{seg}.{side}"] = {"rot": (20, 0, 0)}
 
 # t0..t1: ease in, t2..t3: ease out (seconds). Bones without timing use the pose defaults.
 POSES = {

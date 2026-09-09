@@ -20,11 +20,12 @@ await page.waitForTimeout(Number(waitMs));
 // "t=<seconds>": scrub the requested clip to an exact time (software GL renders too slowly to rely on the wall clock)
 const q = new URLSearchParams(query);
 if (q.get("t")) {
-  await page.evaluate(([clip, t]) => {
+  await page.evaluate(([clip, t, rot]) => {
     const { sm } = window.__capy;
     sm.play(clip, { loop: false, fade: 0 });
     sm.update(Number(t));
-  }, [q.get("clip") ?? "idle_breathe", q.get("t")]);
+    if (rot) window.__capy.scene.rotation.y = (Number(rot) * Math.PI) / 180; // "rot=90": side view
+  }, [q.get("clip") ?? "idle_breathe", q.get("t"), q.get("rot")]);
   await page.waitForTimeout(150);
 }
 await page.screenshot({ path: out });
