@@ -1882,7 +1882,8 @@
           "text": "Goodnight, {kidName}. God is with you all night long.",
           "audio": "bed_03.mp3"
         }
-      ]
+      ],
+      "scene": "bedroom"
     },
     {
       "id": "w5d1",

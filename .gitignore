@@ -18,3 +18,4 @@ packages/avatar-web/src/generated/
 packages/avatar-web/dist-*/
 apps/mobile/.env
 __pycache__/
+apps/mobile/assets/audio/

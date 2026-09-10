@@ -48,3 +48,18 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 #   cd packages/avatar-web && node scripts/shot.mjs "clip=kneel_pray&t=3" out.png
 # dump bone values over a clip: node scripts/dbg-clip.mjs kneel_pray
 ```
+
+## Capy's voice (pre-rendered lines)
+
+Every kid-facing line has a pre-rendered mp3 (Higgsfield "Arthur" voice). The URLs live in
+`packages/content/packs/christian-us-en-v1/audio/urls.json`; the files are not committed. Bring them into the
+bundle on your machine (no ffmpeg needed for mp3):
+
+```powershell
+node tools/audio-fetch.mjs packages/content/packs/christian-us-en-v1   # downloads to apps/mobile/assets/audio
+node tools/audio-manifest.mjs                                          # regenerates src/audio/manifest.ts
+pnpm --filter @capy/mobile start -c
+```
+
+Lines without a file fall back to the device voice. New lines: `node tools/audio-lines.mjs <packDir> --missing`
+lists what still needs rendering.
