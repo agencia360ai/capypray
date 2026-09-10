@@ -1,21 +1,24 @@
 import { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link, Redirect } from "expo-router";
+import { interpolate } from "@capy/content";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
+import { biomeFor } from "@/store/rewards";
+import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
-import { BigButton, Chip, LanternMeter, Sheet } from "@/ui/components";
-import { T } from "@/ui/theme";
-import { glyph } from "@/ui/icons";
-import { useStageInsets } from "@/ui/useStageInsets";
-import { startSync } from "@/backend/sync";
-import { biomeFor } from "@/store/rewards";
+import { Chip, LanternMeter } from "@/ui/components";
 import { Friends } from "@/ui/Friends";
 import { StageDecor } from "@/ui/StageDecor";
-import { interpolate } from "@capy/content";
+import { glyph } from "@/ui/icons";
+import { T } from "@/ui/theme";
+import { useStageInsets } from "@/ui/useStageInsets";
+import { startSync } from "@/backend/sync";
+import * as haptics from "@/ui/haptics";
 
-// Home = Capy on the pond + today's Prayer Moment + the path. Kid-facing strings come from the pack.
+// Lobby: Capy at the pond + four doors (today's Prayer Moment, Stories, Places, Pond) + bedtime.
+// One curriculum lesson per day (GDD §4.2); the other doors keep the kid busy until tomorrow.
 export default function Home() {
   const onboarded = useKid((s) => s.onboarded);
   const introDone = useKid((s) => s.introDone);
@@ -27,18 +30,20 @@ export default function Home() {
 
 function KidHome() {
   const pack = getPack();
-  const { completed, lanterns, beacons, streak, kidName, skinId, biomeId } = useKid();
+  const { completed, lanterns, beacons, streak, kidName, skinId, biomeId, freePlay } = useKid();
   const { premium } = useEntitlement();
   const avatar = useAvatar();
   const { setStage } = useStage();
   const curriculum = pack.lessons.filter((l) => l.routine === "any");
   const nextLesson = curriculum.find((l) => !completed[l.id]) ?? curriculum[curriculum.length - 1]!;
+  const doneToday = !freePlay && lessonDoneToday(completed, new Set(curriculum.map((l) => l.id)));
   const bedtime = pack.lessons.find((l) => l.id === pack.routines.bedtime.lessonId);
   const skill = (id: string) => pack.skills.find((s) => s.id === id);
+  const world = pack.worlds.find((w) => nextLesson.week && w.weeks.includes(nextLesson.week));
   const onBottomLayout = useStageInsets();
 
   useEffect(() => {
-    setStage({ dark: false, biome: biomeFor(pack, { beacons, completed, biomeId }) });
+    setStage({ dark: false, night: false, biome: biomeFor(pack, { beacons, completed, biomeId }) });
     avatar.send({ type: "skin", id: skinId });
     avatar.send({ type: "mood", value: "calm" });
     avatar.send({ type: "idle" });
@@ -46,14 +51,13 @@ function KidHome() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
-  const href = (l: (typeof curriculum)[number]) =>
-    isLessonLocked(l, premium) ? ({ pathname: "/parent/gate", params: { next: "paywall" } } as const) : ({ pathname: "/lesson/[id]", params: { id: l.id } } as const);
+  const lessonHref = isLessonLocked(nextLesson, premium) ? ({ pathname: "/parent/gate", params: { next: "paywall" } } as const) : ({ pathname: "/lesson/[id]", params: { id: nextLesson.id } } as const);
 
   return (
     <View style={styles.root}>
       <View style={styles.top}>
         <Link href="/pond" asChild>
-          <Pressable style={styles.meter}>
+          <Pressable style={styles.meter} onPress={() => void haptics.tap()}>
             <LanternMeter lanterns={lanterns} />
             <Chip>⭐ {beacons}</Chip>
           </Pressable>
@@ -76,47 +80,54 @@ function KidHome() {
       </View>
 
       <View onLayout={onBottomLayout}>
-      <Sheet>
-        <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
-        <Link href={href(nextLesson)} asChild>
-          <Pressable style={({ pressed }) => [styles.today, pressed && styles.todayPressed]}>
-            <Text style={styles.todayIcon}>{glyph(skill(nextLesson.skillId)?.icon)}</Text>
-            <View style={styles.todayText}>
-              <Text style={styles.todayEyebrow}>{skill(nextLesson.skillId)?.title}</Text>
-              <Text style={styles.todayTitle}>{nextLesson.title}</Text>
+        <View style={styles.sheet}>
+          <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
+
+          {doneToday ? (
+            <View style={styles.today}>
+              <Text style={styles.todayIcon}>🌙</Text>
+              <View style={styles.todayText}>
+                <Text style={styles.todayTitle}>{pack.ui.comeBackTomorrow}</Text>
+                <Text style={styles.todayEyebrow}>{pack.ui.tomorrowHint}</Text>
+              </View>
             </View>
-            <Text style={styles.todayGo}>▶</Text>
-          </Pressable>
-        </Link>
-        {bedtime && (
-          <Link href={{ pathname: "/lesson/[id]", params: { id: bedtime.id } }} asChild>
-            <Pressable>
-              <BigButton label={`🌙 ${bedtime.title}`} onPress={() => {}} tone="night" />
-            </Pressable>
-          </Link>
-        )}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.path}>
-          {curriculum.map((l, i) => {
-            const done = !!completed[l.id];
-            const locked = isLessonLocked(l, premium);
-            const current = l.id === nextLesson.id;
-            return (
-              <Link key={l.id} href={href(l)} asChild>
-                <Pressable style={styles.node}>
-                  <View style={[styles.dot, done && styles.dotDone, current && styles.dotCurrent, locked && styles.dotLocked]}>
-                    <Text style={styles.dotText}>{done ? "✓" : locked ? "🔒" : i + 1}</Text>
-                  </View>
-                  <Text style={styles.nodeLabel} numberOfLines={1}>
-                    {l.week?.toUpperCase()}·{l.day}
+          ) : (
+            <Link href={lessonHref} asChild>
+              <Pressable style={({ pressed }) => [styles.today, styles.todayLive, pressed && styles.todayPressed]} onPress={() => void haptics.tap()}>
+                <Text style={styles.todayIcon}>{glyph(skill(nextLesson.skillId)?.icon)}</Text>
+                <View style={styles.todayText}>
+                  <Text style={styles.todayEyebrow}>
+                    {pack.ui.todayTitle} · {world?.title} {nextLesson.week?.toUpperCase()}·{nextLesson.day}
                   </Text>
-                </Pressable>
-              </Link>
-            );
-          })}
-        </ScrollView>
-      </Sheet>
+                  <Text style={styles.todayTitle}>{nextLesson.title}</Text>
+                </View>
+                <Text style={styles.todayGo}>▶</Text>
+              </Pressable>
+            </Link>
+          )}
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.doors}>
+            <Door href="/stories" icon="book" label={pack.ui.storiesTitle} color="#FFE7EE" />
+            <Door href="/places" icon="city" label={pack.ui.placesTitle} color="#E3F4FF" />
+            <Door href="/pond" icon="lantern" label={pack.ui.pondTitle} color="#EAF7DF" />
+            {bedtime ? <Door href={{ pathname: "/lesson/[id]", params: { id: bedtime.id } }} icon="moon" label={pack.ui.bedtimeTitle} color="#E6E3F7" /> : null}
+          </ScrollView>
+        </View>
       </View>
     </View>
+  );
+}
+
+function Door({ href, icon, label, color }: { href: React.ComponentProps<typeof Link>["href"]; icon: string; label: string; color: string }) {
+  return (
+    <Link href={href} asChild>
+      <Pressable style={({ pressed }) => [styles.door, { backgroundColor: color }, pressed && styles.doorPressed]} onPress={() => void haptics.tap()}>
+        <Text style={styles.doorGlyph}>{glyph(icon)}</Text>
+        <Text style={styles.doorLabel} numberOfLines={1}>
+          {label}
+        </Text>
+      </Pressable>
+    </Link>
   );
 }
 
@@ -129,20 +140,19 @@ const styles = StyleSheet.create({
   topRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   parent: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.85)", alignItems: "center", justifyContent: "center" },
   parentText: { fontSize: 18 },
+  sheet: { padding: 20, paddingBottom: 30, gap: 14, backgroundColor: "rgba(255,247,230,0.94)", borderTopLeftRadius: 32, borderTopRightRadius: 32, ...T.shadow },
   hello: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink },
-  today: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: T.color.primary, borderRadius: T.radius.lg, padding: 16, borderBottomWidth: 6, borderBottomColor: T.color.primaryDark },
+  today: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: T.color.paper, borderRadius: T.radius.lg, padding: 16, borderWidth: 3, borderColor: T.color.tan },
+  todayLive: { backgroundColor: T.color.primary, borderWidth: 0, borderBottomWidth: 6, borderBottomColor: T.color.primaryDark },
   todayPressed: { borderBottomWidth: 2, transform: [{ translateY: 4 }] },
   todayIcon: { fontSize: 40 },
   todayText: { flex: 1 },
-  todayEyebrow: { fontFamily: T.font.bold, fontSize: 13, letterSpacing: 1, textTransform: "uppercase", color: T.color.brown },
-  todayTitle: { fontFamily: T.font.black, fontSize: 22, color: T.color.ink },
+  todayEyebrow: { fontFamily: T.font.bold, fontSize: 12, letterSpacing: 0.5, color: T.color.brown },
+  todayTitle: { fontFamily: T.font.black, fontSize: 20, color: T.color.ink },
   todayGo: { fontSize: 22, color: T.color.ink },
-  path: { gap: 14, paddingVertical: 6, paddingHorizontal: 4 },
-  node: { alignItems: "center", gap: 4 },
-  dot: { width: 46, height: 46, borderRadius: 23, backgroundColor: T.color.paper, borderWidth: 3, borderColor: T.color.tan, alignItems: "center", justifyContent: "center" },
-  dotDone: { backgroundColor: T.color.leaf, borderColor: "#6FB35A" },
-  dotCurrent: { borderColor: T.color.primary, transform: [{ scale: 1.12 }] },
-  dotLocked: { opacity: 0.6 },
-  dotText: { fontFamily: T.font.black, fontSize: 16, color: T.color.ink },
-  nodeLabel: { fontFamily: T.font.bold, fontSize: 11, color: T.color.brown },
+  doors: { gap: 12, paddingVertical: 4 },
+  door: { width: 108, height: 96, borderRadius: T.radius.md, alignItems: "center", justifyContent: "center", gap: 4, borderBottomWidth: 5, borderBottomColor: "rgba(59,42,26,0.15)" },
+  doorPressed: { borderBottomWidth: 2, transform: [{ translateY: 3 }] },
+  doorGlyph: { fontSize: 36 },
+  doorLabel: { fontFamily: T.font.bold, fontSize: 14, color: T.color.ink },
 });

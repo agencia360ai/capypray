@@ -31,6 +31,8 @@ type KidState = {
   skinId?: string;
   /** Chosen pond biome reward id (pack.rewards type "biome"); undefined = best unlocked. */
   biomeId?: string;
+  /** Parent Corner: ignore the one-lesson-per-day pacing (testing / catch-up). */
+  freePlay: boolean;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
   lanterns: number;
@@ -44,6 +46,7 @@ type KidState = {
   finishIntro: () => void;
   setSkin: (id?: string) => void;
   setBiome: (id?: string) => void;
+  setFreePlay: (v: boolean) => void;
   addPerson: (label: string, icon?: string) => void;
   removePerson: (id: string) => void;
   setPersonNote: (id: string, note: string) => void;
@@ -59,6 +62,7 @@ const initial = {
   premium: false,
   facts: {} as Record<string, string>,
   introDone: false,
+  freePlay: false,
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
   lanterns: 0,
@@ -78,6 +82,7 @@ export const useKid = create<KidState>()(
       finishIntro: () => set({ introDone: true }),
       setSkin: (skinId) => set({ skinId }),
       setBiome: (biomeId) => set({ biomeId }),
+      setFreePlay: (freePlay) => set({ freePlay }),
       addPerson: (label, icon = "person") =>
         set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: uid(), label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
       removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),

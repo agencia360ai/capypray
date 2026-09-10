@@ -7,6 +7,7 @@ const ICONS: Record<string, string> = {
   beacon: "🗼", orange: "🍊", bird: "🐦", star: "⭐", moon: "🌙", rainbow: "🌈", dog: "🐶", cat: "🐱", fish: "🐟",
   duck: "🦆", frog: "🐸", turtle: "🐢", bunny: "🐰", hedgehog: "🦔", otter: "🦦", mountain: "🏔️", river: "🏞️", hat: "🎀", badge: "🏅", card: "🃏", lily: "🪷",
   chat: "💬", pray: "🙏", game: "🎲", lantern: "🏮", parent: "👤", question: "❓", mic: "🎤", play: "▶️", firefly: "✨",
+  sheep: "🐑", hills: "⛰️", shepherd: "🧑‍🌾", hug: "🤗", road: "🛤️", walk: "🚶", seed: "🌰", boat: "⛵", bread: "🍞", sand: "🏖️", city: "🏙️", garden: "🌻", park: "🌳", bedroom: "🛏️", kitchen: "🍽️",
   music: "🎵", ball: "⚽", ice: "🍦", pizza: "🍕", happy: "😄", sleepy: "😴", scared: "😨", angry: "😠", calm: "😌",
 };
 

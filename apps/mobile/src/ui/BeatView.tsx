@@ -10,6 +10,7 @@ import { Confetti } from "./Confetti";
 import * as haptics from "./haptics";
 import { getPack } from "@/content/pack";
 import { T } from "./theme";
+import { glyph } from "./icons";
 import { useAvatar } from "@/avatar/AvatarView";
 import { estimateMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
@@ -119,6 +120,33 @@ function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext
       <SpeechBubble text={text} audio={audio} badge={badge} hint={hint} onSpoken={() => setSpoken(true)} />
       <Sheet>
         <BigButton label={label} icon={icon} onPress={onNext} hint={showHint && !autoMs} autoAdvanceMs={spoken && autoMs ? autoMs : undefined} />
+      </Sheet>
+    </>
+  );
+}
+
+/** Capy tells a Bible story: big picture card per page, narrated, auto-turning once spoken. */
+function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; onNext: () => void }) {
+  const pack = getPack();
+  const [spoken, setSpoken] = useState(false);
+  const showHint = useGuide(spoken, pack.ui.nudgeTap);
+  const pages = step.story.pages.length + 1;
+  return (
+    <>
+      <SpeechBubble text={step.text} audio={step.audio} badge="book" onSpoken={() => setSpoken(true)} />
+      <Sheet>
+        <View style={styles.storyHead}>
+          <Text style={styles.storyTitle}>{step.story.title}</Text>
+          <View style={styles.dots}>
+            {Array.from({ length: pages }, (_, i) => (
+              <View key={i} style={[styles.dot, i === step.pageIndex && styles.dotOn]} />
+            ))}
+          </View>
+        </View>
+        <View style={[styles.picture, step.last && styles.pictureEnd]}>
+          <Text style={styles.pictureGlyph}>{glyph(step.icon)}</Text>
+        </View>
+        <BigButton label={step.last ? pack.ui.theEnd : pack.ui.storyPage} icon={<Arrow />} onPress={onNext} hint={showHint} autoAdvanceMs={spoken ? 3200 : undefined} />
       </Sheet>
     </>
   );
@@ -377,6 +405,14 @@ function ListenTimer({ seconds, text, audio, onDone, dark }: { seconds: number; 
 }
 
 const styles = StyleSheet.create({
+  storyHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
+  storyTitle: { fontFamily: T.font.black, fontSize: 18, color: T.color.ink, flexShrink: 1 },
+  dots: { flexDirection: "row", gap: 5 },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: T.color.tan },
+  dotOn: { backgroundColor: T.color.primary, transform: [{ scale: 1.4 }] },
+  picture: { alignSelf: "center", width: 150, height: 150, borderRadius: 75, backgroundColor: "#FFF5E0", borderWidth: 4, borderColor: T.color.primary, alignItems: "center", justifyContent: "center", ...T.shadow },
+  pictureEnd: { backgroundColor: "#FFE7EE", borderColor: T.color.coral },
+  pictureGlyph: { fontSize: 76 },
   parent: { fontFamily: T.font.regular, fontSize: 16, color: T.color.brown, lineHeight: 22 },
   slots: { gap: 6 },
   slot: { fontFamily: T.font.bold, fontSize: 18, color: T.color.brown, textAlign: "center", padding: 8, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.6)" },

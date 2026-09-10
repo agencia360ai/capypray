@@ -13,6 +13,8 @@ import { track } from "@/backend/events";
 import { newlyUnlocked } from "@/store/rewards";
 import { LessonTrail } from "@/ui/LessonTrail";
 import { StageDecor } from "@/ui/StageDecor";
+import { biomeFor } from "@/store/rewards";
+import { isNight, sceneById } from "@/store/scenes";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -37,11 +39,14 @@ export default function LessonScreen() {
   };
 
   useEffect(() => {
-    if (runner) {
+    if (runner && lesson) {
+      const scene = sceneById(pack, lesson.scene);
+      const night = isNight(scene, kid.profile.bedtimeHour);
+      setStage({ biome: scene && scene.id !== "pond" ? scene.background : biomeFor(pack, { beacons: kid.beacons, completed: kid.completed, biomeId: kid.biomeId }), night });
       apply(runner.start());
       void track("lesson_start", { lessonId: lesson?.id, routine: lesson?.routine });
     }
-    return () => setStage({ dark: false });
+    return () => setStage({ dark: false, night: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner]);
 
@@ -93,7 +98,7 @@ export default function LessonScreen() {
         <LessonTrail lesson={lesson} index={Math.min(state.beatIndex, lesson.beats.length - 1)} />
       </View>
       <View style={styles.spacer}>
-        <StageDecor night={state.step.kind === "lights_out"} />
+        <StageDecor night={state.step.kind === "lights_out" || isNight(sceneById(pack, lesson.scene), kid.profile.bedtimeHour)} />
       </View>
       <View onLayout={onBottomLayout}>
         <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />

@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -78,6 +78,14 @@
         "w2",
         "w3",
         "w4"
+      ]
+    },
+    {
+      "id": "everywhere",
+      "title": "Everywhere",
+      "weeks": [
+        "w5",
+        "w6"
       ]
     }
   ],
@@ -268,12 +276,23 @@
           "audio": "w1d1_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "lost-sheep"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "hello-god-v1"
         },
         {
           "type": "minigame",
           "minigameId": "mg_w1d1_who_listens"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -286,7 +305,8 @@
           "audio": "w1d1_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d2",
@@ -309,6 +329,10 @@
           "audio": "w1d2_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "good-samaritan"
+        },
+        {
           "type": "avatar_say",
           "clip": "talk_b",
           "text": "God hears you everywhere. Let's say hi from right here.",
@@ -323,6 +347,13 @@
           "minigameId": "mg_w1d2_places"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -333,7 +364,8 @@
           "audio": "w1d2_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d3",
@@ -356,6 +388,10 @@
           "audio": "w1d3_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "mustard-seed"
+        },
+        {
           "type": "choose_people",
           "min": 1,
           "max": 3,
@@ -369,6 +405,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w1d3_people"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -385,7 +428,8 @@
           "audio": "w1d3_07.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d4",
@@ -408,6 +452,10 @@
           "audio": "w1d4_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "calm-storm"
+        },
+        {
           "type": "avatar_say",
           "clip": "think",
           "text": "What made you smile today? Let's tell God three things.",
@@ -422,6 +470,13 @@
           "minigameId": "mg_w1d4_gratitude_garden"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -432,7 +487,8 @@
           "audio": "w1d4_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d5",
@@ -455,12 +511,23 @@
           "audio": "w1d5_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "loaves-fish"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "grace-god-is-great"
         },
         {
           "type": "minigame",
           "minigameId": "mg_w1d5_grace_order"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -477,7 +544,8 @@
           "audio": "w1d5_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d6",
@@ -500,12 +568,23 @@
           "audio": "w1d6_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "zacchaeus"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w1d6_thank_people"
         },
         {
           "type": "repeat_after_me",
           "prayerId": "thank-you-v1"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -518,7 +597,8 @@
           "audio": "w1d6_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w1d7",
@@ -541,6 +621,10 @@
           "audio": "w1d7_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "jesus-children"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "hello-thanks-review"
         },
@@ -553,6 +637,13 @@
           "minigameId": "mg_listen_30"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -563,7 +654,8 @@
           "audio": "w1d7_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d1",
@@ -586,6 +678,10 @@
           "audio": "w2d1_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "prodigal-son"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "thank-you-body",
           "clip": "pray_hands"
@@ -593,6 +689,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w2d1_senses"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -605,7 +708,8 @@
           "audio": "w2d1_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d2",
@@ -628,6 +732,10 @@
           "audio": "w2d2_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "two-houses"
+        },
+        {
           "type": "avatar_say",
           "clip": "talk_b",
           "text": "When something goes wrong, we can still find one thank you.",
@@ -644,6 +752,13 @@
           "minigameId": "mg_w2d2_bad_to_good"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -654,7 +769,8 @@
           "audio": "w2d2_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d3",
@@ -677,6 +793,10 @@
           "mood": "sad"
         },
         {
+          "type": "story",
+          "storyId": "sower"
+        },
+        {
           "type": "avatar_say",
           "clip": "talk_a",
           "text": "Everybody makes mistakes. Saying sorry is how we fix them.",
@@ -693,6 +813,13 @@
           "minigameId": "mg_w2d3_after_mistake"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -703,7 +830,8 @@
           "audio": "w2d3_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d4",
@@ -726,6 +854,10 @@
           "audio": "w2d4_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "lost-sheep"
+        },
+        {
           "type": "avatar_say",
           "clip": "talk_a",
           "text": "Forgive means: it's okay, let's try again. God always forgives.",
@@ -742,6 +874,13 @@
           "minigameId": "mg_w2d4_sorry_forgiven"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -752,7 +891,8 @@
           "audio": "w2d4_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d5",
@@ -775,6 +915,10 @@
           "mood": "calm"
         },
         {
+          "type": "story",
+          "storyId": "good-samaritan"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "sorry-v1",
           "clip": "pray_hands"
@@ -782,6 +926,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w2d5_kind_words"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -798,7 +949,8 @@
           "audio": "w2d5_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d6",
@@ -820,6 +972,10 @@
           "text": "Capybaras are very good at being still. Let's be still together.",
           "audio": "w2d6_02.mp3",
           "mood": "calm"
+        },
+        {
+          "type": "story",
+          "storyId": "mustard-seed"
         },
         {
           "type": "listen_timer",
@@ -844,7 +1000,8 @@
           "audio": "w2d6_05.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w2d7",
@@ -867,6 +1024,10 @@
           "audio": "w2d7_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "calm-storm"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "review-w2",
           "clip": "pray_hands"
@@ -880,6 +1041,13 @@
           "minigameId": "mg_listen_30"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -890,7 +1058,8 @@
           "audio": "w2d7_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d1",
@@ -911,6 +1080,10 @@
           "clip": "talk_a",
           "text": "God cares about big things and tiny things. You can ask anything.",
           "audio": "w3d1_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "loaves-fish"
         },
         {
           "type": "ask",
@@ -961,6 +1134,13 @@
           "minigameId": "mg_w3d1_help_with"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -971,7 +1151,8 @@
           "audio": "w3d1_06.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d2",
@@ -992,6 +1173,10 @@
           "text": "When I'm scared, I breathe slowly and tell God.",
           "audio": "w3d2_02.mp3",
           "mood": "calm"
+        },
+        {
+          "type": "story",
+          "storyId": "zacchaeus"
         },
         {
           "type": "listen_timer",
@@ -1020,7 +1205,8 @@
           "audio": "w3d2_06.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d3",
@@ -1044,6 +1230,10 @@
           "mood": "calm"
         },
         {
+          "type": "story",
+          "storyId": "jesus-children"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "sad-v1",
           "clip": "pray_hands"
@@ -1051,6 +1241,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w3d3_comfort"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1063,7 +1260,8 @@
           "audio": "w3d3_05.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d4",
@@ -1086,6 +1284,10 @@
           "mood": "calm"
         },
         {
+          "type": "story",
+          "storyId": "prodigal-son"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "before-big-v1",
           "clip": "pray_hands"
@@ -1093,6 +1295,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w3d4_breathe_ask_go"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1105,7 +1314,8 @@
           "audio": "w3d4_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d5",
@@ -1128,6 +1338,10 @@
           "audio": "w3d5_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "two-houses"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w3d5_family"
         },
@@ -1135,6 +1349,13 @@
           "type": "repeat_after_me",
           "prayerId": "for-others-v1",
           "clip": "pray_hands"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1147,7 +1368,8 @@
           "audio": "w3d5_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d6",
@@ -1170,6 +1392,10 @@
           "audio": "w3d6_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "sower"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w3d6_friends"
         },
@@ -1177,6 +1403,13 @@
           "type": "repeat_after_me",
           "prayerId": "for-others-v1",
           "clip": "pray_hands"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1189,7 +1422,8 @@
           "audio": "w3d6_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w3d7",
@@ -1212,6 +1446,10 @@
           "audio": "w3d7_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "lost-sheep"
+        },
+        {
           "type": "avatar_say",
           "clip": "talk_b",
           "text": "Thumb: people close to you. Pointer: helpers. Tall: leaders. Ring: the sick. Pinky: you!",
@@ -1227,6 +1465,13 @@
           "clip": "pray_hands"
         },
         {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
           "type": "reward",
           "lantern": 1
         },
@@ -1237,7 +1482,8 @@
           "audio": "w3d7_07.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d1",
@@ -1260,6 +1506,10 @@
           "mood": "calm"
         },
         {
+          "type": "story",
+          "storyId": "good-samaritan"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w4d1_sick"
         },
@@ -1267,6 +1517,13 @@
           "type": "repeat_after_me",
           "prayerId": "sick-v1",
           "clip": "pray_hands"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1279,7 +1536,8 @@
           "audio": "w4d1_05.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d2",
@@ -1302,6 +1560,10 @@
           "audio": "w4d2_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "mustard-seed"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w4d2_world_helpers"
         },
@@ -1309,6 +1571,13 @@
           "type": "repeat_after_me",
           "prayerId": "world-v1",
           "clip": "pray_hands"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1321,7 +1590,8 @@
           "audio": "w4d2_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d3",
@@ -1343,6 +1613,10 @@
           "text": "Still hands. Still feet. Quiet mouth. Open heart.",
           "audio": "w4d3_02.mp3",
           "mood": "calm"
+        },
+        {
+          "type": "story",
+          "storyId": "calm-storm"
         },
         {
           "type": "listen_timer",
@@ -1367,7 +1641,8 @@
           "audio": "w4d3_05.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d4",
@@ -1390,6 +1665,10 @@
           "audio": "w4d4_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "loaves-fish"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "lords-prayer-1",
           "clip": "pray_hands"
@@ -1397,6 +1676,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w4d4_lords_1"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1409,7 +1695,8 @@
           "audio": "w4d4_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d5",
@@ -1432,6 +1719,10 @@
           "audio": "w4d5_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "zacchaeus"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "lords-prayer-2",
           "clip": "pray_hands"
@@ -1439,6 +1730,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_w4d5_lords_2"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1451,7 +1749,8 @@
           "audio": "w4d5_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d6",
@@ -1473,8 +1772,19 @@
           "clip": "pray_hands"
         },
         {
+          "type": "story",
+          "storyId": "jesus-children"
+        },
+        {
           "type": "minigame",
           "minigameId": "mg_w4d6_bedtime_blank"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1487,7 +1797,8 @@
           "audio": "w4d6_04.mp3",
           "mood": "calm"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "w4d7",
@@ -1510,6 +1821,10 @@
           "audio": "w4d7_02.mp3"
         },
         {
+          "type": "story",
+          "storyId": "prodigal-son"
+        },
+        {
           "type": "repeat_after_me",
           "prayerId": "world-complete-v1",
           "clip": "pray_hands"
@@ -1517,6 +1832,13 @@
         {
           "type": "minigame",
           "minigameId": "mg_listen_30"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Let's be quiet for a moment. God is listening.",
+          "audio": "quiet_20.mp3",
+          "clip": "kneel_pray"
         },
         {
           "type": "reward",
@@ -1529,7 +1851,8 @@
           "audio": "w4d7_05.mp3",
           "mood": "happy"
         }
-      ]
+      ],
+      "scene": "pond"
     },
     {
       "id": "bedtime-w1",
@@ -1558,6 +1881,776 @@
           "seconds": 30,
           "text": "Goodnight, {kidName}. God is with you all night long.",
           "audio": "bed_03.mp3"
+        }
+      ]
+    },
+    {
+      "id": "w5d1",
+      "week": "w5",
+      "day": 1,
+      "skillId": "thank-you",
+      "title": "Thank You for Food",
+      "free": false,
+      "scene": "kitchen",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! Sniff sniff. Something smells yummy in the kitchen.",
+          "audio": "w5d1_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Before we eat, we say thank you. That's a kitchen prayer!",
+          "audio": "w5d1_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "loaves-fish"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "grace-god-is-great",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d5_grace_order"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Yum! Thank you prayers taste even better than oranges.",
+          "audio": "w5d1_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d2",
+      "week": "w5",
+      "day": 2,
+      "skillId": "hello",
+      "title": "Good Morning, God",
+      "free": false,
+      "scene": "bedroom",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Good morning, {kidName}! Stretch! Yawn! A brand new day.",
+          "audio": "w5d2_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "The first thing I do every day is say hi to God.",
+          "audio": "w5d2_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "two-houses"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-bedroom",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d2_places"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Say good morning to God tomorrow too. He loves it.",
+          "audio": "w5d2_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d3",
+      "week": "w5",
+      "day": 3,
+      "skillId": "thank-you",
+      "title": "Things Grow",
+      "free": false,
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Look, {kidName}! Tiny green sprouts in the garden.",
+          "audio": "w5d3_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "God makes seeds grow. And He grows us too, little by little.",
+          "audio": "w5d3_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "mustard-seed"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-garden",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d4_gratitude_garden"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "You grew a little today. I saw it!",
+          "audio": "w5d3_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d4",
+      "week": "w5",
+      "day": 4,
+      "skillId": "thank-you",
+      "title": "God Made All This",
+      "free": false,
+      "scene": "park",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "We're at the park, {kidName}! Feel the wind? Hear the birds?",
+          "audio": "w5d4_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Everything you see, God made. Let's say thank you out loud.",
+          "audio": "w5d4_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "sower"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-park",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d1_senses"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Next time you're outside, whisper thank you. God hears.",
+          "audio": "w5d4_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d5",
+      "week": "w5",
+      "day": 5,
+      "skillId": "others",
+      "title": "People Everywhere",
+      "free": false,
+      "scene": "city",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "So many people in the city, {kidName}! Buses, shops, busy feet.",
+          "audio": "w5d5_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Every person has a name God knows. We can pray for them, even strangers.",
+          "audio": "w5d5_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "good-samaritan"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-city",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w4d2_world_helpers"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "You prayed for a whole city. Wow!",
+          "audio": "w5d5_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d6",
+      "week": "w5",
+      "day": 6,
+      "skillId": "please-help",
+      "title": "Before a Hard Thing",
+      "free": false,
+      "scene": "school",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "School day, {kidName}! Sometimes things at school feel hard.",
+          "audio": "w5d6_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "When I'm scared, I breathe and ask God for help. Let's practice.",
+          "audio": "w5d6_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "calm-storm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-school",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d4_breathe_ask_go"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Breathe, ask, go. You've got this.",
+          "audio": "w5d6_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w5d7",
+      "week": "w5",
+      "day": 7,
+      "skillId": "review",
+      "title": "On the Road",
+      "free": false,
+      "scene": "car",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Vroom! We're in the car, {kidName}. Where are we going?",
+          "audio": "w5d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Wherever we go, God comes too. Let's pray for a safe trip.",
+          "audio": "w5d7_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "lost-sheep"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "place-car",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d7_review"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Every trip is better with a prayer. Buckle up!",
+          "audio": "w5d7_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d1",
+      "week": "w6",
+      "day": 1,
+      "skillId": "others",
+      "title": "Sharing",
+      "free": false,
+      "scene": "kitchen",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}! I have two oranges. Who should I share with?",
+          "audio": "w6d1_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Jesus shared bread with everyone. Sharing is a way to love.",
+          "audio": "w6d1_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "loaves-fish"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d5_kind_words"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Sharing makes two happy tummies. Bye!",
+          "audio": "w6d1_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d2",
+      "week": "w6",
+      "day": 2,
+      "skillId": "please-help",
+      "title": "Scared at Night",
+      "free": false,
+      "scene": "bedroom",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Psst, {kidName}. Sometimes the dark feels scary. Even for me.",
+          "audio": "w6d2_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Jesus calmed a big storm. He can calm my heart too.",
+          "audio": "w6d2_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "calm-storm"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "scared-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d3_comfort"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "God is with you in the dark. Sleep tight.",
+          "audio": "w6d2_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d3",
+      "week": "w6",
+      "day": 3,
+      "skillId": "others",
+      "title": "Helping Hands",
+      "free": false,
+      "scene": "park",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "At the park, {kidName}, I saw a kid fall down. What should I do?",
+          "audio": "w6d3_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Helping is praying with your hands. Let's practice being kind.",
+          "audio": "w6d3_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "good-samaritan"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d5_kind_words"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Your hands can pray too. High five!",
+          "audio": "w6d3_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d4",
+      "week": "w6",
+      "day": 4,
+      "skillId": "please-help",
+      "title": "When I Feel Lost",
+      "free": false,
+      "scene": "city",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Uh oh, {kidName}. In the big city I lost my bird friend!",
+          "audio": "w6d4_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "The shepherd looked for one little sheep. God looks for us like that.",
+          "audio": "w6d4_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "lost-sheep"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "please-help-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d1_help_with"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Found! God always finds us. Thank you, God.",
+          "audio": "w6d4_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d5",
+      "week": "w6",
+      "day": 5,
+      "skillId": "others",
+      "title": "Being a Friend",
+      "free": false,
+      "scene": "school",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "School again, {kidName}! Someone is sitting all alone at lunch.",
+          "audio": "w6d5_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Jesus loved kids and said: come to me. Let's be that kind of friend.",
+          "audio": "w6d5_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "jesus-children"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "for-others-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w3d6_friends"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "A new friend is a gift. Go say hi tomorrow!",
+          "audio": "w6d5_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d6",
+      "week": "w6",
+      "day": 6,
+      "skillId": "sorry",
+      "title": "Coming Home",
+      "free": false,
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "Hi {kidName}. I broke a flower pot today and hid in the garden.",
+          "audio": "w6d6_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Then I remembered: God runs to hug us when we say sorry.",
+          "audio": "w6d6_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "prodigal-son"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "sorry-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w2d3_after_mistake"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "Sorry makes hearts new. See you tomorrow.",
+          "audio": "w6d6_04.mp3",
+          "mood": "happy"
+        }
+      ]
+    },
+    {
+      "id": "w6d7",
+      "week": "w6",
+      "day": 7,
+      "skillId": "review",
+      "title": "Everywhere Prayer",
+      "free": false,
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "wave_hello",
+          "text": "We prayed in the kitchen, the park, the car, everywhere, {kidName}!",
+          "audio": "w6d7_01.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "Now you know: any place is a praying place. Let's build on rock!",
+          "audio": "w6d7_02.mp3"
+        },
+        {
+          "type": "story",
+          "storyId": "two-houses"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "world-complete-v1",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "minigame",
+          "minigameId": "mg_w1d7_review"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 20,
+          "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+          "audio": "quiet_breathe_20.mp3",
+          "clip": "kneel_pray"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "celebrate",
+          "text": "World two complete! The pond is glowing. You did it!",
+          "audio": "w6d7_04.mp3",
+          "mood": "happy"
         }
       ]
     }
@@ -2065,6 +3158,148 @@
         "need",
         "person"
       ]
+    },
+    {
+      "id": "place-bedroom",
+      "skillId": "hello",
+      "title": "Good Morning",
+      "lines": [
+        {
+          "text": "Good morning, God. It's me, {kidName}.",
+          "audio": "p_place_bedroom_1.mp3"
+        },
+        {
+          "text": "Thank you for a new day.",
+          "audio": "p_place_bedroom_2.mp3"
+        },
+        {
+          "text": "Stay with me today. Amen.",
+          "audio": "p_place_bedroom_3.mp3"
+        }
+      ],
+      "variables": [
+        "kidName"
+      ]
+    },
+    {
+      "id": "place-garden",
+      "skillId": "thank-you",
+      "title": "In the Garden",
+      "lines": [
+        {
+          "text": "God, you make things grow.",
+          "audio": "p_place_garden_1.mp3"
+        },
+        {
+          "text": "Thank you for flowers and bugs and rain.",
+          "audio": "p_place_garden_2.mp3"
+        },
+        {
+          "text": "Help me grow too. Amen.",
+          "audio": "p_place_garden_3.mp3"
+        }
+      ],
+      "variables": []
+    },
+    {
+      "id": "place-park",
+      "skillId": "thank-you",
+      "title": "At the Park",
+      "lines": [
+        {
+          "text": "God, look at this big sky!",
+          "audio": "p_place_park_1.mp3"
+        },
+        {
+          "text": "Thank you for trees and birds and running.",
+          "audio": "p_place_park_2.mp3"
+        },
+        {
+          "text": "You made it all. Amen.",
+          "audio": "p_place_park_3.mp3"
+        }
+      ],
+      "variables": []
+    },
+    {
+      "id": "place-city",
+      "skillId": "others",
+      "title": "In the City",
+      "lines": [
+        {
+          "text": "God, so many people are here.",
+          "audio": "p_place_city_1.mp3"
+        },
+        {
+          "text": "Please take care of each one.",
+          "audio": "p_place_city_2.mp3"
+        },
+        {
+          "text": "Help me be kind today. Amen.",
+          "audio": "p_place_city_3.mp3"
+        }
+      ],
+      "variables": []
+    },
+    {
+      "id": "place-school",
+      "skillId": "please-help",
+      "title": "At School",
+      "lines": [
+        {
+          "text": "God, help me listen and learn.",
+          "audio": "p_place_school_1.mp3"
+        },
+        {
+          "text": "Help me be brave when it's hard.",
+          "audio": "p_place_school_2.mp3"
+        },
+        {
+          "text": "Help me be a good friend. Amen.",
+          "audio": "p_place_school_3.mp3"
+        }
+      ],
+      "variables": []
+    },
+    {
+      "id": "place-car",
+      "skillId": "please-help",
+      "title": "In the Car",
+      "lines": [
+        {
+          "text": "God, keep us safe on the road.",
+          "audio": "p_place_car_1.mp3"
+        },
+        {
+          "text": "Thank you for places to go.",
+          "audio": "p_place_car_2.mp3"
+        },
+        {
+          "text": "Bring us home happy. Amen.",
+          "audio": "p_place_car_3.mp3"
+        }
+      ],
+      "variables": []
+    },
+    {
+      "id": "place-night",
+      "skillId": "shared",
+      "title": "Goodnight",
+      "lines": [
+        {
+          "text": "God, it's dark but you are here.",
+          "audio": "p_place_night_1.mp3"
+        },
+        {
+          "text": "Thank you for today.",
+          "audio": "p_place_night_2.mp3"
+        },
+        {
+          "text": "Keep my family safe tonight. Amen.",
+          "audio": "p_place_night_3.mp3"
+        }
+      ],
+      "variables": []
     }
   ],
   "minigames": [
@@ -2993,7 +4228,17 @@
     "friend": "friend",
     "nudgeTap": "Tap the big button when you're ready!",
     "nudgeRepeat": "Say it out loud, then tap the button!",
-    "nudgeChoose": "Tap a picture to choose!"
+    "nudgeChoose": "Tap a picture to choose!",
+    "todayTitle": "Today's Prayer Moment",
+    "storiesTitle": "Stories",
+    "placesTitle": "Places",
+    "pondTitle": "My Pond",
+    "bedtimeTitle": "Bedtime",
+    "comeBackTomorrow": "You did today's prayer! Come back tomorrow.",
+    "tomorrowHint": "Until then: a story, a place, or the pond?",
+    "storyPage": "Next page",
+    "theEnd": "The end",
+    "locked": "Soon"
   },
   "routines": {
     "bedtime": {
@@ -3009,5 +4254,440 @@
       "lessonId": "meet-capy"
     }
   },
-  "calendar": []
+  "calendar": [],
+  "stories": [
+    {
+      "id": "lost-sheep",
+      "title": "The Lost Sheep",
+      "ref": "Luke 15:3-7",
+      "icon": "sheep",
+      "pages": [
+        {
+          "text": "A shepherd had one hundred sheep. He loved every single one.",
+          "icon": "sheep",
+          "audio": "st_lost-sheep_1.mp3"
+        },
+        {
+          "text": "One little sheep wandered off and got lost in the hills.",
+          "icon": "hills",
+          "audio": "st_lost-sheep_2.mp3"
+        },
+        {
+          "text": "The shepherd left the ninety-nine and went looking. Up and down, calling its name.",
+          "icon": "shepherd",
+          "audio": "st_lost-sheep_3.mp3"
+        },
+        {
+          "text": "He found it! He carried it home on his shoulders, so happy.",
+          "icon": "hug",
+          "audio": "st_lost-sheep_4.mp3"
+        },
+        {
+          "text": "Jesus said: God is like that shepherd. He never stops looking for you.",
+          "icon": "heart",
+          "audio": "st_lost-sheep_5.mp3"
+        }
+      ],
+      "moral": "God always comes looking for you. You are never lost to Him.",
+      "moralAudio": "st_lost-sheep_m.mp3"
+    },
+    {
+      "id": "good-samaritan",
+      "title": "The Kind Stranger",
+      "ref": "Luke 10:25-37",
+      "icon": "road",
+      "pages": [
+        {
+          "text": "A man was walking on a lonely road. Robbers hurt him and left him there.",
+          "icon": "road",
+          "audio": "st_good-samaritan_1.mp3"
+        },
+        {
+          "text": "A busy man walked by. He did not stop.",
+          "icon": "walk",
+          "audio": "st_good-samaritan_2.mp3"
+        },
+        {
+          "text": "Another man walked by. He looked away and kept going.",
+          "icon": "walk",
+          "audio": "st_good-samaritan_3.mp3"
+        },
+        {
+          "text": "Then a stranger stopped. He cleaned the hurts, gave water, and took him to rest.",
+          "icon": "hug",
+          "audio": "st_good-samaritan_4.mp3"
+        },
+        {
+          "text": "Jesus said: be like the kind stranger. Help anyone who needs it.",
+          "icon": "heart",
+          "audio": "st_good-samaritan_5.mp3"
+        }
+      ],
+      "moral": "Being kind to someone who needs help is a prayer with your hands.",
+      "moralAudio": "st_good-samaritan_m.mp3"
+    },
+    {
+      "id": "mustard-seed",
+      "title": "The Tiny Seed",
+      "ref": "Matthew 13:31-32",
+      "icon": "seed",
+      "pages": [
+        {
+          "text": "Jesus held up a mustard seed. It was tiny, smaller than a crumb.",
+          "icon": "seed",
+          "audio": "st_mustard-seed_1.mp3"
+        },
+        {
+          "text": "Someone planted it in the garden and waited.",
+          "icon": "sprout",
+          "audio": "st_mustard-seed_2.mp3"
+        },
+        {
+          "text": "It grew, and grew, and grew into a big tree!",
+          "icon": "tree",
+          "audio": "st_mustard-seed_3.mp3"
+        },
+        {
+          "text": "Birds came and made nests in its branches.",
+          "icon": "bird",
+          "audio": "st_mustard-seed_4.mp3"
+        },
+        {
+          "text": "Jesus said: a little faith grows big. Even tiny prayers grow.",
+          "icon": "heart",
+          "audio": "st_mustard-seed_5.mp3"
+        }
+      ],
+      "moral": "Your small prayer is a seed. God makes it grow.",
+      "moralAudio": "st_mustard-seed_m.mp3"
+    },
+    {
+      "id": "calm-storm",
+      "title": "Jesus Calms the Storm",
+      "ref": "Mark 4:35-41",
+      "icon": "boat",
+      "pages": [
+        {
+          "text": "Jesus and his friends sailed across the lake in a boat.",
+          "icon": "boat",
+          "audio": "st_calm-storm_1.mp3"
+        },
+        {
+          "text": "A big storm came. Waves splashed in! The friends were scared.",
+          "icon": "storm",
+          "audio": "st_calm-storm_2.mp3"
+        },
+        {
+          "text": "Jesus was asleep. They woke him: Help us!",
+          "icon": "sleepy",
+          "audio": "st_calm-storm_3.mp3"
+        },
+        {
+          "text": "Jesus stood up and said: Quiet! Be still. The wind stopped.",
+          "icon": "calm",
+          "audio": "st_calm-storm_4.mp3"
+        },
+        {
+          "text": "The friends whispered: even the wind listens to Him.",
+          "icon": "heart",
+          "audio": "st_calm-storm_5.mp3"
+        }
+      ],
+      "moral": "When you are scared, tell Jesus. He can calm the storm inside you.",
+      "moralAudio": "st_calm-storm_m.mp3"
+    },
+    {
+      "id": "loaves-fish",
+      "title": "Five Loaves, Two Fish",
+      "ref": "John 6:1-14",
+      "icon": "bread",
+      "pages": [
+        {
+          "text": "A huge crowd came to hear Jesus. Everyone was hungry.",
+          "icon": "people",
+          "audio": "st_loaves-fish_1.mp3"
+        },
+        {
+          "text": "A boy had five small breads and two fish. He shared them.",
+          "icon": "bread",
+          "audio": "st_loaves-fish_2.mp3"
+        },
+        {
+          "text": "Jesus said thank you to God, and broke the bread.",
+          "icon": "pray",
+          "audio": "st_loaves-fish_3.mp3"
+        },
+        {
+          "text": "Everyone ate until they were full. Thousands of people!",
+          "icon": "happy",
+          "audio": "st_loaves-fish_4.mp3"
+        },
+        {
+          "text": "There were twelve baskets left over.",
+          "icon": "plate",
+          "audio": "st_loaves-fish_5.mp3"
+        }
+      ],
+      "moral": "Say thank you before you eat, and share what you have. God makes it enough.",
+      "moralAudio": "st_loaves-fish_m.mp3"
+    },
+    {
+      "id": "zacchaeus",
+      "title": "Zacchaeus in the Tree",
+      "ref": "Luke 19:1-10",
+      "icon": "tree",
+      "pages": [
+        {
+          "text": "Zacchaeus was very short and nobody liked him. He took too much money.",
+          "icon": "sad",
+          "audio": "st_zacchaeus_1.mp3"
+        },
+        {
+          "text": "Jesus was coming! Zacchaeus climbed a tree to see.",
+          "icon": "tree",
+          "audio": "st_zacchaeus_2.mp3"
+        },
+        {
+          "text": "Jesus stopped and said: Zacchaeus, come down. I want to visit your house!",
+          "icon": "house",
+          "audio": "st_zacchaeus_3.mp3"
+        },
+        {
+          "text": "Zacchaeus was so happy. He gave the money back, and more.",
+          "icon": "happy",
+          "audio": "st_zacchaeus_4.mp3"
+        },
+        {
+          "text": "Jesus is a friend to everyone, even when others say no.",
+          "icon": "heart",
+          "audio": "st_zacchaeus_5.mp3"
+        }
+      ],
+      "moral": "Jesus wants to be your friend, exactly as you are.",
+      "moralAudio": "st_zacchaeus_m.mp3"
+    },
+    {
+      "id": "jesus-children",
+      "title": "Jesus and the Children",
+      "ref": "Mark 10:13-16",
+      "icon": "friends",
+      "pages": [
+        {
+          "text": "Moms and dads brought their kids to see Jesus.",
+          "icon": "family",
+          "audio": "st_jesus-children_1.mp3"
+        },
+        {
+          "text": "The helpers said: go away, Jesus is too busy for kids!",
+          "icon": "grab",
+          "audio": "st_jesus-children_2.mp3"
+        },
+        {
+          "text": "Jesus said: No! Let the children come to me.",
+          "icon": "wave",
+          "audio": "st_jesus-children_3.mp3"
+        },
+        {
+          "text": "He hugged them and blessed them, one by one.",
+          "icon": "hug",
+          "audio": "st_jesus-children_4.mp3"
+        },
+        {
+          "text": "Jesus said: kids know how to trust. Everyone should be like them.",
+          "icon": "heart",
+          "audio": "st_jesus-children_5.mp3"
+        }
+      ],
+      "moral": "You are never too small to talk to God. He loves your voice.",
+      "moralAudio": "st_jesus-children_m.mp3"
+    },
+    {
+      "id": "prodigal-son",
+      "title": "The Son Who Came Home",
+      "ref": "Luke 15:11-32",
+      "icon": "house",
+      "pages": [
+        {
+          "text": "A son took his money and ran far away from home.",
+          "icon": "walk",
+          "audio": "st_prodigal-son_1.mp3"
+        },
+        {
+          "text": "He spent it all. Soon he was hungry and sad.",
+          "icon": "sad",
+          "audio": "st_prodigal-son_2.mp3"
+        },
+        {
+          "text": "He thought: I will go home and say I'm sorry.",
+          "icon": "heart-mend",
+          "audio": "st_prodigal-son_3.mp3"
+        },
+        {
+          "text": "His dad saw him far away and ran to hug him!",
+          "icon": "hug",
+          "audio": "st_prodigal-son_4.mp3"
+        },
+        {
+          "text": "They had a party. Dad said: my son was lost, now he's found.",
+          "icon": "happy",
+          "audio": "st_prodigal-son_5.mp3"
+        }
+      ],
+      "moral": "When you say sorry, God runs to hug you. Always.",
+      "moralAudio": "st_prodigal-son_m.mp3"
+    },
+    {
+      "id": "two-houses",
+      "title": "Two Houses",
+      "ref": "Matthew 7:24-27",
+      "icon": "house",
+      "pages": [
+        {
+          "text": "Jesus told about two builders.",
+          "icon": "blocks",
+          "audio": "st_two-houses_1.mp3"
+        },
+        {
+          "text": "One built his house on sand. Easy and fast!",
+          "icon": "sand",
+          "audio": "st_two-houses_2.mp3"
+        },
+        {
+          "text": "The other built on rock. It took longer.",
+          "icon": "rock",
+          "audio": "st_two-houses_3.mp3"
+        },
+        {
+          "text": "Rain came, wind blew. The sand house fell down. Splash!",
+          "icon": "storm",
+          "audio": "st_two-houses_4.mp3"
+        },
+        {
+          "text": "The rock house stood strong. Jesus said: listen to my words, and you are on rock.",
+          "icon": "house",
+          "audio": "st_two-houses_5.mp3"
+        }
+      ],
+      "moral": "Praying every day builds your house on rock.",
+      "moralAudio": "st_two-houses_m.mp3"
+    },
+    {
+      "id": "sower",
+      "title": "The Farmer and the Seeds",
+      "ref": "Matthew 13:3-9",
+      "icon": "seeds",
+      "pages": [
+        {
+          "text": "A farmer threw seeds everywhere.",
+          "icon": "seeds",
+          "audio": "st_sower_1.mp3"
+        },
+        {
+          "text": "Some fell on the path. Birds ate them.",
+          "icon": "bird",
+          "audio": "st_sower_2.mp3"
+        },
+        {
+          "text": "Some fell on rocks. They dried up in the sun.",
+          "icon": "rock",
+          "audio": "st_sower_3.mp3"
+        },
+        {
+          "text": "Some fell in weeds and got squished.",
+          "icon": "bush",
+          "audio": "st_sower_4.mp3"
+        },
+        {
+          "text": "Some fell on good soil and grew tall. A hundred times more!",
+          "icon": "sprout",
+          "audio": "st_sower_5.mp3"
+        }
+      ],
+      "moral": "Keep your heart like good soil: listen, and God's words will grow.",
+      "moralAudio": "st_sower_m.mp3"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "pond",
+      "title": "The Pond",
+      "icon": "lantern",
+      "background": "meadow",
+      "time": "auto",
+      "unlock": {}
+    },
+    {
+      "id": "bedroom",
+      "title": "My Room",
+      "icon": "bed",
+      "background": "bedroom",
+      "time": "auto",
+      "unlock": {},
+      "prayerId": "place-bedroom"
+    },
+    {
+      "id": "kitchen",
+      "title": "The Kitchen",
+      "icon": "plate",
+      "background": "kitchen",
+      "time": "day",
+      "unlock": {},
+      "prayerId": "grace-god-is-great"
+    },
+    {
+      "id": "garden",
+      "title": "The Garden",
+      "icon": "sprout",
+      "background": "garden",
+      "time": "day",
+      "unlock": {
+        "lessonId": "w1d2"
+      },
+      "prayerId": "place-garden"
+    },
+    {
+      "id": "park",
+      "title": "The Park",
+      "icon": "tree",
+      "background": "park",
+      "time": "day",
+      "unlock": {
+        "lessonId": "w1d4"
+      },
+      "prayerId": "place-park"
+    },
+    {
+      "id": "city",
+      "title": "The City",
+      "icon": "city",
+      "background": "city",
+      "time": "auto",
+      "unlock": {
+        "lessonId": "w2d1"
+      },
+      "prayerId": "place-city"
+    },
+    {
+      "id": "school",
+      "title": "School",
+      "icon": "school",
+      "background": "school",
+      "time": "day",
+      "unlock": {
+        "lessonId": "w2d3"
+      },
+      "prayerId": "place-school"
+    },
+    {
+      "id": "car",
+      "title": "The Car",
+      "icon": "car",
+      "background": "car",
+      "time": "day",
+      "unlock": {
+        "lessonId": "w3d1"
+      },
+      "prayerId": "place-car"
+    }
+  ]
 }

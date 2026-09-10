@@ -29,6 +29,15 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   dup(pack.prayers.map((p) => p.id), "prayers");
   dup(pack.minigames.map((m) => m.id), "minigames");
   dup(pack.rewards.map((r) => r.id), "rewards");
+  dup(pack.stories.map((st) => st.id), "stories");
+  dup(pack.scenes.map((sc) => sc.id), "scenes");
+  const stories = new Set(pack.stories.map((st) => st.id));
+  const scenes = new Set(pack.scenes.map((sc) => sc.id));
+  for (const st of pack.stories) for (const [i, pg] of st.pages.entries()) if (countWords(pg.text) > 22) issues.push({ path: `stories.${st.id}.pages.${i}`, message: "story page > 22 words; split the page" });
+  for (const sc of pack.scenes) {
+    if (sc.prayerId && !prayers.has(sc.prayerId)) issues.push({ path: `scenes.${sc.id}.prayerId`, message: `unknown prayer "${sc.prayerId}"` });
+    if (sc.unlock.lessonId && !lessons.has(sc.unlock.lessonId)) issues.push({ path: `scenes.${sc.id}.unlock`, message: `unknown lesson "${sc.unlock.lessonId}"` });
+  }
 
   for (const p of pack.prayers) {
     if (!skills.has(p.skillId)) issues.push({ path: `prayers.${p.id}.skillId`, message: `unknown skill "${p.skillId}"` });
@@ -57,7 +66,9 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
         if (!minigames.has(b.minigameId)) issues.push({ path: bat, message: `unknown minigame "${b.minigameId}"` });
         usedMinigames.add(b.minigameId);
       }
+      if (b.type === "story" && !stories.has(b.storyId)) issues.push({ path: bat, message: `unknown story "${b.storyId}"` });
     }
+    if (l.scene && !scenes.has(l.scene)) issues.push({ path: `${at}.scene`, message: `unknown scene "${l.scene}"` });
     if (!l.beats.some((b) => b.type === "reward")) issues.push({ path: at, message: "lesson has no reward beat" });
   }
   for (const id of minigames.keys()) if (!usedMinigames.has(id)) issues.push({ path: `minigames.${id}`, message: "minigame not referenced by any lesson" });
@@ -122,6 +133,10 @@ export function listAudio(pack: PackT): string[] {
   const add = (a?: string) => a && out.add(a);
   for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b) add(b.audio);
   for (const p of pack.prayers) for (const line of p.lines) add(line.audio);
+  for (const st of pack.stories) {
+    for (const pg of st.pages) add(pg.audio);
+    add(st.moralAudio);
+  }
   for (const m of pack.minigames) {
     add(m.prompt.audio);
     if ("successLine" in m) add(m.successLine.audio);

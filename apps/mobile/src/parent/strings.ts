@@ -31,6 +31,8 @@ export const P = {
     note: "Note for Capy (e.g. \"Grandpa's surgery Tuesday\")",
     remove: "Remove",
     progress: "This week",
+    freePlay: "Free play (no daily limit)",
+    freePlayHint: "Normally one Prayer Moment unlocks per day. Turn this on to try everything at once.",
     premium: "Premium (sandbox)",
     premiumHint: "Store purchases arrive with the RevenueCat build. This switch only simulates the entitlement.",
     deleteData: "Delete my child's data",

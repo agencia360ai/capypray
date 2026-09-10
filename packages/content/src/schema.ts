@@ -131,6 +131,8 @@ export const Beat = z.discriminatedUnion("type", [
     clip: AvatarClip.default("think"),
     options: z.array(z.object({ id: ID, label: z.string().max(30), icon: z.string() })).min(2).max(8),
   }),
+  // Capy tells a Bible story / parable page by page (pack.stories)
+  z.object({ type: z.literal("story"), storyId: ID }),
   z.object({ type: z.literal("parent_prompt"), text: z.string().max(400) }),
   z.object({ type: z.literal("lights_out"), seconds: z.number().int().min(10).max(120).default(30), text: z.string().max(140), audio: Audio.optional() }),
 ]);
@@ -145,9 +147,38 @@ export const Lesson = z.object({
   free: z.boolean().default(false),
   // "any" = curriculum lesson (needs week/day); "bedtime"/"morning" = routine, replayable daily
   routine: z.enum(["any", "morning", "bedtime", "intro"]).default("any"),
-  beats: z.array(Beat).min(3).max(20),
+  /** where this Prayer Moment happens (pack.scenes); default: the pond */
+  scene: ID.optional(),
+  beats: z.array(Beat).min(3).max(24),
 });
 export type Lesson = z.infer<typeof Lesson>;
+
+export const Story = z.object({
+  id: ID,
+  title: z.string().max(40),
+  /** scripture reference shown to grown-ups (e.g. "Luke 15:3-7") */
+  ref: z.string().max(40),
+  icon: z.string(),
+  pages: z.array(z.object({ text: z.string().max(140), icon: z.string(), audio: Audio.optional() })).min(2).max(8),
+  /** the one-line takeaway Capy says at the end */
+  moral: z.string().max(140),
+  moralAudio: Audio.optional(),
+});
+export type Story = z.infer<typeof Story>;
+
+/** A place Capy can be: background art + time of day + the short prayer for that place. */
+export const Scene = z.object({
+  id: ID,
+  title: z.string().max(30),
+  icon: z.string(),
+  /** background id (apps/mobile/src/ui/backgrounds.ts); "-night" variant is used when night */
+  background: ID,
+  time: z.enum(["day", "night", "auto"]).default("auto"),
+  prayerId: ID.optional(),
+  /** unlocked by completing this lesson; omit = always open */
+  unlock: z.object({ lessonId: ID.optional(), beacons: z.number().int().min(0).optional() }).default({}),
+});
+export type Scene = z.infer<typeof Scene>;
 
 export const Reward = z.object({
   id: ID,
@@ -177,6 +208,17 @@ export const UiStrings = z.object({
   lanternsTitle: z.string().max(40),
   rewardsTitle: z.string().max(40),
   biomesTitle: z.string().max(40),
+  /** lobby */
+  todayTitle: z.string().max(40),
+  storiesTitle: z.string().max(40),
+  placesTitle: z.string().max(40),
+  pondTitle: z.string().max(40),
+  bedtimeTitle: z.string().max(40),
+  comeBackTomorrow: z.string().max(80),
+  tomorrowHint: z.string().max(120),
+  storyPage: z.string().max(20),
+  theEnd: z.string().max(30),
+  locked: z.string().max(30),
   /** Capy's spoken hints when the kid stalls (audio-first guidance, GDD §3 "UX audio-first") */
   nudgeTap: z.string().max(80),
   nudgeRepeat: z.string().max(80),
@@ -198,6 +240,8 @@ export const Pack = z.object({
   lessons: z.array(Lesson).min(1),
   prayers: z.array(Prayer).min(1),
   minigames: z.array(Minigame),
+  stories: z.array(Story).default([]),
+  scenes: z.array(Scene).default([]),
   rewards: z.array(Reward),
   people: z.object({ defaults: z.array(z.string()).min(1), friends: z.array(z.string()).min(1).default(["bird", "duck", "frog", "turtle", "bunny", "fish"]) }),
   ui: UiStrings,

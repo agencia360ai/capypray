@@ -23,7 +23,7 @@ const manifestPath = join(audioDir, "manifest.json");
 const manifest: Record<string, string> = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : {};
 
 // Variables are spoken with a neutral placeholder in v1 ("friend"); the kid's name is shown in the subtitle only.
-const SPOKEN_VARS = { kidName: "friend", person: "someone you love", thankfulFor: "something good", mistake: "what I did", feeling: "this way", need: "what I need" };
+const SPOKEN_VARS = { kidName: "friend", person: "someone you love", thankfulFor: "something good", favorite: "Wow", mistake: "what I did", feeling: "this way", need: "what I need" };
 
 const lines: Array<{ file: string; text: string }> = [];
 for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b && b.audio && "text" in b) lines.push({ file: b.audio, text: b.text });

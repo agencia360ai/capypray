@@ -112,6 +112,10 @@ function Corner() {
         <Text style={styles.label}>{P.corner.premium}</Text>
         <Switch value={kid.premium} onValueChange={kid.setPremium} trackColor={{ true: "#FFB84D" }} />
       </View>
+      <View style={styles.rowBetween}>
+        <Text style={styles.label}>{P.corner.freePlay}</Text>
+        <Switch value={kid.freePlay} onValueChange={kid.setFreePlay} trackColor={{ true: "#FFB84D" }} />
+      </View>
       <Text style={styles.hint}>{P.corner.premiumHint}</Text>
 
       <Text style={styles.hint}>{P.corner.privacy}</Text>

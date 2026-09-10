@@ -9,7 +9,10 @@ describe("christian-us-en-v1", () => {
   it("validates", () => {
     const { pack, issues } = validatePack(load());
     expect(issues).toEqual([]);
-    expect(pack?.lessons.filter((l) => l.routine === "any").map((l) => l.id)).toEqual([...[1, 2, 3, 4].flatMap((w) => [1, 2, 3, 4, 5, 6, 7].map((d) => `w${w}d${d}`))]);
+    const world1 = new Set(pack?.worlds[0]?.weeks);
+    expect(pack?.lessons.filter((l) => l.routine === "any" && world1.has(l.week!)).map((l) => l.id)).toEqual([...[1, 2, 3, 4].flatMap((w) => [1, 2, 3, 4, 5, 6, 7].map((d) => `w${w}d${d}`))]);
+    expect(pack?.stories.length).toBeGreaterThanOrEqual(8);
+    expect(pack?.scenes.map((sc) => sc.id)).toContain("kitchen");
     expect(pack?.routines.bedtime.lessonId).toBe("bedtime-w1");
   });
 
@@ -33,8 +36,8 @@ describe("validatePack referential checks", () => {
   it("catches unknown prayer and minigame ids", () => {
     const raw = load();
     const w1d1 = raw.lessons.find((l: { id: string }) => l.id === "w1d1");
-    w1d1.beats[2].prayerId = "nope";
-    w1d1.beats[3].minigameId = "nope";
+    w1d1.beats.find((b: { type: string }) => b.type === "repeat_after_me").prayerId = "nope";
+    w1d1.beats.find((b: { type: string }) => b.type === "minigame").minigameId = "nope";
     const { issues } = validatePack(raw);
     expect(issues.map((i) => i.message)).toEqual(expect.arrayContaining([expect.stringContaining('unknown prayer "nope"'), expect.stringContaining('unknown minigame "nope"')]));
   });

@@ -1,4 +1,4 @@
-import type { Beat, Lesson, Pack, Prayer } from "@capy/content";
+import type { Beat, Lesson, Pack, Prayer, Story } from "@capy/content";
 import { interpolate } from "@capy/content";
 
 // Pure, testable lesson runner (GDD §4.1, §6.3). UI subscribes; avatar commands are emitted as effects.
@@ -11,6 +11,7 @@ export type Step =
   | { kind: "repeat"; prayer: Prayer; lineIndex: number; text: string; audio?: string; clip: string }
   | { kind: "minigame"; minigameId: string }
   | { kind: "listen"; seconds: number; text: string; audio?: string; clip: string }
+  | { kind: "story"; story: Story; pageIndex: number; text: string; icon: string; audio?: string; last: boolean }
   | { kind: "choose_people"; min: number; max: number; text: string; audio?: string }
   | { kind: "reward"; lanterns: number }
   | { kind: "ask"; key: AskKey; text: string; audio?: string; clip: string; options: { id: string; label: string; icon: string }[] }
@@ -30,6 +31,7 @@ export type AvatarEffect =
 export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now = () => Date.now()) {
   const vars: Vars = { ...initialVars };
   const prayers = new Map(pack.prayers.map((p) => [p.id, p]));
+  const stories = new Map(pack.stories.map((st) => [st.id, st]));
   let state: RunnerState = { beatIndex: -1, lineIndex: 0, step: { kind: "done" }, lanternsEarned: 0, startedAt: now() };
 
   const buildStep = (beat: Beat, lineIndex: number): Step => {
@@ -43,6 +45,12 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
       }
       case "minigame":
         return { kind: "minigame", minigameId: beat.minigameId };
+      case "story": {
+        const story = stories.get(beat.storyId)!;
+        const last = lineIndex >= story.pages.length; // one extra "page" for the moral
+        const page = story.pages[Math.min(lineIndex, story.pages.length - 1)]!;
+        return { kind: "story", story, pageIndex: lineIndex, text: last ? story.moral : page.text, icon: last ? story.icon : page.icon, audio: last ? story.moralAudio : page.audio, last };
+      }
       case "listen_timer":
         return { kind: "listen", seconds: beat.seconds, text: beat.text, audio: beat.audio, clip: beat.clip };
       case "choose_people":
@@ -66,6 +74,8 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
         return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
       case "listen":
         return [{ type: "play", clip: step.clip, loop: true }];
+      case "story":
+        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.last ? "heart" : step.pageIndex % 2 ? "listen_nod" : "think" }];
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
       case "ask":
@@ -87,6 +97,13 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
     if (cur?.type === "repeat_after_me") {
       const prayer = prayers.get(cur.prayerId)!;
       if (state.lineIndex + 1 < prayer.lines.length) {
+        state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1) };
+        return { state, effects: effectsFor(state.step) };
+      }
+    }
+    if (cur?.type === "story") {
+      const story = stories.get(cur.storyId)!;
+      if (state.lineIndex < story.pages.length) {
         state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1) };
         return { state, effects: effectsFor(state.step) };
       }

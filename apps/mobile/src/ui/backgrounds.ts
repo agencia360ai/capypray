@@ -7,6 +7,13 @@ const BACKGROUNDS: Record<string, ImageSourcePropType> = {
   meadow: require("../../assets/backgrounds/meadow.jpg"),
   river: require("../../assets/backgrounds/river.jpg"),
   mountain: require("../../assets/backgrounds/mountain.jpg"),
+  bedroom: require("../../assets/backgrounds/bedroom.jpg"),
+  kitchen: require("../../assets/backgrounds/kitchen.jpg"),
+  garden: require("../../assets/backgrounds/garden.jpg"),
+  park: require("../../assets/backgrounds/park.jpg"),
+  city: require("../../assets/backgrounds/city.jpg"),
+  school: require("../../assets/backgrounds/school.jpg"),
+  car: require("../../assets/backgrounds/car.jpg"),
 };
 /* eslint-enable @typescript-eslint/no-require-imports */
 

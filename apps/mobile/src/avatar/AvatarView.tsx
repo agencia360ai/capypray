@@ -38,7 +38,7 @@ export const useAvatar = () => {
   return r;
 };
 
-type StageState = { biome: string; dark: boolean };
+type StageState = { biome: string; dark: boolean; night: boolean };
 const StageCtx = createContext<{ stage: StageState; setStage: (s: Partial<StageState>) => void } | null>(null);
 export const useStage = () => {
   const s = useContext(StageCtx);
@@ -51,7 +51,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
   const webview = useRef<WebView>(null);
   const [uri, setUri] = useState<string | null>(null);
   const [status, setStatus] = useState("asset…");
-  const [stage, setStageState] = useState<StageState>({ biome: "meadow", dark: false });
+  const [stage, setStageState] = useState<StageState>({ biome: "meadow", dark: false, night: false });
   const setStage = (s: Partial<StageState>) => setStageState((p) => ({ ...p, ...s }));
   const renderer = useMemo(() => new WebViewAvatarRenderer((js) => webview.current?.injectJavaScript(js)), []);
   const fail = (message: string) => {
@@ -91,6 +91,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
       <StageCtx.Provider value={{ stage, setStage }}>
         <View style={styles.stage} pointerEvents="none">
           <ImageBackground source={backgroundFor(stage.biome)} style={styles.bg} resizeMode="cover">
+            {stage.night && !stage.dark && <View style={styles.nightTint} />}
             {stage.dark && <View style={styles.dim} />}
             {uri && (
               <WebView
@@ -141,6 +142,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
 const styles = StyleSheet.create({
   stage: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#FFF3DC" },
   bg: { flex: 1 },
+  nightTint: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(20,24,80,0.5)", zIndex: 1 },
   dim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(10,8,30,0.85)", zIndex: 1 },
   webview: { flex: 1, backgroundColor: "transparent" },
   debug: { position: "absolute", top: 100, left: 12, zIndex: 50, backgroundColor: "rgba(59,42,26,0.8)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },
