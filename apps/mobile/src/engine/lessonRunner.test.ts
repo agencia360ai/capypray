@@ -16,6 +16,14 @@ describe("lessonRunner", () => {
     expect(first.effects[1]).toMatchObject({ type: "speak", clip: "wave_hello" });
 
     r.next(); // second say
+    // story: one step per page, then the moral
+    const story = r.next();
+    expect(story.state.step.kind).toBe("story");
+    const pages = (story.state.step as { story: { pages: unknown[] } }).story.pages.length;
+    for (let i = 0; i < pages - 1; i++) expect(r.next().state.step.kind).toBe("story");
+    const moral = r.next();
+    expect(moral.state.step).toMatchObject({ kind: "story", last: true });
+    expect(moral.effects[0]).toMatchObject({ type: "speak", clip: "heart" });
     const rep1 = r.next();
     expect(rep1.state.step.kind).toBe("repeat");
     expect((rep1.state.step as { text: string }).text).toBe("Hi God, it's me, Mia.");
@@ -25,6 +33,9 @@ describe("lessonRunner", () => {
 
     const mg = r.next();
     expect(mg.state.step).toEqual({ kind: "minigame", minigameId: "mg_w1d1_who_listens" });
+    const quiet = r.next();
+    expect(quiet.state.step).toMatchObject({ kind: "listen", clip: "kneel_pray" });
+    expect(quiet.effects[0]).toMatchObject({ type: "play", clip: "kneel_pray", loop: true });
     const reward = r.next();
     expect(reward.state.step).toEqual({ kind: "reward", lanterns: 1 });
     r.next(); // closing say
