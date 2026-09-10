@@ -55,21 +55,19 @@ function KidHome() {
 
   return (
     <View style={styles.root}>
+      {/* Top bar = two things only: this week's lanterns (→ pond) and the grown-ups door. Beacons live in the pond,
+          the streak is part of Capy's greeting — a 4–8 year old can't read four unlabeled counters. */}
       <View style={styles.top}>
         <Link href="/pond" asChild>
           <Pressable style={styles.meter} onPress={() => void haptics.tap()}>
             <LanternMeter lanterns={lanterns} />
-            <Chip>⭐ {beacons}</Chip>
           </Pressable>
         </Link>
-        <View style={styles.topRight}>
-          <Chip>🔥 {streak.current}</Chip>
-          <Link href={{ pathname: "/parent/gate", params: { next: "corner" } }} asChild>
-            <Pressable style={styles.parent} hitSlop={8}>
-              <Text style={styles.parentText}>👤</Text>
-            </Pressable>
-          </Link>
-        </View>
+        <Link href={{ pathname: "/parent/gate", params: { next: "corner" } }} asChild>
+          <Pressable style={styles.parent} hitSlop={10} accessibilityLabel="Parents">
+            <Text style={styles.parentText}>👤</Text>
+          </Pressable>
+        </Link>
       </View>
 
       <View style={styles.spacer}>
@@ -81,7 +79,10 @@ function KidHome() {
 
       <View onLayout={onBottomLayout}>
         <View style={styles.sheet}>
-          <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
+          <View style={styles.helloRow}>
+            <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
+            {streak.current > 1 && pack.ui.streak ? <Chip style={styles.streak}>🔥 {interpolate(pack.ui.streak, { n: String(streak.current) })}</Chip> : null}
+          </View>
 
           {doneToday ? (
             <View style={styles.today}>
@@ -97,7 +98,7 @@ function KidHome() {
                 <Text style={styles.todayIcon}>{glyph(skill(nextLesson.skillId)?.icon)}</Text>
                 <View style={styles.todayText}>
                   <Text style={styles.todayEyebrow}>
-                    {pack.ui.todayTitle} · {world?.title} {nextLesson.week?.toUpperCase()}·{nextLesson.day}
+                    {pack.ui.todayTitle} · {world?.title}
                   </Text>
                   <Text style={styles.todayTitle}>{nextLesson.title}</Text>
                 </View>
@@ -138,10 +139,12 @@ const styles = StyleSheet.create({
   top: { paddingTop: 56, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   meter: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.75)", borderRadius: T.radius.pill, paddingVertical: 6, paddingHorizontal: 10 },
   topRight: { flexDirection: "row", alignItems: "center", gap: 8 },
-  parent: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.85)", alignItems: "center", justifyContent: "center" },
-  parentText: { fontSize: 18 },
+  parent: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.6)", alignItems: "center", justifyContent: "center", opacity: 0.8 },
+  parentText: { fontSize: 15 },
   sheet: { padding: 20, paddingBottom: 30, gap: 14, backgroundColor: "rgba(255,247,230,0.94)", borderTopLeftRadius: 32, borderTopRightRadius: 32, ...T.shadow },
+  helloRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" },
   hello: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink },
+  streak: { backgroundColor: "#FFE9C7" },
   today: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: T.color.paper, borderRadius: T.radius.lg, padding: 16, borderWidth: 3, borderColor: T.color.tan },
   todayLive: { backgroundColor: T.color.primary, borderWidth: 0, borderBottomWidth: 6, borderBottomColor: T.color.primaryDark },
   todayPressed: { borderBottomWidth: 2, transform: [{ translateY: 4 }] },

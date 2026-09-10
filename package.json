@@ -2,7 +2,9 @@
   "name": "capy-prayer",
   "private": true,
   "packageManager": "pnpm@10.15.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -13,7 +15,11 @@
     "avatar:preview": "pnpm --filter @capy/avatar-web dev"
   },
   "devDependencies": {
+    "@types/react": "~19.2.4",
     "turbo": "^2.5.0",
     "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "expo": "^57.0.21"
   }
 }

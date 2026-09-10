@@ -4239,7 +4239,8 @@
     "tomorrowHint": "Until then: a story, a place, or the pond?",
     "storyPage": "Next page",
     "theEnd": "The end",
-    "locked": "Soon"
+    "locked": "Soon",
+    "streak": "{n} days in a row!"
   },
   "routines": {
     "bedtime": {

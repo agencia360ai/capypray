@@ -7,12 +7,13 @@ import { speak } from "@/audio/voice";
 import { BigButton, Grid, IconCard, Sheet, SpeechBubble } from "./components";
 import { Arrow, Check, Mic } from "./art";
 import { Confetti } from "./Confetti";
+import { REWARD_BURST_MS } from "./RewardBurst";
 import * as haptics from "./haptics";
 import { getPack } from "@/content/pack";
 import { T } from "./theme";
 import { glyph } from "./icons";
 import { useAvatar } from "@/avatar/AvatarView";
-import { estimateMs } from "@/engine/lessonRunner";
+import { speakCapMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
@@ -21,7 +22,7 @@ import { track } from "@/backend/events";
 const HINT_MS = 1400;
 const NUDGE_MS = 9000;
 const AUTO_SAY_MS = 1800;
-const AUTO_REWARD_MS = 2600;
+const AUTO_REWARD_MS = REWARD_BURST_MS + 500; // the lantern lights up and floats to the pond first (RewardBurst on the stage)
 
 export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void }) {
   const avatar = useAvatar();
@@ -101,7 +102,7 @@ function useGuide(spoken: boolean, nudge?: string, enabled = true) {
     const a = setTimeout(() => setHint(true), HINT_MS);
     const b = setTimeout(() => {
       if (!nudge) return;
-      avatar.send({ type: "speak", durationMs: estimateMs(nudge) * 2, clip: "listen_nod" });
+      avatar.send({ type: "speak", durationMs: speakCapMs(nudge), clip: "listen_nod" });
       speak(nudge, { onDone: () => avatar.send({ type: "idle" }) });
     }, NUDGE_MS);
     return () => {
@@ -117,7 +118,8 @@ function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext
   const showHint = useGuide(spoken, autoMs ? undefined : nudge);
   return (
     <>
-      <SpeechBubble text={text} audio={audio} badge={badge} hint={hint} onSpoken={() => setSpoken(true)} />
+      {/* prayer lines: when Capy stops talking he settles into the full praying pose instead of idling, so the paws stay together for the whole prayer */}
+      <SpeechBubble text={text} audio={audio} badge={badge} hint={hint} rest={badge === "pray" ? "pray_hands" : undefined} onSpoken={() => setSpoken(true)} />
       <Sheet>
         <BigButton label={label} icon={icon} onPress={onNext} hint={showHint && !autoMs} autoAdvanceMs={spoken && autoMs ? autoMs : undefined} />
       </Sheet>
@@ -167,12 +169,15 @@ function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; aud
 }
 
 function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: string; onNext: () => void }) {
+  // confetti bursts when the lantern lights up (RewardBurst timing: scale-in spring + 250 ms), not on mount
+  const [burst, setBurst] = useState(0);
   useEffect(() => {
-    void haptics.success();
+    const t = setTimeout(() => setBurst(1), 900);
+    return () => clearTimeout(t);
   }, []);
   return (
     <>
-      <Confetti trigger={1} />
+      <Confetti trigger={burst} />
       <SpeechBubble text={`🏮 +${lanterns}`} badge="lantern" />
       <Sheet>
         <BigButton label={label} icon={<Check />} onPress={onNext} autoAdvanceMs={AUTO_REWARD_MS} />
@@ -194,7 +199,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const showHint = useGuide(spoken, pack.ui.nudgeChoose, !touched && !msg);
   // Capy reacts: talks the prompt, celebrates a win, droops on a miss (GDD §4.2 "reacción de Capy").
   useEffect(() => {
-    avatar.send({ type: "speak", durationMs: estimateMs(mg.prompt.text) * 2, clip: "think" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(mg.prompt.text), clip: "think" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mg.id]);
   const [startedAt] = useState(() => Date.now());
@@ -206,7 +211,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     setBurst((b) => b + 1);
     void haptics.success();
     avatar.send({ type: "mood", value: "happy" });
-    avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "celebrate" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "celebrate" });
     setTimeout(onDone, 1900);
   };
   const retry = (line: string) => {
@@ -215,7 +220,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     setMisses((m) => m + 1);
     setShake((n) => n + 1);
     void haptics.nope();
-    avatar.send({ type: "speak", durationMs: estimateMs(line) * 2, clip: "sad" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "sad" });
   };
   const bubble = (text: string, hint?: string) => (
     <>

@@ -69,20 +69,20 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
   const effectsFor = (step: Step): AvatarEffect[] => {
     switch (step.kind) {
       case "say":
-        return [...(step.mood ? [{ type: "mood", value: step.mood } as AvatarEffect] : []), { type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
+        return [...(step.mood ? [{ type: "mood", value: step.mood } as AvatarEffect] : []), { type: "speak", durationMs: speakCapMs(step.text), clip: step.clip }];
       case "repeat":
-        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
+        return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.clip }];
       case "listen":
         return [{ type: "play", clip: step.clip, loop: true }];
       case "story":
-        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.last ? "heart" : step.pageIndex % 2 ? "listen_nod" : "think" }];
+        return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.last ? "heart" : step.pageIndex % 2 ? "listen_nod" : "think" }];
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
       case "ask":
-        return [{ type: "speak", durationMs: estimateMs(step.text) * 2, clip: step.clip }];
+        return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.clip }];
       case "lights_out":
         // Capy says goodnight first; the screen triggers lights_out (yawn → lie down → sleep) when the voice ends
-        return [{ type: "mood", value: "sleepy" }, { type: "speak", durationMs: estimateMs(step.text) * 2 }];
+        return [{ type: "mood", value: "sleepy" }, { type: "speak", durationMs: speakCapMs(step.text) }];
       case "minigame":
       case "choose_people":
         return [{ type: "idle" }];
@@ -142,3 +142,10 @@ export function estimateMs(text: string): number {
   const words = text.trim().split(/\s+/).length;
   return Math.max(1500, Math.round((words / 2.6) * 1000));
 }
+
+/**
+ * Cap for the talk animation. The real end of a line comes from the voice (SpeechBubble sends idle/rest when the
+ * audio or TTS finishes); this only stops the mouth if that callback never arrives. Generous on purpose: device TTS
+ * at Capy's slow rate can run 2–3× the estimate, and a mouth that stops early reads as "the animation is broken".
+ */
+export const speakCapMs = (text: string) => estimateMs(text) * 3;

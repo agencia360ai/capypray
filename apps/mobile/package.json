@@ -43,5 +43,14 @@
     "@types/react": "~19.2.18",
     "typescript": "^6.0.3",
     "vitest": "^3.0.0"
+  },
+  "expo": {
+    "autolinking": {
+      "exclude": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-worklets"
+      ]
+    }
   }
 }

@@ -18,6 +18,8 @@ export type RNToWeb =
 export type WebToRN =
   | { type: "ready"; clips: string[] }
   | { type: "clipEnd"; clip: string }
+  /** A pack asked for a clip the rig does not have; `used` is the fallback that played (dev warning in the app). */
+  | { type: "clipFallback"; clip: string; used: string }
   | { type: "error"; message: string };
 
 declare global {

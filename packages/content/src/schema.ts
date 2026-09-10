@@ -219,6 +219,8 @@ export const UiStrings = z.object({
   storyPage: z.string().max(20),
   theEnd: z.string().max(30),
   locked: z.string().max(30),
+  /** streak, folded into the lobby greeting instead of a bare 🔥 chip ("{n} days in a row!"); optional */
+  streak: z.string().max(40).optional(),
   /** Capy's spoken hints when the kid stalls (audio-first guidance, GDD §3 "UX audio-first") */
   nudgeTap: z.string().max(80),
   nudgeRepeat: z.string().max(80),

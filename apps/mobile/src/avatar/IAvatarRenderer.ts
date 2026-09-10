@@ -14,7 +14,12 @@ export type AvatarCommand =
   /** Equip a reward skin (procedural accessory on the head/neck bone); id undefined = none. */
   | { type: "skin"; id?: string };
 
-export type AvatarEvent = { type: "ready"; clips: string[] } | { type: "clipEnd"; clip: string } | { type: "error"; message: string };
+export type AvatarEvent =
+  | { type: "ready"; clips: string[] }
+  | { type: "clipEnd"; clip: string }
+  /** A pack asked for a clip the rig does not have; `used` is the fallback that played (dev warning). */
+  | { type: "clipFallback"; clip: string; used: string }
+  | { type: "error"; message: string };
 
 export interface IAvatarRenderer {
   send(cmd: AvatarCommand): void;

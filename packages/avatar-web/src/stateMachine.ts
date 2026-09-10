@@ -10,7 +10,13 @@ import { buildGestureClips, buildProbeClip } from "./gestures";
 
 const FALLBACKS: Record<string, string> = clipMap.fallbacks;
 const LOOPS: Record<string, boolean> = Object.fromEntries(Object.entries(clipMap.clips).map(([k, v]) => [k, v.loop]));
-const TALK = ["talk_a", "talk_b"];
+// talk_b compresses the neck and warps the muzzle (reads as a rig deformation), so Capy only ever mouths with
+// talk_a — a friendly arm gesture with a stable face; beats that name talk_b fall through to this too.
+const TALK = ["talk_a"];
+/** Gestures Capy keeps while he talks (paws stay together for a whole prayer line): hold time in seconds. */
+const HOLD: Record<string, number> = { pray_hands: 2.6, heart: 1.6, think: 1.8 };
+/** Lying clips: the only ones where the camera is allowed to follow the body (CapyScene). */
+export const LYING = ["to_sleep", "sleep", "wake", "chill_lie"];
 const IDLE_BY_MOOD: Record<Mood, string[]> = {
   calm: ["idle_breathe", "idle_breathe", "idle_look"],
   happy: ["idle_look", "idle_breathe"],
@@ -27,8 +33,11 @@ export class CapyStateMachine {
   private speaking = false;
   private oneShotClip?: string;
   onClipEnd?: (clip: string) => void;
+  /** A requested clip is not in the rig and played a fallback (surfaced in dev so missing takes are not silent). */
+  onFallback?: (clip: string, used: string) => void;
 
   private gestures = new Map<string, THREE.AnimationAction>();
+  private holds = new Map<string, THREE.AnimationAction>();
   private gesture?: THREE.AnimationAction;
 
   constructor(root: THREE.Object3D, clips: THREE.AnimationClip[]) {
@@ -41,12 +50,21 @@ export class CapyStateMachine {
       a.setLoop(THREE.LoopOnce, 1);
       a.clampWhenFinished = false;
       this.gestures.set(c.name, a);
+      // "<gesture>:hold": the same clip cut before its release keys, clamped, so the pose stays up until gestureStop()
+      const hold = HOLD[c.name];
+      if (hold) {
+        const h = this.mixer.clipAction(THREE.AnimationUtils.subclip(c, `${c.name}:hold`, 0, Math.round(hold * 60), 60));
+        h.blendMode = THREE.AdditiveAnimationBlendMode;
+        h.setLoop(THREE.LoopOnce, 1);
+        h.clampWhenFinished = true;
+        this.holds.set(c.name, h);
+      }
     }
     this.mixer.addEventListener("finished", (e) => {
       const name = (e.action as THREE.AnimationAction).getClip().name;
-      if (this.gestures.has(name)) {
-        if (this.gesture?.getClip().name === name) this.gesture = undefined;
-        this.onClipEnd?.(name);
+      if (this.gestures.has(name) || name.endsWith(":hold")) {
+        if (this.gesture?.getClip().name === name && !name.endsWith(":hold")) this.gesture = undefined;
+        this.onClipEnd?.(name.replace(/:hold$/, ""));
         return;
       }
       const requested = this.oneShotClip ?? name;
@@ -66,14 +84,20 @@ export class CapyStateMachine {
     return [...this.actions.keys(), ...this.gestures.keys()];
   }
 
+  /** Name of the base clip playing now (undefined before the first idle). */
+  get currentClip() {
+    return this.current?.getClip().name;
+  }
+
   isGesture(clip: string) {
     return this.gestures.has(clip);
   }
 
-  /** Play a gesture on top of the current base clip. */
-  gesturePlay(name: string, opts: { loop?: boolean } = {}) {
-    const g = this.gestures.get(name);
+  /** Play a gesture on top of the current base clip. `hold` keeps the pose up (paws together) until gestureStop(). */
+  gesturePlay(name: string, opts: { loop?: boolean; hold?: boolean } = {}) {
+    const g = (opts.hold && this.holds.get(name)) || this.gestures.get(name);
     if (!g) return false;
+    if (this.gesture === g && opts.hold) return true; // already holding this pose: don't restart it
     if (this.gesture && this.gesture !== g) this.gesture.fadeOut(0.2);
     g.reset();
     g.setLoop(opts.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
@@ -103,20 +127,34 @@ export class CapyStateMachine {
   resolve(clip: string): string {
     let c = clip;
     for (let i = 0; i < 4 && !this.actions.has(c); i++) c = FALLBACKS[c] ?? "idle_breathe";
-    return this.actions.has(c) ? c : this.clipNames[0]!;
+    const used = this.actions.has(c) ? c : this.clipNames[0]!;
+    if (used !== clip && !this.gestures.has(clip)) this.onFallback?.(clip, used);
+    return used;
+  }
+
+  /** External cue (RN "play"): whatever Capy was saying is over; do this clip now. */
+  cue(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
+    this.speaking = false;
+    window.clearTimeout(this.speakTimeout);
+    const isGesture = this.gestures.has(clip) && !this.actions.has(clip + "_full");
+    if (!isGesture) this.gestureStop();
+    // a gesture cued after a line: the mouth must not keep moving under it
+    else if (this.current && TALK.includes(this.current.getClip().name)) this.idle();
+    return this.play(clip, opts);
   }
 
   play(clip: string, opts: { loop?: boolean; fade?: number } = {}) {
     if (!["yawn", "to_sleep", "sleep"].includes(clip)) this.sleepChain = false;
     if (!this.speaking) window.clearTimeout(this.speakTimeout);
-    if (this.gestures.has(clip) && !this.actions.has(clip)) {
+    // a baked full-body version of a gesture (Blender poses.py) wins when Capy is not talking
+    const full = !this.speaking && this.actions.has(clip + "_full") ? clip + "_full" : undefined;
+    if (!full && this.gestures.has(clip) && !this.actions.has(clip)) {
       // gesture: keep the base (or start an idle if none) and layer the gesture on top
       if (!this.current) this.idle();
       this.gesturePlay(clip, { loop: opts.loop });
       return clip;
     }
-    // a baked full-body version of a gesture (Blender poses.py) wins when Capy is not talking
-    const name = this.resolve(!this.speaking && this.actions.has(clip + "_full") ? clip + "_full" : clip);
+    const name = this.resolve(full ?? clip);
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
     const fade = opts.fade ?? 0.25;
@@ -144,15 +182,19 @@ export class CapyStateMachine {
     this.play(clip, { loop: clip !== "munch" && clip !== "yawn" });
   }
 
-  /** Talk for durationMs. With a lead gesture (wave, think, heart…) play it once, then keep talking. */
+  /**
+   * Talk for at most durationMs (a safety cap: the app sends idle/cue when the real voice ends).
+   * With a lead gesture (wave, think, heart…) play it once, then keep talking; hold gestures (pray_hands, heart,
+   * think) stay up for the whole line so the paws never drop mid-prayer.
+   */
   speak(durationMs: number, lead?: string) {
     if (lead && this.gestures.has(lead)) {
       this.speaking = true;
       this.sleepChain = false;
       window.clearTimeout(this.speakTimeout);
       this.speakTimeout = window.setTimeout(() => this.idle(), durationMs);
-      this.play(pick(TALK), { loop: true });
-      this.gesturePlay(lead);
+      if (!this.current || !TALK.includes(this.current.getClip().name)) this.play(pick(TALK), { loop: true });
+      this.gesturePlay(lead, { hold: lead in HOLD });
       return;
     }
     this.speaking = true;
