@@ -8,7 +8,7 @@ import * as haptics from "./haptics";
 import { HandPointer, Lantern } from "./art";
 
 /** Capy's line, drawn as a speech bubble whose tail points up at the avatar. */
-export function SpeechBubble({ text, hint, mute, shake, audio, badge, onSpoken }: { text: string; hint?: string; mute?: boolean; shake?: number; audio?: string; badge?: string; onSpoken?: () => void }) {
+export function SpeechBubble({ text, hint, mute, shake, audio, badge, rest, compact, onSpoken }: { text: string; hint?: string; mute?: boolean; shake?: number; audio?: string; badge?: string; /** clip Capy settles into when the line ends (prayer lines: paws stay together) instead of idle */ rest?: string; /** smaller bubble for dense screens (parent onboarding) */ compact?: boolean; onSpoken?: () => void }) {
   const pop = useRef(new Animated.Value(0.92)).current;
   const wobble = useRef(new Animated.Value(0)).current;
   const avatar = useAvatar();
@@ -34,22 +34,22 @@ export function SpeechBubble({ text, hint, mute, shake, audio, badge, onSpoken }
     const h = speak(text, {
       audio,
       onDone: () => {
-        avatar.send({ type: "idle" });
+        avatar.send(rest ? { type: "play", clip: rest, loop: true } : { type: "idle" });
         spoken.current?.();
       },
     });
     return () => h.cancel();
-  }, [text, mute, audio, avatar]);
+  }, [text, mute, audio, rest, avatar]);
   return (
     <Animated.View style={[styles.bubbleWrap, { transform: [{ scale: pop }, { translateX: wobble.interpolate({ inputRange: [-1, 1], outputRange: [-10, 10] }) }] }]}>
       <View style={styles.tail} />
-      <View style={styles.bubble}>
+      <View style={[styles.bubble, compact && styles.bubbleCompact]}>
         {badge ? (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{glyph(badge)}</Text>
           </View>
         ) : null}
-        <Text style={styles.bubbleText}>{text}</Text>
+        <Text style={[styles.bubbleText, compact && styles.bubbleTextCompact]}>{text}</Text>
         {hint ? <Text style={styles.bubbleHint}>{hint}</Text> : null}
       </View>
     </Animated.View>
@@ -123,21 +123,37 @@ export function TapHint({ style }: { style?: ViewStyle }) {
   );
 }
 
-/** Tappable picture card (minigames, get-to-know-you, people). */
+/** Tappable picture card (minigames, get-to-know-you, people). Squashes on press, pops when it becomes selected. */
 export function IconCard({ icon, label, onPress, selected, size = "md" }: { icon?: string; label: string; onPress: () => void; selected?: boolean; size?: "md" | "lg" }) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const wasSelected = useRef(!!selected);
+  useEffect(() => {
+    if (selected && !wasSelected.current) {
+      scale.setValue(0.92);
+      Animated.spring(scale, { toValue: 1.06, useNativeDriver: true, friction: 4, tension: 160 }).start();
+    } else if (!selected && wasSelected.current) {
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true, friction: 6 }).start();
+    }
+    wasSelected.current = !!selected;
+  }, [selected, scale]);
+  const squash = (to: number) => Animated.spring(scale, { toValue: to, useNativeDriver: true, friction: 5, tension: 220 }).start();
   return (
-    <Pressable
-      onPress={() => {
-        void haptics.tap();
-        onPress();
-      }}
-      style={({ pressed }) => [styles.card, size === "lg" && styles.cardLg, selected && styles.cardOn, pressed && styles.cardPressed]}
-    >
-      <Text style={[styles.cardIcon, size === "lg" && styles.cardIconLg]}>{glyph(icon)}</Text>
-      <Text style={styles.cardLabel} numberOfLines={2}>
-        {label}
-      </Text>
-    </Pressable>
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Pressable
+        onPressIn={() => squash(0.94)}
+        onPressOut={() => squash(selected ? 1.06 : 1)}
+        onPress={() => {
+          void haptics.tap();
+          onPress();
+        }}
+        style={({ pressed }) => [styles.card, size === "lg" && styles.cardLg, selected && styles.cardOn, pressed && styles.cardPressed]}
+      >
+        <Text style={[styles.cardIcon, size === "lg" && styles.cardIconLg]}>{glyph(icon)}</Text>
+        <Text style={styles.cardLabel} numberOfLines={2}>
+          {label}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -161,9 +177,17 @@ export function Chip({ children, style }: { children: ReactNode; style?: ViewSty
   );
 }
 
-/** Bottom panel that sits over the stage. */
+/** Bottom panel that sits over the stage. Slides up when it mounts (each beat gets a fresh one), so a new step feels like it arrives. */
 export function Sheet({ children, style }: { children: ReactNode; style?: ViewStyle }) {
-  return <View style={[styles.sheet, style]}>{children}</View>;
+  const v = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.spring(v, { toValue: 1, useNativeDriver: true, friction: 8, tension: 70 }).start();
+  }, [v]);
+  return (
+    <Animated.View style={[styles.sheet, style, { opacity: v, transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [36, 0] }) }] }]}>
+      {children}
+    </Animated.View>
+  );
 }
 
 /** Cards pop in one after another (toy-box feel). Re-runs when the set of children changes. */
@@ -194,6 +218,8 @@ const styles = StyleSheet.create({
   tail: { width: 22, height: 22, backgroundColor: T.color.paper, transform: [{ rotate: "45deg" }], marginBottom: -14, borderRadius: 4 },
   bubble: { backgroundColor: T.color.paper, borderRadius: T.radius.lg, paddingVertical: 18, paddingHorizontal: 22, maxWidth: 420, ...T.shadow },
   bubbleText: { fontFamily: T.font.bold, fontSize: 26, lineHeight: 34, color: T.color.ink, textAlign: "center" },
+  bubbleCompact: { paddingVertical: 12, paddingHorizontal: 16 },
+  bubbleTextCompact: { fontSize: 19, lineHeight: 25 },
   badge: { position: "absolute", top: -14, left: -10, width: 40, height: 40, borderRadius: 20, backgroundColor: T.color.primary, borderWidth: 3, borderColor: T.color.paper, alignItems: "center", justifyContent: "center", ...T.shadow },
   badgeText: { fontSize: 18 },
   bigRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 },
@@ -211,7 +237,7 @@ const styles = StyleSheet.create({
   bigTextGhost: { color: T.color.brown, fontSize: 17 },
   card: { width: 104, paddingVertical: 12, paddingHorizontal: 8, borderRadius: T.radius.md, backgroundColor: T.color.paper, borderWidth: 3, borderColor: T.color.tan, alignItems: "center", gap: 6, borderBottomWidth: 6 },
   cardLg: { width: 132, paddingVertical: 16 },
-  cardOn: { borderColor: T.color.primary, backgroundColor: "#FFF5E0", transform: [{ scale: 1.04 }] },
+  cardOn: { borderColor: T.color.primary, backgroundColor: "#FFF5E0" },
   cardPressed: { borderBottomWidth: 3, transform: [{ translateY: 3 }] },
   cardIcon: { fontSize: 36 },
   cardIconLg: { fontSize: 48 },

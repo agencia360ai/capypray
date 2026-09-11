@@ -4,10 +4,13 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
+    "prestart": "node ../../tools/audio-manifest.mjs",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "pretypecheck": "node ../../tools/audio-manifest.mjs",
     "typecheck": "tsc --noEmit",
+    "pretest": "node ../../tools/audio-manifest.mjs",
     "test": "vitest run"
   },
   "dependencies": {
@@ -43,5 +46,14 @@
     "@types/react": "~19.2.18",
     "typescript": "^6.0.3",
     "vitest": "^3.0.0"
+  },
+  "expo": {
+    "autolinking": {
+      "exclude": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-worklets"
+      ]
+    }
   }
 }

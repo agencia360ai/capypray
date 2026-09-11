@@ -5,14 +5,19 @@ import { Lantern, Sparkle } from "./art";
 
 // Living pond: this week's lit lanterns float beside Capy (GDD §4.1 "se enciende 1 linterna en el Estanque"),
 // fireflies drift at night. Pure Animated, no native deps.
-export function StageDecor({ night }: { night?: boolean }) {
+/** Where the week's 7 lanterns float: x as a fraction of the stage width from the centre, y from the bottom (px). */
+export const LANTERN_SLOTS = [-0.44, 0.44, -0.3, 0.3, -0.18, 0.18, 0] as const;
+export const lanternSlot = (i: number) => ({ x: LANTERN_SLOTS[i % LANTERN_SLOTS.length]!, y: 12 + (i % 3) * 14 });
+
+/** `extraLit`: lanterns earned in the running lesson (not yet saved) so the one that just flew in stays lit. */
+export function StageDecor({ night, extraLit = 0 }: { night?: boolean; extraLit?: number }) {
   const lanterns = useKid((s) => s.lanterns);
-  const lit = lanterns % 7;
-  const slots = useMemo(() => [-0.44, 0.44, -0.3, 0.3, -0.18, 0.18, 0], []);
+  const lit = (lanterns % 7) + extraLit;
+  const slots = useMemo(() => [...LANTERN_SLOTS], []);
   return (
     <View pointerEvents="none" style={styles.layer}>
-      {slots.slice(0, 7).map((x, i) => (
-        <Float key={i} x={x} y={12 + (i % 3) * 14} delay={i * 380} amp={5 + (i % 2) * 3}>
+      {slots.map((x, i) => (
+        <Float key={i} x={x} y={lanternSlot(i).y} delay={i * 380} amp={5 + (i % 2) * 3}>
           <Lantern size={22 + (i % 2) * 4} lit={i < lit} />
         </Float>
       ))}

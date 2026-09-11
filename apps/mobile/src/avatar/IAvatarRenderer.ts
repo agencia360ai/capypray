@@ -6,7 +6,7 @@ export type AvatarCommand =
   | { type: "play"; clip: string; loop?: boolean; fade?: number }
   | { type: "speak"; durationMs: number; clip?: string; visemes?: Array<{ t: number; v: number }> }
   /** Fractions (0..1) of the stage covered by UI at the top/bottom; Capy is framed in the free band. */
-  | { type: "viewport"; top: number; bottom: number }
+  | { type: "viewport"; top: number; bottom: number; align?: "center" | "bottom" }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }
@@ -14,7 +14,12 @@ export type AvatarCommand =
   /** Equip a reward skin (procedural accessory on the head/neck bone); id undefined = none. */
   | { type: "skin"; id?: string };
 
-export type AvatarEvent = { type: "ready"; clips: string[] } | { type: "clipEnd"; clip: string } | { type: "error"; message: string };
+export type AvatarEvent =
+  | { type: "ready"; clips: string[] }
+  | { type: "clipEnd"; clip: string }
+  /** A pack asked for a clip the rig does not have; `used` is the fallback that played (dev warning). */
+  | { type: "clipFallback"; clip: string; used: string }
+  | { type: "error"; message: string };
 
 export interface IAvatarRenderer {
   send(cmd: AvatarCommand): void;

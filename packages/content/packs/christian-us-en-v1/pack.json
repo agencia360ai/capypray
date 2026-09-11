@@ -4257,7 +4257,8 @@
         "text": "Splash! I love the pond.",
         "audio": "tap_04.mp3"
       }
-    ]
+    ],
+    "streak": "{n} days in a row!"
   },
   "routines": {
     "bedtime": {

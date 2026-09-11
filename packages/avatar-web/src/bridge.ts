@@ -7,7 +7,7 @@ export type RNToWeb =
   | { type: "load"; glb: string; skin?: string }
   | { type: "play"; clip: string; loop?: boolean; fade?: number }
   | { type: "speak"; durationMs: number; clip?: string; visemes?: Array<{ t: number; v: number }> }
-  | { type: "viewport"; top: number; bottom: number }
+  | { type: "viewport"; top: number; bottom: number; align?: "center" | "bottom" }
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }
@@ -18,6 +18,8 @@ export type RNToWeb =
 export type WebToRN =
   | { type: "ready"; clips: string[] }
   | { type: "clipEnd"; clip: string }
+  /** A pack asked for a clip the rig does not have; `used` is the fallback that played (dev warning in the app). */
+  | { type: "clipFallback"; clip: string; used: string }
   | { type: "error"; message: string };
 
 declare global {

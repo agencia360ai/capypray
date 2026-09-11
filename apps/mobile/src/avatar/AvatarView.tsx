@@ -38,6 +38,22 @@ export const useAvatar = () => {
   return r;
 };
 
+/** True once the WebView has parsed the model (first launch takes 1–2 s); screens that show Capy right away use it for a placeholder. */
+export function useAvatarReady() {
+  const r = useAvatar();
+  const [ready, setReady] = useState(r.ready);
+  useEffect(() => {
+    if (r.ready) {
+      setReady(true);
+      return;
+    }
+    return r.onEvent((e) => {
+      if (e.type === "ready") setReady(true);
+    });
+  }, [r]);
+  return ready;
+}
+
 type StageState = { biome: string; dark: boolean; night: boolean };
 const StageCtx = createContext<{ stage: StageState; setStage: (s: Partial<StageState>) => void } | null>(null);
 export const useStage = () => {
@@ -80,6 +96,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
         renderer.markReady();
       }
       if (msg.type === "error") fail(msg.message);
+      if (msg.type === "clipFallback" && __DEV__) console.warn(`[avatar] clip "${msg.clip}" is not in the rig, played "${msg.used}" (tools/avatar/clip-map.json)`);
       renderer.events.emit(msg);
     } catch {
       fail("bad message from webview");

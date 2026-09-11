@@ -1,9 +1,9 @@
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, ContactShadows } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { CapyStateMachine } from "./stateMachine";
+import { CapyStateMachine, LYING } from "./stateMachine";
 import { SkinManager } from "./skins";
 import type { RNToWeb, WebToRN } from "./bridge";
 
@@ -67,18 +67,19 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
 
   useEffect(() => {
     sm.onClipEnd = (clip) => onMessage({ type: "clipEnd", clip });
+    sm.onFallback = (clip, used) => onMessage({ type: "clipFallback", clip, used });
     sm.idle();
     register({
       send: (m) => {
         switch (m.type) {
           case "play":
-            sm.play(m.clip, { loop: m.loop, fade: m.fade });
+            sm.cue(m.clip, { loop: m.loop, fade: m.fade });
             break;
           case "speak":
             sm.speak(m.durationMs, m.clip);
             break;
           case "viewport":
-            insets.current = { top: Math.max(0, Math.min(0.6, m.top)), bottom: Math.max(0, Math.min(0.8, m.bottom)) };
+            insets.current = { top: Math.max(0, Math.min(0.6, m.top)), bottom: Math.max(0, Math.min(0.8, m.bottom)), align: m.align ?? "center" };
             break;
           case "idle":
             sm.idle();
@@ -113,40 +114,51 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
   }, [sm, skins, scene, onMessage, register]);
 
   const frame = useRef(0);
-  const insets = useRef({ top: 0.1, bottom: 0.45 });
+  const insets = useRef<{ top: number; bottom: number; align: "center" | "bottom" }>({ top: 0.1, bottom: 0.45, align: "center" });
   const bounds = useRef(new THREE.Box3());
   const target = useRef(new THREE.Vector3(0, 0.8, 0));
+  const camPos = useRef(new THREE.Vector3(0, 0.95, 4.2));
   const tmp = useMemo(() => new THREE.Vector3(), []);
+  // Standing Capy always gets the same frame (feet on y=0, 1.6 tall): the camera does not chase hip sway,
+  // hops or arm swings, so he reads as planted on the ground. Only lying clips (sleep chain) are followed,
+  // because the body leaves that box.
+  // A little headroom above the hair tuft and a strip of ground under the paws (the contact shadow lives there).
+  const STAND = useMemo(() => new THREE.Box3(new THREE.Vector3(-0.7, -0.14, -0.4), new THREE.Vector3(0.7, 1.82, 0.4)), []);
 
   useFrame(({ camera }, dt) => {
     sm.update(Math.min(dt, 1 / 20));
-    // auto-framing: follow the skeleton so lying-down clips (sleep, chill_lie) stay in view
-    if (frame.current++ % 6 === 0) {
+    const lying = LYING.includes(sm.currentClip ?? "");
+    if (lying && frame.current++ % 6 === 0) {
       const box = bounds.current.makeEmpty();
       scene.traverse((o) => {
         const m = o as THREE.SkinnedMesh;
         if (m.isSkinnedMesh) for (const b of m.skeleton.bones) box.expandByPoint(b.getWorldPosition(tmp));
       });
       if (!box.isEmpty()) box.expandByScalar(0.45);
-    }
-    const box = bounds.current;
-    if (!box.isEmpty()) {
-      const size = box.getSize(tmp);
-      const center = box.getCenter(new THREE.Vector3());
-      const persp = camera as THREE.PerspectiveCamera;
-      // frame Capy inside the band of the screen not covered by UI (RN sends viewport insets)
-      const { top, bottom } = insets.current;
-      const band = Math.max(0.3, 1 - top - bottom);
-      const tanHalf = Math.tan(THREE.MathUtils.degToRad(persp.fov) / 2);
-      const fit = Math.max(size.y, (size.x / persp.aspect) * band, 1.8);
-      const dist = THREE.MathUtils.clamp((fit / (2 * tanHalf * band)) * 1.12, 3.5, 12);
-      const ndcY = 1 - 2 * top - band; // band centre in NDC
-      const shift = ndcY * dist * tanHalf; // world units to move the look target down so Capy sits in the band
-      const k = frame.current < 30 ? 1 : 0.08; // snap on load, then follow smoothly
-      target.current.lerp(tmp.set(center.x, center.y - shift, center.z), k);
-      camera.position.lerp(tmp.set(target.current.x, target.current.y + 0.15, target.current.z + dist), k);
-      camera.lookAt(target.current);
-    }
+    } else if (!lying) frame.current++;
+    const box = lying && !bounds.current.isEmpty() ? bounds.current : STAND;
+    const size = box.getSize(tmp);
+    const center = box.getCenter(new THREE.Vector3());
+    const persp = camera as THREE.PerspectiveCamera;
+    // frame Capy inside the band of the screen not covered by UI (RN sends viewport insets)
+    const { top, bottom, align } = insets.current;
+    const band = Math.max(0.2, 1 - top - bottom);
+    const tanHalf = Math.tan(THREE.MathUtils.degToRad(persp.fov) / 2);
+    const fit = Math.max(size.y, (size.x / persp.aspect) * band, 1.8);
+    // far limit is generous: the onboarding leaves Capy a ~25 % band, which needs ~18 units to fit
+    const dist = THREE.MathUtils.clamp((fit / (2 * tanHalf * band)) * 1.02, 3.5, 24);
+    // where the box centre goes, in NDC: the band centre, or (align "bottom") resting on the band's lower edge
+    const boxNdc = size.y / (dist * tanHalf); // box height in NDC units (screen = 2)
+    const ndcY = align === "bottom" ? 2 * bottom - 1 + boxNdc / 2 + 0.01 : 1 - 2 * top - band;
+    const shift = ndcY * dist * tanHalf; // world units to move the look target down so Capy sits in the band
+    // snap on load; afterwards ease by wall-clock (frame-rate independent: ~0.5 s standing, ~1.2 s lying) so a slow
+    // Android WebView converges as fast as a 60 fps phone
+    const k = frame.current < 30 ? 1 : 1 - Math.exp(-dt * (lying ? 2.5 : 6));
+    target.current.lerp(tmp.set(center.x, center.y - shift, center.z), k);
+    // camera sits ~16° above the look target: a level camera sees the ground edge-on and the contact shadow vanishes
+    camPos.current.lerp(tmp.set(target.current.x, target.current.y + dist * 0.29, target.current.z + dist * 0.96), k);
+    camera.position.copy(camPos.current);
+    camera.lookAt(target.current);
     if (head.current) {
       // subtle head-follow, additive on top of the clip
       head.current.rotation.y += THREE.MathUtils.clamp(lookTarget.current.x, -1, 1) * 0.35;
@@ -155,6 +167,34 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
   });
 
   return <primitive ref={group} object={scene} />;
+}
+
+/**
+ * Ground contact: a painted soft ellipse under the paws (radial gradient texture on a flat plane). Costs nothing per
+ * frame — no extra render passes like drei's ContactShadows, which also never showed up on the WebView's low-power GL —
+ * and it is what glues Capy to the 2D biome behind the transparent canvas.
+ */
+function BlobShadow() {
+  const texture = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+    g.addColorStop(0, "rgba(60,35,15,0.55)");
+    g.addColorStop(0.45, "rgba(60,35,15,0.28)");
+    g.addColorStop(1, "rgba(60,35,15,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, []);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.004, 0.05]} renderOrder={-1}>
+      <planeGeometry args={[1.7, 0.9]} />
+      <meshBasicMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
+    </mesh>
+  );
 }
 
 export function CapyScene(props: Props) {
@@ -177,7 +217,7 @@ export function CapyScene(props: Props) {
       <directionalLight position={[-3, 2, -2]} intensity={0.6} color="#ffd9a8" />
       <Suspense fallback={null}>
         {props.gltf ? <CapyModel gltf={props.gltf} onMessage={props.onMessage} register={props.register} /> : props.glb ? <CapyModelFromUrl glb={props.glb} onMessage={props.onMessage} register={props.register} /> : null}
-        <ContactShadows position={[0, 0.001, 0]} opacity={0.35} scale={4} blur={2.2} far={2} />
+        <BlobShadow />
       </Suspense>
     </Canvas>
   );

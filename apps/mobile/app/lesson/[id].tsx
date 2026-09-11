@@ -13,6 +13,7 @@ import { track } from "@/backend/events";
 import { newlyUnlocked } from "@/store/rewards";
 import { LessonTrail } from "@/ui/LessonTrail";
 import { StageDecor } from "@/ui/StageDecor";
+import { RewardBurst, nextLanternSlot } from "@/ui/RewardBurst";
 import { biomeFor } from "@/store/rewards";
 import { isNight, sceneById } from "@/store/scenes";
 
@@ -98,7 +99,8 @@ export default function LessonScreen() {
         <LessonTrail lesson={lesson} index={Math.min(state.beatIndex, lesson.beats.length - 1)} />
       </View>
       <View style={styles.spacer}>
-        <StageDecor night={state.step.kind === "lights_out" || isNight(sceneById(pack, lesson.scene), kid.profile.bedtimeHour)} />
+        <StageDecor night={state.step.kind === "lights_out" || isNight(sceneById(pack, lesson.scene), kid.profile.bedtimeHour)} extraLit={state.lanternsEarned} />
+        {state.step.kind === "reward" && <RewardBurst key={state.beatIndex} slot={nextLanternSlot(kid.lanterns + state.lanternsEarned)} />}
       </View>
       <View onLayout={onBottomLayout}>
         <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />

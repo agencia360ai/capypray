@@ -21,7 +21,10 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
       if (sk) handle.current?.send({ type: "skin", id: sk });
       const g = q.get("gesture");
       if (g) setTimeout(() => handle.current?.send({ type: "play", clip: g }), 300);
-      handle.current?.send({ type: "viewport", top: 0, bottom: 0 });
+      // ?ui=top,bottom mimics the app's UI insets (e.g. ui=0.12,0.5 = lesson screen); default = full canvas
+      const [top = "0", bottom = "0"] = (q.get("ui") ?? "0,0").split(",");
+      handle.current?.send({ type: "viewport", top: Number(top), bottom: Number(bottom) });
+      (window as unknown as { __capyReady: boolean; __capySend: CapyHandle["send"] }).__capySend = (m) => handle.current?.send(m);
       (window as unknown as { __capyReady: boolean }).__capyReady = true;
     }
   }, []);

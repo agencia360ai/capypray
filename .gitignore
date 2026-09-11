@@ -19,3 +19,4 @@ packages/avatar-web/dist-*/
 apps/mobile/.env
 __pycache__/
 apps/mobile/assets/audio/
+apps/mobile/src/audio/manifest.ts
