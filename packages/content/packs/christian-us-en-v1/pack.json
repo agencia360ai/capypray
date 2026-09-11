@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -5222,6 +5222,28 @@
       "feeling": "a little unsure",
       "need": "what is on my heart",
       "favorite": "little things that make me smile"
+    },
+    "breathing": {
+      "prompt": {
+        "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+        "audio": "quiet_breathe_20.mp3"
+      },
+      "eyebrow": "A MOMENT OF PEACE",
+      "title": "Breathe with Capy",
+      "ready": "Follow the gentle glow",
+      "pace": "Breathe at your own pace.",
+      "inhaleHint": "Let the light grow.",
+      "exhaleHint": "Let the air out gently.",
+      "paused": "Take your time",
+      "pausedHint": "Capy is right here.",
+      "complete": "A little moment with God.",
+      "completeHint": "Carry this quiet with you.",
+      "progress": "Breath {current} of {total}",
+      "start": "Let's breathe",
+      "pause": "Pause",
+      "resume": "Keep breathing",
+      "finish": "I'm ready",
+      "continue": "Continue"
     }
   }
 }

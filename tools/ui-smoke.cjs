@@ -42,6 +42,8 @@ const path = require('node:path');
   await page.getByText(pack.ui.next,{exact:true}).click();
   await page.getByText('Breathe gently. God is here with us.',{exact:true}).waitFor();
   await shot('05-breathe.png');
+  await page.getByRole('button', { name: pack.companion.breathing.start, exact: true }).click();
+  await page.getByRole('button', { name: pack.companion.breathing.continue, exact: true }).click({ timeout: 22000 });
   await page.getByText(pack.ui.iSaidIt,{exact:true}).waitFor({timeout:22000});
   for(let i=0;i<3;i++) await page.getByText(pack.ui.iSaidIt,{exact:true}).click();
   await page.getByText(pack.ui.yay,{exact:true}).click();

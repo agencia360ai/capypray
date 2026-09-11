@@ -16,6 +16,7 @@ import { useAvatar } from "@/avatar/AvatarView";
 import { speakCapMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
 import { useReducedMotion } from "./motion";
+import { BreathingMoment } from "./BreathingMoment";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Audio leads (kids 4–6 don't read): plain lines advance by themselves once spoken, anything that needs the
@@ -72,7 +73,7 @@ export function BeatView({ step, pack, onNext, onAnswer, quiet = false }: { step
     case "story":
       return <StoryBeat key={`${step.story.id}:${step.pageIndex}`} step={step} onNext={onNext} />;
     case "listen":
-      return <ListenTimer seconds={step.seconds} text={step.text} audio={step.audio} onDone={onNext} />;
+      return <BreathingMoment key={`${step.text}:${step.seconds}`} seconds={step.seconds} text={step.text} audio={step.audio} onDone={onNext} />;
     case "choose_people":
       return <PeoplePicker text={step.text} audio={step.audio} min={step.min} max={step.max} defaults={pack.people.defaults} allowAdd onDone={onNext} />;
     case "reward":
@@ -297,7 +298,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
         />
       );
     case "listen_timer":
-      return <ListenTimer seconds={mg.seconds} text={mg.prompt.text} audio={mg.prompt.audio} onDone={onDone} />;
+      return <BreathingMoment key={mg.id} seconds={mg.seconds} text={mg.prompt.text} audio={mg.prompt.audio} onDone={onDone} />;
     case "sequence":
       return (
         <>

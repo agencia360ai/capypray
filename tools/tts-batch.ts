@@ -89,6 +89,7 @@ async function main() {
 
   const lines = new Map<string, string>();
   const add = (file?: string, text?: string) => file && text && !lines.has(file) && lines.set(file, text);
+  add(pack.companion.breathing.prompt.audio, pack.companion.breathing.prompt.text);
   for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b && b.audio && "text" in b) add(b.audio, b.text);
   for (const p of pack.prayers) for (const ln of p.lines) add(ln.audio, ln.text);
   for (const line of pack.ui.tapLines) add(line.audio, line.text);

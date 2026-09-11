@@ -233,6 +233,13 @@ export type UiStrings = z.infer<typeof UiStrings>;
 
 /** Locale-owned copy and curated, replayable moments; IDs stay stable across translations. */
 export const Companion = z.object({
+  breathing: z.object({
+    prompt: z.object({ text: z.string(), audio: Audio.optional() }),
+    eyebrow: z.string(), title: z.string(), ready: z.string(), pace: z.string(),
+    inhaleHint: z.string(), exhaleHint: z.string(), paused: z.string(), pausedHint: z.string(),
+    complete: z.string(), completeHint: z.string(), progress: z.string(), start: z.string(),
+    pause: z.string(), resume: z.string(), finish: z.string(), continue: z.string(),
+  }),
   prayerDefaults: z.object({ person: z.string(), thankfulFor: z.string(), mistake: z.string(), feeling: z.string(), need: z.string(), favorite: z.string() }),
   ui: z.object({
     brand: z.string(), tagline: z.string(), welcome: z.string(), greeting: z.string(),
