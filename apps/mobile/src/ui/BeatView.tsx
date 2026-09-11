@@ -191,7 +191,10 @@ function RewardBeat({ lanterns, label, onNext, quiet }: { lanterns: number; labe
 
 function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const pack = getPack();
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ text: string; audio?: string } | null>(null);
+  const finished = useRef(false);
+  const completionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(completionTimer.current), []);
   const [picked, setPicked] = useState<string[]>([]);
   const [burst, setBurst] = useState(0);
   const [shake, setShake] = useState(0);
@@ -207,28 +210,36 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   }, [mg.id]);
   const [startedAt] = useState(() => Date.now());
   const [misses, setMisses] = useState(0);
-  const finish = (line: string) => {
+  const finish = (line: { text: string; audio?: string }) => {
+    if (finished.current) return;
+    finished.current = true;
     setTouched(true);
     setMsg(line);
     void track("minigame_complete", { type: mg.type, id: mg.id, score: Math.max(0, 3 - misses), durationMs: Date.now() - startedAt });
     setBurst((b) => b + 1);
     void haptics.success();
     avatar.send({ type: "mood", value: "happy" });
-    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "celebrate" });
-    setTimeout(onDone, 1900);
+    avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "celebrate" });
   };
-  const retry = (line: string) => {
+  const retry = (line: { text: string; audio?: string }) => {
+    if (finished.current) return;
     setTouched(true);
     setMsg(line);
     setMisses((m) => m + 1);
     setShake((n) => n + 1);
     void haptics.nope();
-    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "sad" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "sad" });
   };
   const bubble = (text: string, hint?: string) => (
     <>
       <Confetti trigger={burst} />
-      <SpeechBubble text={text} audio={msg ? undefined : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => setSpoken(true)} />
+      <SpeechBubble key={`${msg?.text ?? mg.id}:${misses}`} text={text} audio={msg ? msg.audio : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => {
+        setSpoken(true);
+        if (finished.current) {
+          clearTimeout(completionTimer.current);
+          completionTimer.current = setTimeout(onDone, 500);
+        }
+      }} />
     </>
   );
 
@@ -236,11 +247,11 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "tap_choice":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text)}
+          {bubble(msg?.text ?? mg.prompt.text)}
           <Sheet>
             <Grid hint={showHint}>
               {mg.cards.map((c) => (
-                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
+                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine) : retry(mg.retryLine))} />
               ))}
             </Grid>
           </Sheet>
@@ -249,7 +260,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "collect":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text, `${picked.length} / ${mg.target}`)}
+          {bubble(msg?.text ?? mg.prompt.text, `${picked.length} / ${mg.target}`)}
           <Sheet>
             <Grid hint={showHint}>
               {mg.items.map((c) => (
@@ -262,7 +273,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
                     setTouched(true);
                     const n = picked.includes(c.id) ? picked.filter((x) => x !== c.id) : [...picked, c.id];
                     setPicked(n);
-                    if (n.length >= mg.target) finish(mg.successLine.text);
+                    if (n.length >= mg.target) finish(mg.successLine);
                   }}
                 />
               ))}
@@ -290,7 +301,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "sequence":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text)}
+          {bubble(msg?.text ?? mg.prompt.text)}
           <Sheet>
             <View style={styles.slots}>
               {mg.order.map((_, i) => (
@@ -311,12 +322,12 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
                       setTouched(true);
                       const n = [...picked, c.id];
                       if (mg.order[n.length - 1] !== c.id) {
-                        retry(mg.retryLine.text);
+                        retry(mg.retryLine);
                         setPicked([]);
                         return;
                       }
                       setPicked(n);
-                      if (n.length === mg.order.length) finish(mg.successLine.text);
+                      if (n.length === mg.order.length) finish(mg.successLine);
                     }}
                   />
                 ))}
@@ -327,11 +338,11 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "fill_blank":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text, mg.sentence.replace("___", picked[0] ?? "____"))}
+          {bubble(msg?.text ?? mg.prompt.text, mg.sentence.replace("___", picked[0] ?? "____"))}
           <Sheet>
             <Grid hint={showHint}>
               {mg.options.map((o) => (
-                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
+                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine) : retry(mg.retryLine))} />
               ))}
             </Grid>
           </Sheet>

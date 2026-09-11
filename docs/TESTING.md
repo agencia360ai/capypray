@@ -51,15 +51,14 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 
 ## Capy's voice (pre-rendered lines)
 
-Every kid-facing line has a pre-rendered mp3 (Higgsfield "Arthur" voice). The URLs live in
+352 pre-rendered mp3 files use the Higgsfield "Arthur" voice; 339 match current content references. The URLs live in
 `packages/content/packs/christian-us-en-v1/audio/urls.json`; the files are not committed. Bring them into the
 bundle on your machine (no ffmpeg needed for mp3):
 
 ```powershell
-node tools/audio-fetch.mjs packages/content/packs/christian-us-en-v1   # downloads to apps/mobile/assets/audio
-node tools/audio-manifest.mjs                                          # regenerates src/audio/manifest.ts
+pnpm audio:prepare                                                    # download recordings and regenerate manifest
 pnpm --filter @capy/mobile start -c
 ```
 
 Lines without a file fall back to the device voice. New lines: `node tools/audio-lines.mjs <packDir> --missing`
-lists what still needs rendering.
+lists what still needs rendering (65 pack lines at this revision). See `docs/voice.md` for coverage and the playback regression check.

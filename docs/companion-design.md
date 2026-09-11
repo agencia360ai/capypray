@@ -73,7 +73,7 @@ Native export: `pnpm --filter @capy/mobile exec expo export --platform android -
 
 43 unit/content tests pass. Mobile, content, and avatar typechecks pass. Avatar, web, iOS, and Android bundles export. Browser flows pass without uncaught page errors. Physical iOS/Android testing, purchases, push notifications, and production voice quality are not validated by these checks.
 
-This checkout contains no rendered voice files. The app uses its existing system-speech fallback. The content validator reports the missing audio files separately from structural validation; final narration must be rendered or downloaded using the repository's audio tools before release.
+The voice follow-up recovered 352 existing Arthur recordings; 339 cover current pack references and 65 current lines still use system speech. A fresh checkout must run `pnpm audio:prepare` because generated recordings and the Metro manifest are ignored by Git. See `voice.md` for coverage and playback checks.
 
 ## Screenshots
 

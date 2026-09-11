@@ -3699,7 +3699,7 @@
       "id": "mg_w1d2_places",
       "prompt": {
         "text": "Tap three places where you can pray.",
-        "audio": "mg_w1d2_prompt.mp3"
+        "audio": "mg_w1d2_prompt_v08.mp3"
       },
       "target": 3,
       "items": [
