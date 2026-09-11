@@ -49,6 +49,18 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 # dump bone values over a clip: node scripts/dbg-clip.mjs kneel_pray
 ```
 
+## "I still see the old app"
+
+```powershell
+pnpm doctor
+```
+
+It prints which folder it is describing, which branch and commit that checkout is on and whether it is behind
+origin, whether the 3D viewer and the voice files were generated (neither is committed), which voice the audio
+folder came from, the content pack version, and whether a Metro cache is present. Every failing row names the
+command that fixes it. Paste the whole block when reporting that something looks stale: it separates a checkout
+problem from a cache problem in one step.
+
 ## Capy's voice (pre-rendered lines)
 
 Every kid-facing line has a pre-rendered mp3 (Higgsfield "Juan" voice, `6b528d43-c056-4a2f-9d82-1591a7ba13b0`, speech rate -10). The URLs live in
