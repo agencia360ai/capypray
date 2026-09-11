@@ -3,7 +3,7 @@ import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import { Asset } from "expo-asset";
 import { AvatarEvents, type AvatarCommand, type AvatarEvent, type IAvatarRenderer } from "./IAvatarRenderer";
-import { backgroundFor } from "@/ui/backgrounds";
+import { backgroundFor, backgroundHeight } from "@/ui/backgrounds";
 
 // Built by `pnpm --filter @capy/avatar-web build`: one HTML with the viewer and the GLB embedded (base64),
 // so the page never fetches anything. Loaded from its file:// URL (no subresources → no WKWebView restrictions).
@@ -107,7 +107,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
     <Ctx.Provider value={renderer}>
       <StageCtx.Provider value={{ stage, setStage }}>
         <View style={styles.stage} pointerEvents="none">
-          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: stage.biome === "meadow" ? "72%" : "100%" }} resizeMode="cover">
+          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: backgroundHeight(stage.biome) }} resizeMode="cover">
             {stage.night && stage.biome !== "meadow" && !stage.dark && <View style={styles.nightTint} />}
             {stage.dark && <View style={styles.dim} />}
             {uri && (

@@ -1,11 +1,12 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Link, router } from "expo-router";
+import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { unlockedScenes } from "@/store/scenes";
 import { glyph } from "@/ui/icons";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
+import { backgroundFor } from "@/ui/backgrounds";
 
 // Places: everywhere Capy has learned to pray. Tap one to go there and say that place's prayer.
 export default function Places() {
@@ -26,15 +27,15 @@ export default function Places() {
             {pack.scenes.map((sc) => {
               const ok = open.has(sc.id);
               return (
-                <Link key={sc.id} href={{ pathname: "/place/[id]", params: { id: sc.id } }} asChild>
-                  <Pressable disabled={!ok} style={({ pressed }) => [styles.card, !ok && styles.locked, pressed && styles.pressed]}>
-                    <Text style={styles.cardGlyph}>{ok ? glyph(sc.icon) : "🔒"}</Text>
-                    <Text style={styles.cardTitle} numberOfLines={2}>
-                      {sc.title}
-                    </Text>
-                    {!ok ? <Text style={styles.soon}>{pack.ui.locked}</Text> : null}
-                  </Pressable>
-                </Link>
+                <Pressable key={sc.id} accessibilityRole="button" accessibilityState={{ disabled: !ok }} onPress={() => router.push({ pathname: "/place/[id]", params: { id: sc.id } })} disabled={!ok} style={({ pressed }) => [styles.card, !ok && styles.locked, pressed && styles.pressed]}>
+                  <ImageBackground source={backgroundFor(sc.background)} style={styles.cardArt} imageStyle={styles.cardArtImage} resizeMode="cover" accessible={false}>
+                    <View style={styles.badge}><Text style={styles.cardGlyph}>{ok ? glyph(sc.icon) : "🔒"}</Text></View>
+                  </ImageBackground>
+                  <Text style={styles.cardTitle} numberOfLines={2}>
+                    {sc.title}
+                  </Text>
+                  {!ok ? <Text style={styles.soon}>{pack.ui.locked}</Text> : null}
+                </Pressable>
               );
             })}
           </View>
@@ -54,10 +55,13 @@ const styles = StyleSheet.create({
   sheetContent: { padding: 20, paddingBottom: 34, gap: 14 },
   title: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
-  card: { width: 104, paddingVertical: 12, paddingHorizontal: 6, borderRadius: T.radius.md, backgroundColor: T.color.paper, borderWidth: 3, borderColor: T.color.tan, borderBottomWidth: 6, alignItems: "center", gap: 4 },
-  locked: { opacity: 0.55 },
+  card: { width: "46%", flexGrow: 1, paddingBottom: 12, overflow: "hidden", borderRadius: T.radius.md, backgroundColor: T.color.paper, borderWidth: 2, borderColor: T.color.tan, borderBottomWidth: 5, alignItems: "center", gap: 8 },
+  cardArt: { width: "100%", height: 96, overflow: "hidden", alignItems: "flex-end", justifyContent: "flex-end", padding: 8 },
+  cardArtImage: { height: "180%" },
+  badge: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#FFFBF2E8", alignItems: "center", justifyContent: "center" },
+  locked: { opacity: 0.65 },
   pressed: { borderBottomWidth: 3, transform: [{ translateY: 3 }] },
-  cardGlyph: { fontSize: 38 },
+  cardGlyph: { fontSize: 19 },
   cardTitle: { fontFamily: T.font.bold, fontSize: 13, color: T.color.ink, textAlign: "center" },
   soon: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown },
 });
