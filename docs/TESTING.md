@@ -51,7 +51,7 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 
 ## Capy's voice (pre-rendered lines)
 
-Every kid-facing line has a pre-rendered mp3 (Higgsfield "Arthur" voice). The URLs live in
+Every kid-facing line has a pre-rendered mp3 (Higgsfield "Juan" voice, `6b528d43-c056-4a2f-9d82-1591a7ba13b0`, speech rate -10). The URLs live in
 `packages/content/packs/christian-us-en-v1/audio/urls.json`; the files are not committed. Bring them into the
 bundle on your machine (no ffmpeg needed for mp3):
 
@@ -61,8 +61,15 @@ node tools/audio-manifest.mjs                                          # regener
 pnpm --filter @capy/mobile start -c
 ```
 
+The fetcher keeps `apps/mobile/assets/audio/urls.lock.json`, so a line whose URL changed is downloaded again: after
+a re-render in a new voice, the same command replaces every file. `--force` re-downloads regardless.
+
+One quirk of the hosted renderer: it refuses a line that ends in a sentence plus "Amen." often enough to be a
+blocker (the mealtime grace closing line failed every attempt). That prayer now closes with "Amen." as its own
+line, which also reads better for a child repeating it.
+
 Lines without a file fall back to the device voice. New lines: `node tools/audio-lines.mjs <packDir> --missing`
-lists what still needs rendering. The set is complete: 362 pack lines + 8 Parent Corner lines = 370, all in one voice.
+lists what still needs rendering. The set is complete: 363 pack lines + 8 Parent Corner lines = 371, all in one voice.
 Parent Corner shows the count it found on the device.
 
 ### Rendering with VoiceStudio (local, no API key)

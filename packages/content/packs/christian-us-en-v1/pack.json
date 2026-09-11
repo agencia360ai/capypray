@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -2763,8 +2763,12 @@
           "audio": "p_grace_01.mp3"
         },
         {
-          "text": "Let us thank Him for our food. Amen.",
+          "text": "Let us thank Him for our food.",
           "audio": "p_grace_02.mp3"
+        },
+        {
+          "text": "Amen.",
+          "audio": "p_grace_03.mp3"
         }
       ]
     },
