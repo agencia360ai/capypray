@@ -5,12 +5,13 @@ import { CollectionScreen } from "@/ui/CollectionScreen";
 import { CompanionIcon } from "@/ui/CompanionIcon";
 import { Reveal } from "@/ui/motion";
 import { T } from "@/ui/theme";
+import { FeelingArt } from "@/ui/FeelingArt";
 
 export default function Moments() {
   const pack = getPack(), copy = pack.companion.ui;
   return <CollectionScreen title={copy.moments} subtitle={copy.feelingsHint}>
     {pack.companion.moments.map((moment, i) => <Reveal key={moment.id} delay={i * 25}><Pressable onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: moment.lessonId } })} accessibilityRole="button" style={({ pressed }) => [styles.card, { backgroundColor: ["#EDF2E4", "#E9EFF5", "#FAEADA", "#F5E7DC"][i % 4] }, pressed && { opacity: 0.8 }]}>
-      <View style={styles.icon}><CompanionIcon name={moment.icon} size={44} /></View><View style={styles.copy}><Text style={styles.title}>{moment.title}</Text><Text style={styles.description}>{moment.description}</Text></View><CompanionIcon name="arrow" size={23} />
+      <View style={styles.icon}><FeelingArt icon={moment.icon} size={60} /></View><View style={styles.copy}><Text style={styles.title}>{moment.title}</Text><Text style={styles.description}>{moment.description}</Text></View><CompanionIcon name="arrow" size={23} />
     </Pressable></Reveal>)}
   </CollectionScreen>;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Image, StyleSheet, Text, View } from "react-native";
 import type { Pack, Minigame } from "@capy/content";
 import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
@@ -17,6 +17,7 @@ import { speakCapMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
 import { useReducedMotion } from "./motion";
 import { BreathingMoment } from "./BreathingMoment";
+import { storyCover } from "./illustrations";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Audio leads (kids 4–6 don't read): plain lines advance by themselves once spoken, anything that needs the
@@ -137,6 +138,7 @@ function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; o
   const [spoken, setSpoken] = useState(false);
   const showHint = useGuide(spoken, pack.ui.nudgeTap);
   const pages = step.story.pages.length + 1;
+  const cover = step.pageIndex === 0 ? storyCover(step.story.id) : undefined;
   return (
     <>
       <SpeechBubble text={step.text} audio={step.audio} badge="book" onSpoken={() => setSpoken(true)} />
@@ -149,8 +151,8 @@ function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; o
             ))}
           </View>
         </View>
-        <View style={[styles.picture, step.last && styles.pictureEnd]}>
-          <Text style={styles.pictureGlyph}>{glyph(step.icon)}</Text>
+        <View style={[styles.picture, !!cover && styles.storyCover, step.last && styles.pictureEnd]}>
+          {cover ? <Image source={cover} style={{ width: "100%", height: "100%" }} resizeMode="cover" accessible={false} testID="story-opening-art" /> : <Text style={styles.pictureGlyph}>{glyph(step.icon)}</Text>}
         </View>
         <BigButton label={step.last ? pack.ui.theEnd : pack.ui.storyPage} icon={<Arrow />} onPress={onNext} hint={showHint} autoAdvanceMs={spoken ? 3200 : undefined} />
       </Sheet>
@@ -442,6 +444,7 @@ const styles = StyleSheet.create({
   dotOn: { backgroundColor: T.color.primary, transform: [{ scale: 1.4 }] },
   picture: { alignSelf: "center", width: 150, height: 150, borderRadius: 75, backgroundColor: "#FFF5E0", borderWidth: 4, borderColor: T.color.primary, alignItems: "center", justifyContent: "center", ...T.shadow },
   pictureEnd: { backgroundColor: "#FFE7EE", borderColor: T.color.coral },
+  storyCover: { borderRadius: 22, overflow: "hidden", borderWidth: 2, borderColor: "#E6DECA" },
   pictureGlyph: { fontSize: 76 },
   parent: { fontFamily: T.font.regular, fontSize: 16, color: T.color.brown, lineHeight: 22 },
   slots: { gap: 6 },
