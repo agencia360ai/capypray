@@ -142,7 +142,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
 const styles = StyleSheet.create({
   stage: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#FFF3DC" },
   bg: { flex: 1 },
-  nightTint: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(20,24,80,0.5)", zIndex: 1 },
+  nightTint: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(20,24,80,0.45)" },
   dim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(10,8,30,0.85)", zIndex: 1 },
   webview: { flex: 1, backgroundColor: "transparent" },
   debug: { position: "absolute", top: 100, left: 12, zIndex: 50, backgroundColor: "rgba(59,42,26,0.8)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },

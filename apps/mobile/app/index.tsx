@@ -11,6 +11,7 @@ import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { Chip, LanternMeter } from "@/ui/components";
 import { Friends } from "@/ui/Friends";
 import { StageDecor } from "@/ui/StageDecor";
+import { CapyTapZone } from "@/ui/CapyTapZone";
 import { glyph } from "@/ui/icons";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
@@ -74,6 +75,7 @@ function KidHome() {
 
       <View style={styles.spacer}>
         <StageDecor />
+        <CapyTapZone />
         <View style={styles.friends}>
           <Friends />
         </View>

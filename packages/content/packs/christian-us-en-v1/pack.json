@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -365,7 +365,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "bedroom"
     },
     {
       "id": "w1d3",
@@ -429,7 +429,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "park"
     },
     {
       "id": "w1d4",
@@ -488,7 +488,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "garden"
     },
     {
       "id": "w1d5",
@@ -545,7 +545,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "kitchen"
     },
     {
       "id": "w1d6",
@@ -598,7 +598,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "city"
     },
     {
       "id": "w1d7",
@@ -709,7 +709,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "park"
     },
     {
       "id": "w2d2",
@@ -770,7 +770,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "garden"
     },
     {
       "id": "w2d3",
@@ -831,7 +831,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "school"
     },
     {
       "id": "w2d4",
@@ -892,7 +892,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "bedroom"
     },
     {
       "id": "w2d5",
@@ -950,7 +950,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "kitchen"
     },
     {
       "id": "w2d6",
@@ -1152,7 +1152,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "school"
     },
     {
       "id": "w3d2",
@@ -1206,7 +1206,7 @@
           "mood": "calm"
         }
       ],
-      "scene": "pond"
+      "scene": "bedroom"
     },
     {
       "id": "w3d3",
@@ -1261,7 +1261,7 @@
           "mood": "calm"
         }
       ],
-      "scene": "pond"
+      "scene": "park"
     },
     {
       "id": "w3d4",
@@ -1315,7 +1315,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "car"
     },
     {
       "id": "w3d5",
@@ -1369,7 +1369,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "kitchen"
     },
     {
       "id": "w3d6",
@@ -1423,7 +1423,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "school"
     },
     {
       "id": "w3d7",
@@ -1537,7 +1537,7 @@
           "mood": "calm"
         }
       ],
-      "scene": "pond"
+      "scene": "bedroom"
     },
     {
       "id": "w4d2",
@@ -1591,7 +1591,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "city"
     },
     {
       "id": "w4d3",
@@ -1642,7 +1642,7 @@
           "mood": "calm"
         }
       ],
-      "scene": "pond"
+      "scene": "garden"
     },
     {
       "id": "w4d4",
@@ -1696,7 +1696,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "school"
     },
     {
       "id": "w4d5",
@@ -1750,7 +1750,7 @@
           "mood": "happy"
         }
       ],
-      "scene": "pond"
+      "scene": "kitchen"
     },
     {
       "id": "w4d6",
@@ -1798,7 +1798,7 @@
           "mood": "calm"
         }
       ],
-      "scene": "pond"
+      "scene": "bedroom"
     },
     {
       "id": "w4d7",
@@ -3342,7 +3342,7 @@
       "type": "collect",
       "id": "mg_w1d2_places",
       "prompt": {
-        "text": "Drag three places where you can pray to Capy.",
+        "text": "Tap three places where you can pray.",
         "audio": "mg_w1d2_prompt.mp3"
       },
       "target": 3,
@@ -4239,7 +4239,25 @@
     "tomorrowHint": "Until then: a story, a place, or the pond?",
     "storyPage": "Next page",
     "theEnd": "The end",
-    "locked": "Soon"
+    "locked": "Soon",
+    "tapLines": [
+      {
+        "text": "Hee hee! That tickles.",
+        "audio": "tap_01.mp3"
+      },
+      {
+        "text": "Hi {kidName}! Want to pray with me?",
+        "audio": "tap_02.mp3"
+      },
+      {
+        "text": "God loves you. And so do I!",
+        "audio": "tap_03.mp3"
+      },
+      {
+        "text": "Splash! I love the pond.",
+        "audio": "tap_04.mp3"
+      }
+    ]
   },
   "routines": {
     "bedtime": {
@@ -4642,7 +4660,7 @@
       "background": "garden",
       "time": "day",
       "unlock": {
-        "lessonId": "w1d2"
+        "lessonId": "w1d4"
       },
       "prayerId": "place-garden"
     },
@@ -4653,7 +4671,7 @@
       "background": "park",
       "time": "day",
       "unlock": {
-        "lessonId": "w1d4"
+        "lessonId": "w1d3"
       },
       "prayerId": "place-park"
     },
@@ -4664,7 +4682,7 @@
       "background": "city",
       "time": "auto",
       "unlock": {
-        "lessonId": "w2d1"
+        "lessonId": "w1d6"
       },
       "prayerId": "place-city"
     },
@@ -4686,7 +4704,7 @@
       "background": "car",
       "time": "day",
       "unlock": {
-        "lessonId": "w3d1"
+        "lessonId": "w3d4"
       },
       "prayerId": "place-car"
     }

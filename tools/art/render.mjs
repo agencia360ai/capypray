@@ -2,10 +2,12 @@
 // usage: node tools/art/render.mjs meadow   (PLAYWRIGHT_CHROMIUM=/path if needed)
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+const here = dirname(fileURLToPath(import.meta.url));
 
 const name = process.argv[2] ?? "meadow";
-const root = resolve(import.meta.dirname, "../..");
+const root = resolve(here, "../..");
 const svg = readFileSync(resolve(root, "tools/art", `${name}.svg`), "utf8");
 const outDir = resolve(root, "apps/mobile/assets/backgrounds");
 mkdirSync(outDir, { recursive: true });

@@ -1,8 +1,10 @@
 // Scan apps/mobile/assets/audio/*.mp3 → apps/mobile/src/audio/manifest.ts (static requires so Metro bundles them).
 // Run after tools/tts-batch.ts or tools/audio-fetch.mjs. Idempotent.
 import { readdirSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
-const root = resolve(import.meta.dirname, "..");
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+const here = dirname(fileURLToPath(import.meta.url));
+const root = resolve(here, "..");
 const dir = resolve(root, "apps/mobile/assets/audio");
 mkdirSync(dir, { recursive: true });
 const files = readdirSync(dir).filter((f) => f.endsWith(".mp3")).sort();

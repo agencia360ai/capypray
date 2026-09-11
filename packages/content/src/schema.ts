@@ -223,6 +223,8 @@ export const UiStrings = z.object({
   nudgeTap: z.string().max(80),
   nudgeRepeat: z.string().max(80),
   nudgeChoose: z.string().max(80),
+  /** what Capy says when the kid pokes him in the lobby (rotates) */
+  tapLines: z.array(z.object({ text: z.string().max(80), audio: Audio.optional() })).min(1).max(8),
 });
 export type UiStrings = z.infer<typeof UiStrings>;
 

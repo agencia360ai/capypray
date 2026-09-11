@@ -11,6 +11,7 @@ const lines = new Map();
 const add = (file, text) => file && text && !lines.has(file) && lines.set(file, spoken(text));
 for (const l of pack.lessons) for (const b of l.beats) if (b.audio && b.text) add(b.audio, b.text);
 for (const p of pack.prayers) for (const ln of p.lines) add(ln.audio, ln.text);
+for (const t of pack.ui?.tapLines ?? []) add(t.audio, t.text);
 for (const s of pack.stories ?? []) for (const pg of s.pages) add(pg.audio, pg.text);
 for (const m of pack.minigames) for (const k of ["prompt", "successLine", "retryLine", "closingLine"]) if (m[k]) add(m[k].audio, m[k].text);
 const urlsPath = resolve(dir, "audio/urls.json");

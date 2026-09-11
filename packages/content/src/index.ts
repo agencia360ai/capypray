@@ -133,6 +133,7 @@ export function listAudio(pack: PackT): string[] {
   const add = (a?: string) => a && out.add(a);
   for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b) add(b.audio);
   for (const p of pack.prayers) for (const line of p.lines) add(line.audio);
+  for (const t of pack.ui.tapLines) add(t.audio);
   for (const st of pack.stories) {
     for (const pg of st.pages) add(pg.audio);
     add(st.moralAudio);
