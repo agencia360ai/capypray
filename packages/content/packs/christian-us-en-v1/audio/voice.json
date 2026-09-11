@@ -1,0 +1,12 @@
+{
+  "name": "Juan",
+  "provider": "higgsfield",
+  "model": "seed_audio",
+  "voiceId": "6b528d43-c056-4a2f-9d82-1591a7ba13b0",
+  "voiceType": "preset",
+  "speechRate": -10,
+  "format": "mp3",
+  "sampleRate": 24000,
+  "renderedAt": "2026-09-11",
+  "note": "Every url in urls.json comes from this voice. Change the name when you re-render, so audio-fetch can tell a stale folder from a current one."
+}

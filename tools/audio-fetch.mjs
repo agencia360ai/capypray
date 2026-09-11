@@ -11,15 +11,20 @@ const packDir = process.argv[2];
 const force = process.argv.includes("--force");
 if (!packDir) throw new Error("usage: audio-fetch <packDir> [--force]");
 const urls = JSON.parse(readFileSync(resolve(packDir, "audio/urls.json"), "utf8"));
+const voicePath = resolve(packDir, "audio/voice.json");
+const voice = existsSync(voicePath) ? JSON.parse(readFileSync(voicePath, "utf8")) : { name: "unknown" };
 const out = resolve(here, "../apps/mobile/assets/audio");
 mkdirSync(out, { recursive: true });
 // what this folder was last filled from, so a re-render (new voice) is picked up instead of skipped
 const lockPath = resolve(out, "urls.lock.json");
 const lock = existsSync(lockPath) ? JSON.parse(readFileSync(lockPath, "utf8")) : {};
+const had = lock._voice;
+console.log(`pack voice: ${voice.name}${had && had !== voice.name ? ` (this folder holds ${had} - replacing it)` : ""}`);
 let n = 0;
 let failed = 0;
 const entries = Object.entries(urls);
 for (const [file, url] of entries) {
+  if (file.startsWith("_")) continue;
   const dest = resolve(out, file);
   if (!force && existsSync(dest) && lock[file] === url) continue;
   const res = await fetch(url).catch((e) => ({ ok: false, status: String(e) }));
@@ -40,5 +45,8 @@ for (const [file, url] of entries) {
   n++;
   console.log("saved", file);
 }
+if (!failed) lock._voice = voice.name;
+writeFileSync(lockPath, JSON.stringify(lock, null, 2));
 console.log(`done: ${n} downloaded, ${entries.length - n - failed} already current, ${failed} failed → ${out}`);
+console.log(failed ? `${failed} lines did NOT download, so this folder is not fully on the "${voice.name}" voice yet` : `this folder now holds the "${voice.name}" voice`);
 if (failed) process.exitCode = 1;

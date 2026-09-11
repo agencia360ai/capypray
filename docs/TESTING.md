@@ -62,7 +62,12 @@ pnpm --filter @capy/mobile start -c
 ```
 
 The fetcher keeps `apps/mobile/assets/audio/urls.lock.json`, so a line whose URL changed is downloaded again: after
-a re-render in a new voice, the same command replaces every file. `--force` re-downloads regardless.
+a re-render in a new voice, the same command replaces every file. `--force` re-downloads regardless. It prints the
+voice named in `audio/voice.json` and, when the folder was filled from a different one, says it is replacing it. The
+last line tells you which voice the folder ended up on, so "I still hear the old voice" is one command to diagnose.
+
+Still hearing the old voice after a fetch that reported no downloads? Metro is serving cached assets. Delete
+`apps/mobile/assets/audio`, fetch again, then `pnpm --filter @capy/mobile start -c` and reload the app.
 
 One quirk of the hosted renderer: it refuses a line that ends in a sentence plus "Amen." often enough to be a
 blocker (the mealtime grace closing line failed every attempt). That prayer now closes with "Amen." as its own
