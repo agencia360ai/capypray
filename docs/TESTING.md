@@ -62,4 +62,31 @@ pnpm --filter @capy/mobile start -c
 ```
 
 Lines without a file fall back to the device voice. New lines: `node tools/audio-lines.mjs <packDir> --missing`
-lists what still needs rendering.
+lists what still needs rendering. The set is complete: 362 pack lines + 8 Parent Corner lines = 370, all in one voice.
+Parent Corner shows the count it found on the device.
+
+### Rendering with VoiceStudio (local, no API key)
+
+[VoiceStudio](https://github.com/debpalash/VoiceStudio) runs the text-to-speech on this machine, so re-rendering the
+whole set costs nothing and the voice can be cloned from a sample you like. It is a build-time tool only: the app
+bundles the resulting mp3 files, so the child's device still talks to no voice service.
+
+1. Install VoiceStudio (desktop app, Docker or from source) and start it. Default server: `http://127.0.0.1:3900`.
+2. In its window, pick the engine and the voice — or clone one from a short sample. Copy the voice profile id.
+3. Render:
+
+```powershell
+pnpm tsx tools/voicestudio-batch.ts packages/content/packs/christian-us-en-v1 --list-voices
+pnpm tsx tools/voicestudio-batch.ts packages/content/packs/christian-us-en-v1 --voice <profile-id> --only ob_,pw_
+pnpm tsx tools/voicestudio-batch.ts packages/content/packs/christian-us-en-v1 --voice <profile-id>
+```
+
+The first render of a few lines (`--only`) is the cheap audition. A re-run only renders what changed
+(`apps/mobile/assets/audio/manifest.json` keeps a hash per line); `--force` re-renders everything, `--speed`
+tunes the pace (default 0.95). `VOICESTUDIO_API` and `VOICESTUDIO_MODEL` override the base URL and the engine.
+
+Licence: VoiceStudio's app is AGPL-3.0 and its **default OmniVoice weights are CC-BY-NC — not usable in a paid app**.
+Before rendering the shipping set, select an engine whose weights allow commercial use: CosyVoice 3, VoxCPM2 or
+MOSS-TTS-Nano (Apache-2.0), or GPT-SoVITS (MIT). Avoid IndexTTS 2.5 and PocketTTS (gated licences).
+Because a hosted render (`tools/audio-fetch.mjs`) and a local render write to the same folder, pick one voice for the
+whole set — `--force` after switching engines, so no line keeps the old voice.

@@ -18,7 +18,8 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { validatePack, interpolate } from "../packages/content/src/index";
 import { CAPY_LINES } from "../apps/mobile/src/parent/strings";
 
@@ -78,7 +79,7 @@ async function main() {
   const { pack, issues } = validatePack(JSON.parse(readFileSync(join(dir, "pack.json"), "utf8")));
   if (!pack || issues.length) throw new Error("pack invalid: " + JSON.stringify(issues));
 
-  const root = resolve(import.meta.dirname, "..");
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   const audioDir = resolve(root, "apps/mobile/assets/audio");
   mkdirSync(audioDir, { recursive: true });
   const manifestPath = join(audioDir, "manifest.json");

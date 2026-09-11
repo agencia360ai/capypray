@@ -4,7 +4,7 @@ import { Redirect, router } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { gate } from "@/parent/gate";
-import { P } from "@/parent/strings";
+import { CAPY_LINES, P } from "@/parent/strings";
 import { AUDIO } from "@/audio/manifest";
 import { listAudio } from "@capy/content";
 import { cancelBedtimeReminder, scheduleBedtimeReminder } from "@/notifications/bedtime";
@@ -122,7 +122,7 @@ function Corner() {
 
       <Text style={styles.hint}>{P.corner.privacy}</Text>
       <Text style={styles.hint}>
-        {P.corner.voice}: {Object.keys(AUDIO).length} / {listAudio(getPack()).length}
+        {P.corner.voice}: {Object.keys(AUDIO).length} / {listAudio(getPack()).length + Object.keys(CAPY_LINES).length}
       </Text>
       <Pressable style={styles.danger} onPress={deleteData}>
         <Text style={styles.dangerText}>{P.corner.deleteData}</Text>
