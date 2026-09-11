@@ -203,6 +203,7 @@ export const UiStrings = z.object({
   friend: z.string().max(20),
   beaconTitle: z.string().max(40),
   beaconLine: z.string().max(140),
+  beaconLineAudio: Audio.optional(),
   newUnlock: z.string().max(40),
   friendsTitle: z.string().max(40),
   lanternsTitle: z.string().max(40),
@@ -223,8 +224,11 @@ export const UiStrings = z.object({
   streak: z.string().max(40).optional(),
   /** Capy's spoken hints when the kid stalls (audio-first guidance, GDD §3 "UX audio-first") */
   nudgeTap: z.string().max(80),
+  nudgeTapAudio: Audio.optional(),
   nudgeRepeat: z.string().max(80),
+  nudgeRepeatAudio: Audio.optional(),
   nudgeChoose: z.string().max(80),
+  nudgeChooseAudio: Audio.optional(),
   /** what Capy says when the kid pokes him in the lobby (rotates) */
   tapLines: z.array(z.object({ text: z.string().max(80), audio: Audio.optional() })).min(1).max(8),
 });

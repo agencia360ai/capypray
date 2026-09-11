@@ -28,7 +28,7 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
   const avatar = useAvatar();
   switch (step.kind) {
     case "say":
-      return <LineBeat key={step.text} text={step.text} audio={step.audio} badge="chat" label={pack.ui.next} icon={<Arrow />} autoMs={AUTO_SAY_MS} nudge={pack.ui.nudgeTap} onNext={onNext} />;
+      return <LineBeat key={step.text} text={step.text} audio={step.audio} badge="chat" label={pack.ui.next} icon={<Arrow />} autoMs={AUTO_SAY_MS} nudge={nudgeTap(pack.ui)} onNext={onNext} />;
     case "repeat":
       return (
         <LineBeat
@@ -39,13 +39,13 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
           hint={`${step.lineIndex + 1} / ${step.prayer.lines.length}`}
           label={pack.ui.iSaidIt}
           icon={<Mic />}
-          nudge={pack.ui.nudgeRepeat}
+          nudge={nudgeRepeat(pack.ui)}
           onNext={onNext}
         />
       );
     case "ask":
       return (
-        <ChoiceBeat key={step.key} text={step.text} audio={step.audio} badge="question" nudge={pack.ui.nudgeChoose}>
+        <ChoiceBeat key={step.key} text={step.text} audio={step.audio} badge="question" nudge={nudgeChoose(pack.ui)}>
           {(pick) =>
             step.options.map((o) => (
               <IconCard
@@ -90,8 +90,13 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
   }
 }
 
+type Nudge = { text: string; audio?: string };
+const nudgeTap = (ui: { nudgeTap: string; nudgeTapAudio?: string }): Nudge => ({ text: ui.nudgeTap, audio: ui.nudgeTapAudio });
+const nudgeRepeat = (ui: { nudgeRepeat: string; nudgeRepeatAudio?: string }): Nudge => ({ text: ui.nudgeRepeat, audio: ui.nudgeRepeatAudio });
+const nudgeChoose = (ui: { nudgeChoose: string; nudgeChooseAudio?: string }): Nudge => ({ text: ui.nudgeChoose, audio: ui.nudgeChooseAudio });
+
 /** After Capy finished: pointing hand after HINT_MS, a spoken nudge after NUDGE_MS (once). */
-function useGuide(spoken: boolean, nudge?: string, enabled = true) {
+function useGuide(spoken: boolean, nudge?: Nudge, enabled = true) {
   const [hint, setHint] = useState(false);
   const avatar = useAvatar();
   useEffect(() => {
@@ -102,8 +107,8 @@ function useGuide(spoken: boolean, nudge?: string, enabled = true) {
     const a = setTimeout(() => setHint(true), HINT_MS);
     const b = setTimeout(() => {
       if (!nudge) return;
-      avatar.send({ type: "speak", durationMs: speakCapMs(nudge), clip: "listen_nod" });
-      speak(nudge, { onDone: () => avatar.send({ type: "idle" }) });
+      avatar.send({ type: "speak", durationMs: speakCapMs(nudge.text), clip: "listen_nod" });
+      speak(nudge.text, { audio: nudge.audio, onDone: () => avatar.send({ type: "idle" }) });
     }, NUDGE_MS);
     return () => {
       clearTimeout(a);
@@ -113,7 +118,7 @@ function useGuide(spoken: boolean, nudge?: string, enabled = true) {
   return hint;
 }
 
-function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext }: { text: string; audio?: string; badge: string; hint?: string; label: string; icon: React.ReactNode; autoMs?: number; nudge: string; onNext: () => void }) {
+function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext }: { text: string; audio?: string; badge: string; hint?: string; label: string; icon: React.ReactNode; autoMs?: number; nudge: Nudge; onNext: () => void }) {
   const [spoken, setSpoken] = useState(false);
   const showHint = useGuide(spoken, autoMs ? undefined : nudge);
   return (
@@ -131,7 +136,7 @@ function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext
 function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; onNext: () => void }) {
   const pack = getPack();
   const [spoken, setSpoken] = useState(false);
-  const showHint = useGuide(spoken, pack.ui.nudgeTap);
+  const showHint = useGuide(spoken, nudgeTap(pack.ui));
   const pages = step.story.pages.length + 1;
   return (
     <>
@@ -154,7 +159,7 @@ function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; o
   );
 }
 
-function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; audio?: string; badge: string; nudge: string; children: (pick: () => void) => React.ReactNode }) {
+function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; audio?: string; badge: string; nudge: Nudge; children: (pick: () => void) => React.ReactNode }) {
   const [spoken, setSpoken] = useState(false);
   const [picked, setPicked] = useState(false);
   const showHint = useGuide(spoken, nudge, !picked);
@@ -188,7 +193,7 @@ function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: stri
 
 function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const pack = getPack();
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ text: string; audio?: string } | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
   const [burst, setBurst] = useState(0);
   const [shake, setShake] = useState(0);
@@ -196,7 +201,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const [touched, setTouched] = useState(false);
   const kid = useKid();
   const avatar = useAvatar();
-  const showHint = useGuide(spoken, pack.ui.nudgeChoose, !touched && !msg);
+  const showHint = useGuide(spoken, nudgeChoose(pack.ui), !touched && !msg);
   // Capy reacts: talks the prompt, celebrates a win, droops on a miss (GDD §4.2 "reacción de Capy").
   useEffect(() => {
     avatar.send({ type: "speak", durationMs: speakCapMs(mg.prompt.text), clip: "think" });
@@ -204,28 +209,28 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   }, [mg.id]);
   const [startedAt] = useState(() => Date.now());
   const [misses, setMisses] = useState(0);
-  const finish = (line: string) => {
+  const finish = (line: { text: string; audio?: string }) => {
     setTouched(true);
     setMsg(line);
     void track("minigame_complete", { type: mg.type, id: mg.id, score: Math.max(0, 3 - misses), durationMs: Date.now() - startedAt });
     setBurst((b) => b + 1);
     void haptics.success();
     avatar.send({ type: "mood", value: "happy" });
-    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "celebrate" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "celebrate" });
     setTimeout(onDone, 1900);
   };
-  const retry = (line: string) => {
+  const retry = (line: { text: string; audio?: string }) => {
     setTouched(true);
     setMsg(line);
     setMisses((m) => m + 1);
     setShake((n) => n + 1);
     void haptics.nope();
-    avatar.send({ type: "speak", durationMs: speakCapMs(line), clip: "sad" });
+    avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "sad" });
   };
-  const bubble = (text: string, hint?: string) => (
+  const bubble = (hint?: string) => (
     <>
       <Confetti trigger={burst} />
-      <SpeechBubble text={text} audio={msg ? undefined : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => setSpoken(true)} />
+      <SpeechBubble text={msg?.text ?? mg.prompt.text} audio={msg ? msg.audio : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => setSpoken(true)} />
     </>
   );
 
@@ -233,11 +238,11 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "tap_choice":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text)}
+          {bubble()}
           <Sheet>
             <Grid hint={showHint}>
               {mg.cards.map((c) => (
-                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
+                <IconCard key={c.id} icon={c.icon} label={c.label} size="lg" onPress={() => (c.correct ? finish(mg.successLine) : retry(mg.retryLine))} />
               ))}
             </Grid>
           </Sheet>
@@ -246,7 +251,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "collect":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text, `${picked.length} / ${mg.target}`)}
+          {bubble(`${picked.length} / ${mg.target}`)}
           <Sheet>
             <Grid hint={showHint}>
               {mg.items.map((c) => (
@@ -259,7 +264,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
                     setTouched(true);
                     const n = picked.includes(c.id) ? picked.filter((x) => x !== c.id) : [...picked, c.id];
                     setPicked(n);
-                    if (n.length >= mg.target) finish(mg.successLine.text);
+                    if (n.length >= mg.target) finish(mg.successLine);
                   }}
                 />
               ))}
@@ -287,7 +292,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "sequence":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text)}
+          {bubble()}
           <Sheet>
             <View style={styles.slots}>
               {mg.order.map((_, i) => (
@@ -308,12 +313,12 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
                       setTouched(true);
                       const n = [...picked, c.id];
                       if (mg.order[n.length - 1] !== c.id) {
-                        retry(mg.retryLine.text);
+                        retry(mg.retryLine);
                         setPicked([]);
                         return;
                       }
                       setPicked(n);
-                      if (n.length === mg.order.length) finish(mg.successLine.text);
+                      if (n.length === mg.order.length) finish(mg.successLine);
                     }}
                   />
                 ))}
@@ -324,11 +329,11 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "fill_blank":
       return (
         <>
-          {bubble(msg ?? mg.prompt.text, mg.sentence.replace("___", picked[0] ?? "____"))}
+          {bubble(mg.sentence.replace("___", picked[0] ?? "____"))}
           <Sheet>
             <Grid hint={showHint}>
               {mg.options.map((o) => (
-                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine.text) : retry(mg.retryLine.text))} />
+                <IconCard key={o} icon="text" label={o} selected={picked[0] === o} onPress={() => (setPicked([o]), o === mg.answer ? finish(mg.successLine) : retry(mg.retryLine))} />
               ))}
             </Grid>
           </Sheet>
@@ -343,7 +348,7 @@ function PeoplePicker({ text, audio, min, max, defaults, allowAdd, onDone }: { t
   const avatar = useAvatar();
   const [picked, setPicked] = useState<string[]>([]);
   const [spoken, setSpoken] = useState(false);
-  const showHint = useGuide(spoken, picked.length < min ? pack.ui.nudgeChoose : pack.ui.nudgeTap, true);
+  const showHint = useGuide(spoken, picked.length < min ? nudgeChoose(pack.ui) : nudgeTap(pack.ui), true);
   const options = kid.people.length ? kid.people : defaults.map((d) => ({ id: `default:${d}`, label: d, icon: "person", prayedCount: 0 }));
   return (
     <>

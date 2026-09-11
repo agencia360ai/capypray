@@ -44,7 +44,7 @@ export default function Beacon() {
         <StageDecor />
       </View>
       <View onLayout={onBottomLayout}>
-        <SpeechBubble text={interpolate(pack.ui.beaconLine, { kidName: kidName || pack.ui.friend })} />
+        <SpeechBubble text={interpolate(pack.ui.beaconLine, { kidName: kidName || pack.ui.friend })} audio={pack.ui.beaconLineAudio} />
         <Sheet>
           <View style={styles.head}>
             <Text style={styles.title}>{pack.ui.beaconTitle}</Text>

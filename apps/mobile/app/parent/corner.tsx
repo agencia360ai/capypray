@@ -5,7 +5,7 @@ import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { gate } from "@/parent/gate";
 import { CAPY_LINES, P } from "@/parent/strings";
-import { AUDIO } from "@/audio/manifest";
+import { AUDIO, VOICE } from "@/audio/manifest";
 import { listAudio } from "@capy/content";
 import { cancelBedtimeReminder, scheduleBedtimeReminder } from "@/notifications/bedtime";
 import { BackupCard } from "@/parent/BackupCard";
@@ -122,7 +122,7 @@ function Corner() {
 
       <Text style={styles.hint}>{P.corner.privacy}</Text>
       <Text style={styles.hint}>
-        {P.corner.voice}: {Object.keys(AUDIO).length} / {listAudio(getPack()).length + Object.keys(CAPY_LINES).length}
+        {P.corner.voice}: {VOICE} · {Object.keys(AUDIO).length} / {listAudio(getPack()).length + Object.keys(CAPY_LINES).length}
       </Text>
       <Pressable style={styles.danger} onPress={deleteData}>
         <Text style={styles.dangerText}>{P.corner.deleteData}</Text>
