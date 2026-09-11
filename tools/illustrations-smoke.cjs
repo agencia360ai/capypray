@@ -51,7 +51,7 @@ const pack=require('../packages/content/packs/christian-us-en-v1/pack.json');
   await page.screenshot({path:path.join(out,'stories-illustrated.png')});
   await page.getByTestId('story-cover-lost-sheep').locator('..').click();
   await page.getByText(pack.ui.next,{exact:true}).click();
-  await page.getByTestId('story-opening-art').waitFor();
+  await page.getByTestId('story-art-lost-sheep-flock').waitFor();
   await page.waitForTimeout(1000);await page.screenshot({path:path.join(out,'story-opening.png')});
   await page.getByText(pack.ui.storyPage,{exact:true}).click();await page.getByText(pack.stories[0].pages[1].text,{exact:true}).waitFor();
   await page.goto('http://127.0.0.1:8081/stories');await page.setViewportSize({width:320,height:568});

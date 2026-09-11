@@ -1,0 +1,132 @@
+{
+  "generator": "ChatGPT Images built-in tool",
+  "sharedPrompt": "Use case: illustration-story. Create ONE new square full-bleed page illustration for the same children's Bible story as the reference. Reference role: exact character identity, clothing and painted storybook style; this is a NEW moment, not an edit of the original composition. Match cozy rounded 2D cartoon, matte soft shading, sage/cream/honey/peach palette, friendly expressive faces, ancient Middle Eastern setting and medium-brown skin. Clear central action readable on a small phone card. No text, letters, numbers, captions, UI, border, watermark or capybara. Child audience ages 4–8: no graphic injury, frightening faces or violence. Keep main action inside central 80%. ",
+  "scenes": [
+    {
+      "id": "lost-sheep-flock",
+      "reference": "apps/mobile/assets/illustrations/stories/lost-sheep.jpg",
+      "prompt": "The shepherd, in the same cream robe and terracotta cloak, gently watches a little flock of fluffy cream sheep on a green hillside. The recognizable lamb from the reference stays close to him. A few sheep behind, rounded trees, morning sun. Convey the care at the beginning before one sheep wanders away. No numeral 100.",
+      "output": "apps/mobile/assets/illustrations/pages/lost-sheep-flock.jpg"
+    },
+    {
+      "id": "lost-sheep-found",
+      "reference": "apps/mobile/assets/illustrations/stories/lost-sheep.jpg",
+      "prompt": "The same shepherd smiles with relief, carrying the recognizable little cream lamb gently across his shoulders, its legs held securely by his hands. They head home along the hillside path together. Lamb is content, warm golden afternoon light. Close central view of joyful reunion.",
+      "output": "apps/mobile/assets/illustrations/pages/lost-sheep-found.jpg"
+    },
+    {
+      "id": "good-samaritan-road",
+      "reference": "apps/mobile/assets/illustrations/stories/good-samaritan.jpg",
+      "prompt": "The tired traveler from the LEFT of the reference sits alone beside a winding dusty road, one hand on his knee, weary but calm. Same short curly dark hair, beard, cream tunic and sage cloth. Satchel on the ground. No helper yet, no injury or blood, no robbers. Olive trees and rounded hills. Quiet lonely scene.",
+      "output": "apps/mobile/assets/illustrations/pages/good-samaritan-road.jpg"
+    },
+    {
+      "id": "good-samaritan-passing",
+      "reference": "apps/mobile/assets/illustrations/stories/good-samaritan.jpg",
+      "prompt": "The same tired traveler sits on a roadside stone in foreground, while two busy travelers in simple neutral brown and gray robes walk past along the path in the middle distance, looking ahead. They are ordinary adults, not villains. The blue-head-wrapped kind helper from the reference has not arrived. No hurt details. Emphasize distance and a missed chance to help.",
+      "output": "apps/mobile/assets/illustrations/pages/good-samaritan-passing.jpg"
+    },
+    {
+      "id": "mustard-seed-tiny",
+      "reference": "apps/mobile/assets/illustrations/stories/mustard-seed.jpg",
+      "prompt": "Close view of one adult medium-brown hand holding a SINGLE tiny round mustard seed between thumb and index finger, above a little shallow planting hole in rich garden soil. A second hand rests nearby. No large tree yet, just soft green garden distance and warm sunshine. Seed visibly tiny compared to the fingertips.",
+      "output": "apps/mobile/assets/illustrations/pages/mustard-seed-tiny.jpg"
+    },
+    {
+      "id": "mustard-seed-birds",
+      "reference": "apps/mobile/assets/illustrations/stories/mustard-seed.jpg",
+      "prompt": "The small seed has now grown into a lush rounded mustard tree filling the scene, a little nest with two tiny birds resting safely in a sturdy branch and another bird flying toward it. Focus on the leafy shelter and welcoming branches. Rich green garden and warm sunlight, no giant sprout in foreground.",
+      "output": "apps/mobile/assets/illustrations/pages/mustard-seed-birds.jpg"
+    },
+    {
+      "id": "calm-storm-waves",
+      "reference": "apps/mobile/assets/illustrations/stories/calm-storm.jpg",
+      "prompt": "The same wooden boat and three men from the reference meet a short rainy squall. Jesus lies asleep on a cushion at the rear, cream robe and terracotta shawl; his two adult friends sit holding the gunwale with concerned but not terrified expressions. Rounded moderate blue waves splash at the outside, soft gray clouds and rain, boat safely afloat. No lightning, capsizing or danger imagery.",
+      "output": "apps/mobile/assets/illustrations/pages/calm-storm-waves.jpg"
+    },
+    {
+      "id": "calm-storm-wake",
+      "reference": "apps/mobile/assets/illustrations/stories/calm-storm.jpg",
+      "prompt": "Inside the same boat during the soft gray rainy squall, one concerned friend gently touches sleeping Jesus on the shoulder to wake him, the other holds the boat's side. Jesus rests on a cushion, eyes beginning to open, cream robe and terracotta shawl. Moderate waves visible beyond the side, no panic. Close clear interaction asking for help.",
+      "output": "apps/mobile/assets/illustrations/pages/calm-storm-wake.jpg"
+    },
+    {
+      "id": "loaves-fish-crowd",
+      "reference": "apps/mobile/assets/illustrations/stories/loaves-fish.jpg",
+      "prompt": "A little crowd of ancient Middle Eastern families sits on a green hillside listening to Jesus standing nearby. A young boy at the center holds his small bread basket close to his chest, ready to share. Friendly varied faces, simple pastel tunics. Nobody eating yet. Focus on community and the small boy's offering.",
+      "output": "apps/mobile/assets/illustrations/pages/loaves-fish-crowd.jpg"
+    },
+    {
+      "id": "loaves-fish-baskets",
+      "reference": "apps/mobile/assets/illustrations/stories/loaves-fish.jpg",
+      "prompt": "A grateful smiling family has finished a shared meal in the background while EXACTLY TWELVE distinct woven baskets containing leftover bread sit in the foreground on grass, clearly arranged in three rows of four baskets. No extra baskets anywhere. Warm hillside light and distant lake. No text or numbers. The baskets are the main subject.",
+      "output": "apps/mobile/assets/illustrations/pages/loaves-fish-baskets.jpg"
+    },
+    {
+      "id": "zacchaeus-alone",
+      "reference": "apps/mobile/assets/illustrations/stories/zacchaeus.jpg",
+      "prompt": "Zacchaeus, the SAME short bearded adult in ochre tunic and cream vest from the tree in the reference, stands alone beside a little table with a few coins in the village square. His head is bowed thoughtfully, expression lonely rather than villainous. Other adults are gently distant in background. No Jesus or tree-climbing yet.",
+      "output": "apps/mobile/assets/illustrations/pages/zacchaeus-alone.jpg"
+    },
+    {
+      "id": "zacchaeus-sharing",
+      "reference": "apps/mobile/assets/illustrations/stories/zacchaeus.jpg",
+      "prompt": "The same Zacchaeus in ochre tunic and cream vest smiles as he returns a small handful of coins into a neighbor's open hand, outside a cozy ancient village house. Jesus in cream robe and terracotta shawl stands a step behind with a warm encouraging smile. Focus on hands sharing and repairing a mistake.",
+      "output": "apps/mobile/assets/illustrations/pages/zacchaeus-sharing.jpg"
+    },
+    {
+      "id": "jesus-children-arriving",
+      "reference": "apps/mobile/assets/illustrations/stories/jesus-children.jpg",
+      "prompt": "Three children matching the children in the reference walk with their mothers and fathers along a garden path toward Jesus, who is seated under the olive tree in the middle distance. Children excited and hopeful, parents kind, simple pastel period clothes. A welcoming gathering before they reach him.",
+      "output": "apps/mobile/assets/illustrations/pages/jesus-children-arriving.jpg"
+    },
+    {
+      "id": "jesus-children-waiting",
+      "reference": "apps/mobile/assets/illustrations/stories/jesus-children.jpg",
+      "prompt": "The same three children with their parents pause on the path as one adult helper in a muted blue tunic holds an open palm gently to indicate wait. The helper looks busy, not angry. Jesus is visible seated farther back under the olive tree, looking toward the children. No rejection gestures that look violent, no tears. Calm visual of being asked to wait.",
+      "output": "apps/mobile/assets/illustrations/pages/jesus-children-waiting.jpg"
+    },
+    {
+      "id": "prodigal-son-leaving",
+      "reference": "apps/mobile/assets/illustrations/stories/prodigal-son.jpg",
+      "prompt": "The adult son from the reference, short dark hair and ochre tunic, walks away down a country path carrying a small travel bag and coin pouch. His gray-bearded father in sage robe stands by the doorway of their home in the distance, watching. A journey away from home, warm daytime, no reunion yet.",
+      "output": "apps/mobile/assets/illustrations/pages/prodigal-son-leaving.jpg"
+    },
+    {
+      "id": "prodigal-son-hungry",
+      "reference": "apps/mobile/assets/illustrations/stories/prodigal-son.jpg",
+      "prompt": "The same adult son in a worn ochre tunic sits resting beside a tree away from home, holding an empty little bowl and an open empty coin pouch. Gentle sad thoughtful expression, one hand near his heart. Quiet warm earthy landscape. No emaciation, suffering spectacle or frightened face; convey deciding to go home.",
+      "output": "apps/mobile/assets/illustrations/pages/prodigal-son-hungry.jpg"
+    },
+    {
+      "id": "two-houses-building",
+      "reference": "apps/mobile/assets/illustrations/stories/two-houses.jpg",
+      "prompt": "Two friendly adult builders at work: left building a little stone house on a broad solid gray rock, right building a smaller house on golden sand. Same architecture as reference, incomplete low walls so construction is clear. Simple hand tools and baskets, no modern machinery. Sunny friendly landscape; foundations clearly different.",
+      "output": "apps/mobile/assets/illustrations/pages/two-houses-building.jpg"
+    },
+    {
+      "id": "two-houses-rain",
+      "reference": "apps/mobile/assets/illustrations/stories/two-houses.jpg",
+      "prompt": "The same two-house landscape during gentle rain: the house on the broad gray rock at left remains upright and snug, a warm window; the small empty sand house at right has become a low harmless pile of stones and red roof tiles on wet sand. No people in or near the fallen house. Soft gray rain clouds, modest puddles, no disaster spectacle, no lightning or huge waves. Clear child-friendly contrast of the foundations.",
+      "output": "apps/mobile/assets/illustrations/pages/two-houses-rain.jpg"
+    },
+    {
+      "id": "sower-birds",
+      "reference": "apps/mobile/assets/illustrations/stories/sower.jpg",
+      "prompt": "Close view of a path beside the farmer's field, with several little golden seeds lying on the firm path. Two friendly small brown birds peck up the seeds. Rich garden soil and healthy green shoots at the side, the same farmer in sage tunic and straw hat small in background. Warm daylight.",
+      "output": "apps/mobile/assets/illustrations/pages/sower-birds.jpg"
+    },
+    {
+      "id": "sower-weeds",
+      "reference": "apps/mobile/assets/illustrations/stories/sower.jpg",
+      "prompt": "Close view of a small patch at the edge of the same farmer's field: a few seeds among smooth gray stones, a tiny drooping dry sprout by one rock, and a second tiny sprout crowded by curling green weeds at the right. Clear simple botanical scene, softly rounded, no anthropomorphic sad plants. Golden light; healthy field softly visible behind.",
+      "output": "apps/mobile/assets/illustrations/pages/sower-weeds.jpg"
+    }
+  ],
+  "corrections": [
+    {
+      "id": "prodigal-son-hungry",
+      "prompt": "Edit this illustration to correct the extra arm: the young adult must have EXACTLY TWO arms and TWO hands. Remove the entire third arm and hand at the chest, restoring plain ochre tunic fabric there. Keep one natural arm/hand supporting the empty bowl in his lap and the other natural arm/hand holding the empty pouch. Keep the face, hairstyle, seated pose, bowl, pouch, landscape, warm storybook cartoon style, composition and all other details unchanged. No text."
+    }
+  ]
+}

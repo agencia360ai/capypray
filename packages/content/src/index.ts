@@ -1,6 +1,7 @@
 import { Pack, type Pack as PackT, type Lesson, type Minigame } from "./schema";
 
 export * from "./schema";
+export * from "./visuals";
 
 export type ValidationIssue = { path: string; message: string };
 

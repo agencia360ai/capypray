@@ -2,7 +2,7 @@
 
 Five original Capy portraits and ten original Bible-story covers generated with the built-in ChatGPT Images tool, using the approved UI concept as the character/style reference. They are bundled offline and contain no text. Production exports total approximately 1.43 MB: five 256 × 256 transparent PNGs and ten 640 × 640 JPEGs (quality 88). Original PNGs are retained in the review outputs.
 
-Home uses the five portraits with existing localized feeling labels and lesson links. The row keeps five targets at least 44px wide at 320px screen width. Little-prayer cards reuse these portraits; functional controls remain vectors. Story cards show their individual square cover, title, existing availability message, and a small lock badge when unavailable. Existing free stories and curriculum unlocks are unchanged. The first narrated page reuses the cover; subsequent pages retain their existing page-specific symbols and narration.
+Home uses the five portraits with existing localized feeling labels and lesson links. The row keeps five targets at least 44px wide at 320px screen width. Little-prayer cards reuse these portraits; functional controls remain vectors. Story cards show their individual square cover, title, existing availability message, and a small lock badge when unavailable. Existing free stories and curriculum unlocks are unchanged. The story reader now accompanies every page with scenes and symbols; see [Story and prayer visuals](narrative-visuals.md).
 
 `src/ui/illustrations.ts` maps stable content ids to bundled assets. `FeelingArt` falls back to the existing vector icon for an unmapped emotion, and stories without a mapped cover fall back to the book symbol. All labels remain in the content pack; no schema or narration changes were needed.
 

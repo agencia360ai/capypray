@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { VisualCue } from "./visuals";
 
 // GDD §6.2–6.5. The app is a pack runner: everything the kid sees or hears is here.
 
@@ -40,6 +41,7 @@ export const Audio = z.string().regex(/^[a-z0-9_./-]+\.(mp3|m4a|ogg)$/);
 const Line = z.object({
   text: z.string().max(140),
   audio: Audio.optional(),
+  visual: VisualCue.optional(),
 });
 
 export const Prayer = z.object({
@@ -160,10 +162,11 @@ export const Story = z.object({
   /** scripture reference shown to grown-ups (e.g. "Luke 15:3-7") */
   ref: z.string().max(40),
   icon: z.string(),
-  pages: z.array(z.object({ text: z.string().max(140), icon: z.string(), audio: Audio.optional() })).min(2).max(8),
+  pages: z.array(z.object({ text: z.string().max(140), icon: z.string(), audio: Audio.optional(), visual: VisualCue.optional() })).min(2).max(8),
   /** the one-line takeaway Capy says at the end */
   moral: z.string().max(140),
   moralAudio: Audio.optional(),
+  moralVisual: VisualCue.optional(),
 });
 export type Story = z.infer<typeof Story>;
 
