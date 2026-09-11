@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { CapyStateMachine, LYING } from "./stateMachine";
 import { SkinManager } from "./skins";
 import type { RNToWeb, WebToRN } from "./bridge";
@@ -26,11 +27,9 @@ function CapyModelFromUrl({ glb, ...rest }: Omit<Props, "background" | "gltf"> &
 
 function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "glb"> & { gltf: GLTF }) {
   const group = useRef<THREE.Group>(null);
-  const lookTarget = useRef(new THREE.Vector2(0, 0));
-  const head = useRef<THREE.Object3D | null>(null);
 
   const scene = useMemo(() => {
-    const s = gltf.scene;
+    const s = clone(gltf.scene);
     s.traverse((o) => {
       if ((o as THREE.Mesh).isMesh) {
         const m = o as THREE.Mesh;
@@ -41,7 +40,6 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
         mat.roughness = 0.9;
         mat.metalness = 0;
       }
-      if (o.name === "DEF-spine006" || o.name === "DEF-spine.006") head.current = o;
     });
     // normalise: feet on y=0, 1.6 units tall (bind pose, skinning applied) so camera framing is stable
     s.updateMatrixWorld(true);
@@ -94,7 +92,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
             sm.setMood(m.value);
             break;
           case "look":
-            lookTarget.current.set(m.x, m.y);
+            sm.lookAt(m.x, m.y);
             break;
           case "load":
             break; // handled by parent (re-mount with new glb)
@@ -111,6 +109,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
       sm.probe(scene, bone!, [x ?? 0, y ?? 0, z ?? 0]);
     }
     onMessage({ type: "ready", clips: sm.clipNames });
+    return () => sm.dispose();
   }, [sm, skins, scene, onMessage, register]);
 
   const frame = useRef(0);
@@ -159,11 +158,6 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
     camPos.current.lerp(tmp.set(target.current.x, target.current.y + dist * 0.29, target.current.z + dist * 0.96), k);
     camera.position.copy(camPos.current);
     camera.lookAt(target.current);
-    if (head.current) {
-      // subtle head-follow, additive on top of the clip
-      head.current.rotation.y += THREE.MathUtils.clamp(lookTarget.current.x, -1, 1) * 0.35;
-      head.current.rotation.x += THREE.MathUtils.clamp(-lookTarget.current.y, -1, 1) * 0.2;
-    }
   });
 
   return <primitive ref={group} object={scene} />;

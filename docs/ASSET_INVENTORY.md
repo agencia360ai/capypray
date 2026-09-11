@@ -2,6 +2,8 @@
 
 Source: `Capibara.unitypackage` (25 MB) and `Capybara.zip` (8.6 MB), received 7 Sep 2026.
 
+Runtime gesture update: see `avatar-rig-fix.md`. Gesture controls now preserve the independent facial roots and blend complete arm poses; the older direct additive DEF-bone implementation described below is superseded.
+
 ## 1. Verdict
 
 | Asset | Reusable in the GDD stack (Expo + WebView/R3F)? | Where it lives now |

@@ -11,7 +11,7 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "content:validate": "pnpm --filter @capy/content validate",
-    "voice:fetch": "node tools/audio-fetch.mjs",
+    "audio:prepare": "node tools/audio-fetch.mjs packages/content/packs/christian-us-en-v1 && node tools/audio-manifest.mjs",
     "voice:studio": "tsx tools/voicestudio-batch.ts",
     "avatar:build": "bash tools/avatar/build.sh",
     "avatar:preview": "pnpm --filter @capy/avatar-web dev"

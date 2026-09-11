@@ -9,6 +9,7 @@ const VARS = { kidName: "friend", person: "someone you love", thankfulFor: "some
 const spoken = (t) => t.replace(/\{(\w+)\}/g, (m, k) => VARS[k] ?? m).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").replace(/\s+/g, " ").trim();
 const lines = new Map();
 const add = (file, text) => file && text && !lines.has(file) && lines.set(file, spoken(text));
+add(pack.companion.breathing.prompt.audio, pack.companion.breathing.prompt.text);
 for (const l of pack.lessons) for (const b of l.beats) if (b.audio && b.text) add(b.audio, b.text);
 for (const p of pack.prayers) for (const ln of p.lines) add(ln.audio, ln.text);
 for (const t of pack.ui?.tapLines ?? []) add(t.audio, t.text);

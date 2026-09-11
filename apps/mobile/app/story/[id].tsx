@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import type { Lesson } from "@capy/content";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
@@ -11,13 +11,14 @@ import { useStageInsets } from "@/ui/useStageInsets";
 import { stopSpeaking } from "@/audio/voice";
 import { track } from "@/backend/events";
 import { T } from "@/ui/theme";
+import { availableStoryIds } from "@/content/stories";
 
 // Replay one story from the shelf: a tiny synthetic lesson (say → story → say) with no lantern.
 export default function StoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const pack = getPack();
-  const story = pack.stories.find((s) => s.id === id);
   const kid = useKid();
+  const story = pack.stories.find((s) => s.id === id && availableStoryIds(pack, kid.completed).has(s.id));
   const avatar = useAvatar();
   const { setStage } = useStage();
   const onBottomLayout = useStageInsets();
@@ -47,9 +48,11 @@ export default function StoryScreen() {
       apply(runner.start());
       void track("story_replay", { storyId: id });
     }
+    return () => stopSpeaking();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner]);
-  if (!story || !runner || !state) return null;
+  if (!story) return <Redirect href="/stories" />;
+  if (!runner || !state) return null;
   const next = () => {
     const r = runner.next();
     // the reward beat is only there to satisfy the schema; leave before it shows

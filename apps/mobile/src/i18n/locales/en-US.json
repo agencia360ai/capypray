@@ -1,0 +1,30 @@
+{
+  "onboarding": {
+    "eyebrow": "A LITTLE MOMENT. A LIFELONG FRIEND.",
+    "welcomeTitle": "Meet your prayer buddy.",
+    "welcomeBody": "A gentle friend to help your little one talk to God, one small moment at a time.",
+    "start": "Meet Capy",
+    "parentNote": "For grown-ups · Christian prayers for ages 4–8",
+    "trust": "No ads. No recording. Just a little time together.",
+    "nameTitle": "What should Capy call them?",
+    "nameBody": "A nickname is perfect. You can also leave this blank.",
+    "nameLabel": "Your child's nickname",
+    "namePlaceholder": "Nickname (optional)",
+    "rhythmTitle": "Make room for a little calm.",
+    "rhythmBody": "Pick a bedtime that feels right for your family. You can change it later.",
+    "rhythmNote": "Reminders are off. You can turn them on in Parent Corner.",
+    "readyTitle": "A little prayer. Together.",
+    "readyBody": "Capy will go first. Your child can follow along, or simply listen.",
+    "readyDetail": "Start with a short hello to God. Explore at your own pace.",
+    "next": "Continue",
+    "back": "Back",
+    "finish": "Let's pray together",
+    "step": "Step {current} of {total}",
+    "benefitCalm": "Little moments of calm",
+    "benefitPrayer": "Simple words to pray",
+    "benefitGrow": "A friendship that grows",
+    "familyPlan": "YOUR FIRST LITTLE STEP",
+    "timeLabel": "Bedtime: {time}",
+    "editLater": "More family settings are always in Parent Corner."
+  }
+}

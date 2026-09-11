@@ -56,8 +56,7 @@ Every kid-facing line has a pre-rendered mp3 (Higgsfield "Juan" voice, `6b528d43
 bundle on your machine (no ffmpeg needed for mp3):
 
 ```powershell
-node tools/audio-fetch.mjs packages/content/packs/christian-us-en-v1   # downloads to apps/mobile/assets/audio
-node tools/audio-manifest.mjs                                          # regenerates src/audio/manifest.ts
+pnpm audio:prepare                                                    # download recordings and regenerate manifest
 pnpm --filter @capy/mobile start -c
 ```
 
@@ -73,12 +72,12 @@ One quirk of the hosted renderer: it refuses a line that ends in a sentence plus
 blocker (the mealtime grace closing line failed every attempt). That prayer now closes with "Amen." as its own
 line, which also reads better for a child repeating it.
 
-Parent Corner names the voice it found: `Capy's voice on this device: Juan · 375 / 375`. It reads that name from
+Parent Corner names the voice it found: `Capy's voice on this device: Juan · 417 / 417`. It reads that name from
 `urls.lock.json` through the generated manifest, so `device` there means the folder is empty and every line is being
 read by the phone, and a different name means the folder is stale.
 
 Lines without a file fall back to the device voice. New lines: `node tools/audio-lines.mjs <packDir> --missing`
-lists what still needs rendering. The set is complete: 367 pack lines + 8 Parent Corner lines = 375, all in one voice.
+lists what still needs rendering. The set is complete: 409 pack lines + 8 Parent Corner lines = 417, all in one voice.
 Parent Corner shows the count it found on the device.
 
 ### Rendering with VoiceStudio (local, no API key)
@@ -106,3 +105,4 @@ Before rendering the shipping set, select an engine whose weights allow commerci
 MOSS-TTS-Nano (Apache-2.0), or GPT-SoVITS (MIT). Avoid IndexTTS 2.5 and PocketTTS (gated licences).
 Because a hosted render (`tools/audio-fetch.mjs`) and a local render write to the same folder, pick one voice for the
 whole set — `--force` after switching engines, so no line keeps the old voice.
+See `docs/voice.md` for per-line coverage and the playback regression check.

@@ -7,4 +7,7 @@ const dest = resolve(import.meta.dirname, "../../../apps/mobile/assets/avatar");
 await rm(dest, { recursive: true, force: true });
 await mkdir(dest, { recursive: true });
 await cp(resolve(src, "embedded.html"), resolve(dest, "index.html"));
+const webDest = resolve(import.meta.dirname, "../../../apps/mobile/public/avatar");
+await mkdir(webDest, { recursive: true });
+await cp(resolve(src, "embedded.html"), resolve(webDest, "index.html"));
 console.log("avatar bundle →", dest);

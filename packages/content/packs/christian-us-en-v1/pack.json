@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.7.3",
+  "version": "0.9.1",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -100,146 +100,20 @@
         {
           "type": "avatar_say",
           "clip": "wave_hello",
-          "text": "Hi {kidName}! I'm Capy. I live in this pond.",
-          "audio": "intro_01.mp3",
-          "mood": "happy"
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_a",
-          "text": "I want to know you! Can I ask you some things?",
-          "audio": "intro_02.mp3"
-        },
-        {
-          "type": "ask",
-          "key": "favorite",
-          "clip": "think",
-          "text": "What do you love the most?",
-          "audio": "intro_03.mp3",
-          "options": [
-            {
-              "id": "dog",
-              "label": "Dogs",
-              "icon": "dog"
-            },
-            {
-              "id": "cat",
-              "label": "Cats",
-              "icon": "cat"
-            },
-            {
-              "id": "ice",
-              "label": "Ice cream",
-              "icon": "ice"
-            },
-            {
-              "id": "ball",
-              "label": "Playing ball",
-              "icon": "ball"
-            },
-            {
-              "id": "music",
-              "label": "Music",
-              "icon": "music"
-            },
-            {
-              "id": "rainbow",
-              "label": "Rainbows",
-              "icon": "rainbow"
-            }
-          ]
+          "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+          "mood": "happy",
+          "audio": "meet_capy_v08_1.mp3"
         },
         {
           "type": "avatar_say",
           "clip": "heart",
-          "text": "{favorite}! Me too. I love oranges and my bird friend.",
-          "audio": "intro_04.mp3",
-          "mood": "happy"
-        },
-        {
-          "type": "ask",
-          "key": "thankfulFor",
-          "clip": "think",
-          "text": "What made you happy today?",
-          "audio": "intro_05.mp3",
-          "options": [
-            {
-              "id": "family",
-              "label": "My family",
-              "icon": "family"
-            },
-            {
-              "id": "food",
-              "label": "Yummy food",
-              "icon": "apple"
-            },
-            {
-              "id": "friends",
-              "label": "My friends",
-              "icon": "friends"
-            },
-            {
-              "id": "sun",
-              "label": "Sunshine",
-              "icon": "sun"
-            },
-            {
-              "id": "toys",
-              "label": "My toys",
-              "icon": "blocks"
-            },
-            {
-              "id": "hugs",
-              "label": "Hugs",
-              "icon": "heart"
-            }
-          ]
-        },
-        {
-          "type": "ask",
-          "key": "feeling",
-          "clip": "listen_nod",
-          "text": "How do you feel right now?",
-          "audio": "intro_06.mp3",
-          "options": [
-            {
-              "id": "happy",
-              "label": "Happy",
-              "icon": "happy"
-            },
-            {
-              "id": "calm",
-              "label": "Calm",
-              "icon": "calm"
-            },
-            {
-              "id": "sleepy",
-              "label": "Sleepy",
-              "icon": "sleepy"
-            },
-            {
-              "id": "scared",
-              "label": "A bit scared",
-              "icon": "scared"
-            }
-          ]
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_b",
-          "text": "Thank you for telling me. Now I'll tell you my secret.",
-          "audio": "intro_07.mp3"
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_a",
-          "text": "I talk to God every day. It's called praying. Let's try together!",
-          "audio": "intro_08.mp3",
-          "mood": "calm"
+          "text": "We can talk to God together. I’ll go first.",
+          "audio": "meet_capy_v08_2.mp3"
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "first-prayer"
+          "prayerId": "first-prayer",
+          "clip": "pray_hands"
         },
         {
           "type": "reward",
@@ -247,10 +121,10 @@
         },
         {
           "type": "avatar_say",
-          "clip": "celebrate",
-          "text": "You did it! Your first lantern is on the pond.",
-          "audio": "intro_10.mp3",
-          "mood": "happy"
+          "clip": "heart",
+          "text": "Our first little light! Come back whenever you’re ready.",
+          "mood": "happy",
+          "audio": "meet_capy_v08_5.mp3"
         }
       ]
     },
@@ -2654,6 +2528,326 @@
           "mood": "happy"
         }
       ]
+    },
+    {
+      "id": "moment-happy",
+      "skillId": "thank-you",
+      "title": "A happy little prayer",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Something good happened? Let’s share it with God!",
+          "mood": "calm",
+          "audio": "moment_happy_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_happy_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-happy-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Keep a little kindness with you today.",
+          "mood": "calm",
+          "audio": "moment_happy_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sad",
+      "skillId": "please-help",
+      "title": "When my heart feels heavy",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "It’s okay to feel sad. I’ll sit with you.",
+          "mood": "calm",
+          "audio": "moment_sad_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sad_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sad-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You can tell a trusted grown-up how you feel.",
+          "mood": "calm",
+          "audio": "moment_sad_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-worried",
+      "skillId": "please-help",
+      "title": "A little courage",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Big worries can feel heavy. Let’s take a little breath.",
+          "mood": "calm",
+          "audio": "moment_worried_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_worried_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-worried-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You don’t have to carry a worry alone.",
+          "mood": "calm",
+          "audio": "moment_worried_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-thankful",
+      "skillId": "thank-you",
+      "title": "Thank you for today",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Let’s think of one little thing we’re thankful for.",
+          "mood": "calm",
+          "audio": "moment_thankful_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_thankful_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-thankful-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You can say thank you to someone today, too.",
+          "mood": "calm",
+          "audio": "moment_thankful_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sleepy",
+      "skillId": "listen",
+      "title": "Ready to rest",
+      "free": true,
+      "routine": "moment",
+      "scene": "bedroom",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "yawn",
+          "text": "Let’s put the busy day down for a little while.",
+          "mood": "calm",
+          "audio": "moment_sleepy_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sleepy_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sleepy-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Rest is good. A new day can wait.",
+          "mood": "calm",
+          "audio": "moment_sleepy_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sorry",
+      "skillId": "sorry",
+      "title": "Let’s try again",
+      "free": true,
+      "routine": "moment",
+      "scene": "park",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Sometimes we hurt someone’s feelings. We can try again.",
+          "mood": "calm",
+          "audio": "moment_sorry_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sorry_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sorry-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "When you’re ready, ask a grown-up to help you reconnect.",
+          "mood": "calm",
+          "audio": "moment_sorry_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-family",
+      "skillId": "others",
+      "title": "Someone I love",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Think of someone you love. We can pray for them.",
+          "mood": "calm",
+          "audio": "moment_family_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_family_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-family-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "A kind word can be a little gift.",
+          "mood": "calm",
+          "audio": "moment_family_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-morning",
+      "skillId": "hello",
+      "title": "Hello, new day",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "A new day is here. Let’s start it together.",
+          "mood": "calm",
+          "audio": "moment_morning_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_morning_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-morning-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "One little act of kindness is a lovely start.",
+          "mood": "calm",
+          "audio": "moment_morning_v08_5.mp3"
+        }
+      ]
     }
   ],
   "prayers": [
@@ -2664,15 +2858,27 @@
       "lines": [
         {
           "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "audio": "p_hello_01.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for listening.",
-          "audio": "p_hello_02.mp3"
+          "audio": "p_hello_02.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
         },
         {
           "text": "I love you. Amen.",
-          "audio": "p_hello_03.mp3"
+          "audio": "p_hello_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2686,15 +2892,27 @@
       "lines": [
         {
           "text": "Dear God, thank you for {thankfulFor}.",
-          "audio": "p_thanks_01.mp3"
+          "audio": "p_thanks_01.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for {person}.",
-          "audio": "p_thanks_02.mp3"
+          "audio": "p_thanks_02.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for today. Amen.",
-          "audio": "p_thanks_03.mp3"
+          "audio": "p_thanks_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2709,15 +2927,27 @@
       "lines": [
         {
           "text": "God, please be with {person}.",
-          "audio": "p_others_01.mp3"
+          "audio": "p_others_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Keep them safe and happy.",
-          "audio": "p_others_02.mp3"
+          "audio": "p_others_02.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me be kind to them. Amen.",
-          "audio": "p_others_03.mp3"
+          "audio": "p_others_03.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2731,19 +2961,35 @@
       "lines": [
         {
           "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "audio": "p_hello_01.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for {thankfulFor}.",
-          "audio": "p_review_02.mp3"
+          "audio": "p_review_02.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for {person}.",
-          "audio": "p_thanks_02.mp3"
+          "audio": "p_thanks_02.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "I love you. Amen.",
-          "audio": "p_hello_03.mp3"
+          "audio": "p_hello_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2760,15 +3006,27 @@
       "lines": [
         {
           "text": "God is great, God is good.",
-          "audio": "p_grace_01.mp3"
+          "audio": "p_grace_01.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Let us thank Him for our food.",
-          "audio": "p_grace_02.mp3"
+          "audio": "p_grace_02.mp3",
+          "visual": {
+            "symbol": "food",
+            "motion": "glow"
+          }
         },
         {
           "text": "Amen.",
-          "audio": "p_grace_03.mp3"
+          "audio": "p_grace_03.mp3",
+          "visual": {
+            "symbol": "food",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2780,19 +3038,35 @@
       "lines": [
         {
           "text": "Now I lay me down to sleep,",
-          "audio": "p_bed_01.mp3"
+          "audio": "p_bed_01.mp3",
+          "visual": {
+            "symbol": "moon",
+            "motion": "float"
+          }
         },
         {
           "text": "I pray the Lord my soul to keep.",
-          "audio": "p_bed_02.mp3"
+          "audio": "p_bed_02.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         },
         {
           "text": "Guide me safely through the night,",
-          "audio": "p_bed_03.mp3"
+          "audio": "p_bed_03.mp3",
+          "visual": {
+            "symbol": "home",
+            "motion": "glow"
+          }
         },
         {
           "text": "and wake me with the morning light. Amen.",
-          "audio": "p_bed_04.mp3"
+          "audio": "p_bed_04.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2803,15 +3077,27 @@
       "lines": [
         {
           "text": "Dear God, thank you for my eyes and ears.",
-          "audio": "p_body_01.mp3"
+          "audio": "p_body_01.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for my hands and feet.",
-          "audio": "p_body_02.mp3"
+          "audio": "p_body_02.mp3",
+          "visual": {
+            "symbol": "footsteps",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me use them for good. Amen.",
-          "audio": "p_body_03.mp3"
+          "audio": "p_body_03.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2822,15 +3108,27 @@
       "lines": [
         {
           "text": "God, today was hard.",
-          "audio": "p_hard_01.mp3"
+          "audio": "p_hard_01.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
         },
         {
           "text": "But thank you for {thankfulFor}.",
-          "audio": "p_hard_02.mp3"
+          "audio": "p_hard_02.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for staying with me. Amen.",
-          "audio": "p_hard_03.mp3"
+          "audio": "p_hard_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2844,15 +3142,27 @@
       "lines": [
         {
           "text": "God, I'm sorry for {mistake}.",
-          "audio": "p_sorry_01.mp3"
+          "audio": "p_sorry_01.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please forgive me and help me try again.",
-          "audio": "p_sorry_02.mp3"
+          "audio": "p_sorry_02.mp3",
+          "visual": {
+            "symbol": "forgive",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for loving me. Amen.",
-          "audio": "p_sorry_03.mp3"
+          "audio": "p_sorry_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2866,11 +3176,19 @@
       "lines": [
         {
           "text": "I'm listening, God.",
-          "audio": "p_listen_01.mp3"
+          "audio": "p_listen_01.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
         },
         {
           "text": "Amen.",
-          "audio": "p_listen_02.mp3"
+          "audio": "p_listen_02.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2881,19 +3199,35 @@
       "lines": [
         {
           "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "audio": "p_hello_01.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for {thankfulFor}.",
-          "audio": "p_review_02.mp3"
+          "audio": "p_review_02.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "I'm sorry for {mistake}. Please forgive me.",
-          "audio": "p_review_w2_03.mp3"
+          "audio": "p_review_w2_03.mp3",
+          "visual": {
+            "symbol": "forgive",
+            "motion": "glow"
+          }
         },
         {
           "text": "I love you. Amen.",
-          "audio": "p_hello_03.mp3"
+          "audio": "p_hello_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2908,26 +3242,32 @@
       "title": "My First Prayer",
       "lines": [
         {
-          "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "text": "Hi God, it’s me, {kidName}.",
+          "audio": "first_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
-          "text": "Thank you for {thankfulFor}.",
-          "audio": "p_first_02.mp3"
+          "text": "Thank you for listening and loving me.",
+          "audio": "first_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
-          "text": "I feel {feeling} today.",
-          "audio": "p_first_03.mp3"
-        },
-        {
-          "text": "Thank you for listening. Amen.",
-          "audio": "p_hello_02b.mp3"
+          "text": "Please be with me today. Amen.",
+          "audio": "first_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
-        "kidName",
-        "thankfulFor",
-        "feeling"
+        "kidName"
       ]
     },
     {
@@ -2937,15 +3277,27 @@
       "lines": [
         {
           "text": "God, I feel {feeling}.",
-          "audio": "p_help_01.mp3"
+          "audio": "p_help_01.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please help me with {need}.",
-          "audio": "p_help_02.mp3"
+          "audio": "p_help_02.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
         },
         {
           "text": "I know you're with me. Amen.",
-          "audio": "p_help_03.mp3"
+          "audio": "p_help_03.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -2960,15 +3312,27 @@
       "lines": [
         {
           "text": "God, I feel scared right now.",
-          "audio": "p_scared_01.mp3"
+          "audio": "p_scared_01.mp3",
+          "visual": {
+            "symbol": "cloud",
+            "motion": "float"
+          }
         },
         {
           "text": "Please hold my hand.",
-          "audio": "p_scared_02.mp3"
+          "audio": "p_scared_02.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "You are bigger than my fear. Amen.",
-          "audio": "p_scared_03.mp3"
+          "audio": "p_scared_03.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2979,15 +3343,27 @@
       "lines": [
         {
           "text": "God, I feel sad today.",
-          "audio": "p_sad_01.mp3"
+          "audio": "p_sad_01.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please sit with me.",
-          "audio": "p_sad_02.mp3"
+          "audio": "p_sad_02.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for loving me anyway. Amen.",
-          "audio": "p_sad_03.mp3"
+          "audio": "p_sad_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -2998,15 +3374,27 @@
       "lines": [
         {
           "text": "God, something big is coming.",
-          "audio": "p_big_01.mp3"
+          "audio": "p_big_01.mp3",
+          "visual": {
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please be with me every step.",
-          "audio": "p_big_02.mp3"
+          "audio": "p_big_02.mp3",
+          "visual": {
+            "symbol": "footsteps",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me be brave. Amen.",
-          "audio": "p_big_03.mp3"
+          "audio": "p_big_03.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -3017,23 +3405,43 @@
       "lines": [
         {
           "text": "God, bless the people close to me.",
-          "audio": "p_five_01.mp3"
+          "audio": "p_five_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Bless my helpers and teachers.",
-          "audio": "p_five_02.mp3"
+          "audio": "p_five_02.mp3",
+          "visual": {
+            "symbol": "book",
+            "motion": "glow"
+          }
         },
         {
           "text": "Bless the leaders who guide us.",
-          "audio": "p_five_03.mp3"
+          "audio": "p_five_03.mp3",
+          "visual": {
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "Bless the sick and the sad.",
-          "audio": "p_five_04.mp3"
+          "audio": "p_five_04.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
         },
         {
           "text": "And bless me too. Amen.",
-          "audio": "p_five_05.mp3"
+          "audio": "p_five_05.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -3044,15 +3452,27 @@
       "lines": [
         {
           "text": "God, please be close to {person}.",
-          "audio": "p_sick_01.mp3"
+          "audio": "p_sick_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help them feel better soon.",
-          "audio": "p_sick_02.mp3"
+          "audio": "p_sick_02.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
         },
         {
           "text": "Give them rest tonight. Amen.",
-          "audio": "p_sick_03.mp3"
+          "audio": "p_sick_03.mp3",
+          "visual": {
+            "symbol": "moon",
+            "motion": "float"
+          }
         }
       ],
       "variables": [
@@ -3066,15 +3486,27 @@
       "lines": [
         {
           "text": "God, you love the whole world.",
-          "audio": "p_world_01.mp3"
+          "audio": "p_world_01.mp3",
+          "visual": {
+            "symbol": "world",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please help the helpers.",
-          "audio": "p_world_02.mp3"
+          "audio": "p_world_02.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Bring peace everywhere. Amen.",
-          "audio": "p_world_03.mp3"
+          "audio": "p_world_03.mp3",
+          "visual": {
+            "symbol": "bird",
+            "motion": "float"
+          }
         }
       ]
     },
@@ -3086,19 +3518,35 @@
       "lines": [
         {
           "text": "Our Father, who art in heaven,",
-          "audio": "p_lp_01.mp3"
+          "audio": "p_lp_01.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "hallowed be thy name.",
-          "audio": "p_lp_02.mp3"
+          "audio": "p_lp_02.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thy kingdom come, thy will be done,",
-          "audio": "p_lp_03.mp3"
+          "audio": "p_lp_03.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "on earth as it is in heaven.",
-          "audio": "p_lp_04.mp3"
+          "audio": "p_lp_04.mp3",
+          "visual": {
+            "symbol": "world",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -3110,19 +3558,35 @@
       "lines": [
         {
           "text": "Give us this day our daily bread,",
-          "audio": "p_lp_05.mp3"
+          "audio": "p_lp_05.mp3",
+          "visual": {
+            "symbol": "food",
+            "motion": "glow"
+          }
         },
         {
           "text": "and forgive us our trespasses,",
-          "audio": "p_lp_06.mp3"
+          "audio": "p_lp_06.mp3",
+          "visual": {
+            "symbol": "forgive",
+            "motion": "glow"
+          }
         },
         {
           "text": "as we forgive those who trespass against us.",
-          "audio": "p_lp_07.mp3"
+          "audio": "p_lp_07.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Lead us not into temptation, but deliver us from evil. Amen.",
-          "audio": "p_lp_08.mp3"
+          "audio": "p_lp_08.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ]
     },
@@ -3133,27 +3597,51 @@
       "lines": [
         {
           "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "audio": "p_hello_01.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for {thankfulFor}.",
-          "audio": "p_review_02.mp3"
+          "audio": "p_review_02.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "I'm sorry for {mistake}.",
-          "audio": "p_wc_03.mp3"
+          "audio": "p_wc_03.mp3",
+          "visual": {
+            "symbol": "forgive",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please help me with {need}.",
-          "audio": "p_help_02.mp3"
+          "audio": "p_help_02.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please be with {person}.",
-          "audio": "p_others_01.mp3"
+          "audio": "p_others_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "I'm listening, God. Amen.",
-          "audio": "p_wc_06.mp3"
+          "audio": "p_wc_06.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -3171,15 +3659,27 @@
       "lines": [
         {
           "text": "Good morning, God. It's me, {kidName}.",
-          "audio": "p_place_bedroom_1.mp3"
+          "audio": "p_place_bedroom_1.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for a new day.",
-          "audio": "p_place_bedroom_2.mp3"
+          "audio": "p_place_bedroom_2.mp3",
+          "visual": {
+            "symbol": "flower",
+            "motion": "glow"
+          }
         },
         {
           "text": "Stay with me today. Amen.",
-          "audio": "p_place_bedroom_3.mp3"
+          "audio": "p_place_bedroom_3.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
         }
       ],
       "variables": [
@@ -3193,15 +3693,27 @@
       "lines": [
         {
           "text": "God, you make things grow.",
-          "audio": "p_place_garden_1.mp3"
+          "audio": "p_place_garden_1.mp3",
+          "visual": {
+            "symbol": "seed",
+            "motion": "grow"
+          }
         },
         {
           "text": "Thank you for flowers and bugs and rain.",
-          "audio": "p_place_garden_2.mp3"
+          "audio": "p_place_garden_2.mp3",
+          "visual": {
+            "symbol": "flower",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me grow too. Amen.",
-          "audio": "p_place_garden_3.mp3"
+          "audio": "p_place_garden_3.mp3",
+          "visual": {
+            "symbol": "leaf",
+            "motion": "grow"
+          }
         }
       ],
       "variables": []
@@ -3213,15 +3725,27 @@
       "lines": [
         {
           "text": "God, look at this big sky!",
-          "audio": "p_place_park_1.mp3"
+          "audio": "p_place_park_1.mp3",
+          "visual": {
+            "symbol": "cloud",
+            "motion": "float"
+          }
         },
         {
           "text": "Thank you for trees and birds and running.",
-          "audio": "p_place_park_2.mp3"
+          "audio": "p_place_park_2.mp3",
+          "visual": {
+            "symbol": "bird",
+            "motion": "float"
+          }
         },
         {
           "text": "You made it all. Amen.",
-          "audio": "p_place_park_3.mp3"
+          "audio": "p_place_park_3.mp3",
+          "visual": {
+            "symbol": "world",
+            "motion": "glow"
+          }
         }
       ],
       "variables": []
@@ -3233,15 +3757,27 @@
       "lines": [
         {
           "text": "God, so many people are here.",
-          "audio": "p_place_city_1.mp3"
+          "audio": "p_place_city_1.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "Please take care of each one.",
-          "audio": "p_place_city_2.mp3"
+          "audio": "p_place_city_2.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me be kind today. Amen.",
-          "audio": "p_place_city_3.mp3"
+          "audio": "p_place_city_3.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
         }
       ],
       "variables": []
@@ -3253,15 +3789,27 @@
       "lines": [
         {
           "text": "God, help me listen and learn.",
-          "audio": "p_place_school_1.mp3"
+          "audio": "p_place_school_1.mp3",
+          "visual": {
+            "symbol": "book",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me be brave when it's hard.",
-          "audio": "p_place_school_2.mp3"
+          "audio": "p_place_school_2.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         },
         {
           "text": "Help me be a good friend. Amen.",
-          "audio": "p_place_school_3.mp3"
+          "audio": "p_place_school_3.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
         }
       ],
       "variables": []
@@ -3273,15 +3821,27 @@
       "lines": [
         {
           "text": "God, keep us safe on the road.",
-          "audio": "p_place_car_1.mp3"
+          "audio": "p_place_car_1.mp3",
+          "visual": {
+            "symbol": "shield",
+            "motion": "glow"
+          }
         },
         {
           "text": "Thank you for places to go.",
-          "audio": "p_place_car_2.mp3"
+          "audio": "p_place_car_2.mp3",
+          "visual": {
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "Bring us home happy. Amen.",
-          "audio": "p_place_car_3.mp3"
+          "audio": "p_place_car_3.mp3",
+          "visual": {
+            "symbol": "home",
+            "motion": "glow"
+          }
         }
       ],
       "variables": []
@@ -3293,18 +3853,294 @@
       "lines": [
         {
           "text": "God, it's dark but you are here.",
-          "audio": "p_place_night_1.mp3"
+          "audio": "p_place_night_1.mp3",
+          "visual": {
+            "symbol": "moon",
+            "motion": "float"
+          }
         },
         {
           "text": "Thank you for today.",
-          "audio": "p_place_night_2.mp3"
+          "audio": "p_place_night_2.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
         },
         {
           "text": "Keep my family safe tonight. Amen.",
-          "audio": "p_place_night_3.mp3"
+          "audio": "p_place_night_3.mp3",
+          "visual": {
+            "symbol": "home",
+            "motion": "glow"
+          }
         }
       ],
       "variables": []
+    },
+    {
+      "id": "moment-happy-prayer",
+      "skillId": "thank-you",
+      "title": "A happy little prayer",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for this happy moment.",
+          "audio": "moment_happy_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "happy",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me share a little kindness today.",
+          "audio": "moment_happy_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for loving me. Amen.",
+          "audio": "moment_happy_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-sad-prayer",
+      "skillId": "please-help",
+      "title": "When my heart feels heavy",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, my heart feels sad today.",
+          "audio": "moment_sad_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Please comfort me and help me ask for a hug.",
+          "audio": "moment_sad_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for being with me. Amen.",
+          "audio": "moment_sad_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-worried-prayer",
+      "skillId": "please-help",
+      "title": "A little courage",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, I feel worried right now.",
+          "audio": "moment_worried_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "cloud",
+            "motion": "float"
+          }
+        },
+        {
+          "text": "Help me take one small, brave step.",
+          "audio": "moment_worried_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "footsteps",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me tell a grown-up what I need. Amen.",
+          "audio": "moment_worried_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-thankful-prayer",
+      "skillId": "thank-you",
+      "title": "Thank you for today",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for the good things around me.",
+          "audio": "moment_thankful_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me notice something kind today.",
+          "audio": "moment_thankful_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "flower",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for the people who care for me. Amen.",
+          "audio": "moment_thankful_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-sleepy-prayer",
+      "skillId": "listen",
+      "title": "Ready to rest",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for being with me today.",
+          "audio": "moment_sleepy_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help my body rest and my thoughts grow quiet.",
+          "audio": "moment_sleepy_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "moon",
+            "motion": "float"
+          }
+        },
+        {
+          "text": "Please be with my family tonight. Amen.",
+          "audio": "moment_sleepy_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "home",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-sorry-prayer",
+      "skillId": "sorry",
+      "title": "Let’s try again",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, I’m sorry for my unkind words.",
+          "audio": "moment_sorry_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me listen and say a caring sorry.",
+          "audio": "moment_sorry_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Show me one kind thing I can do. Amen.",
+          "audio": "moment_sorry_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-family-prayer",
+      "skillId": "others",
+      "title": "Someone I love",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, please be with the person in my heart.",
+          "audio": "moment_family_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Give them comfort and people who care.",
+          "audio": "moment_family_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me show them love today. Amen.",
+          "audio": "moment_family_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "moment-morning-prayer",
+      "skillId": "hello",
+      "title": "Hello, new day",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Good morning, God. Thank you for this new day.",
+          "audio": "moment_morning_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me learn, listen, and be kind.",
+          "audio": "moment_morning_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "book",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Please be with me wherever I go. Amen.",
+          "audio": "moment_morning_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "road",
+            "motion": "glow"
+          }
+        }
+      ]
     }
   ],
   "minigames": [
@@ -3347,7 +4183,7 @@
       "id": "mg_w1d2_places",
       "prompt": {
         "text": "Tap three places where you can pray.",
-        "audio": "mg_w1d2_prompt.mp3"
+        "audio": "mg_w1d2_prompt_v08.mp3"
       },
       "target": 3,
       "items": [
@@ -4293,31 +5129,62 @@
         {
           "text": "A shepherd had one hundred sheep. He loved every single one.",
           "icon": "sheep",
-          "audio": "st_lost-sheep_1.mp3"
+          "audio": "st_lost-sheep_1.mp3",
+          "visual": {
+            "art": "lost-sheep-flock",
+            "symbol": "sheep",
+            "motion": "glow"
+          }
         },
         {
           "text": "One little sheep wandered off and got lost in the hills.",
           "icon": "hills",
-          "audio": "st_lost-sheep_2.mp3"
+          "audio": "st_lost-sheep_2.mp3",
+          "visual": {
+            "art": "lost-sheep",
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "The shepherd left the ninety-nine and went looking. Up and down, calling its name.",
           "icon": "shepherd",
-          "audio": "st_lost-sheep_3.mp3"
+          "audio": "st_lost-sheep_3.mp3",
+          "visual": {
+            "art": "lost-sheep",
+            "symbol": "search",
+            "motion": "glow"
+          }
         },
         {
           "text": "He found it! He carried it home on his shoulders, so happy.",
           "icon": "hug",
-          "audio": "st_lost-sheep_4.mp3"
+          "audio": "st_lost-sheep_4.mp3",
+          "visual": {
+            "art": "lost-sheep-found",
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus said: God is like that shepherd. He never stops looking for you.",
           "icon": "heart",
-          "audio": "st_lost-sheep_5.mp3"
+          "audio": "st_lost-sheep_5.mp3",
+          "visual": {
+            "art": "lost-sheep-found",
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "God always comes looking for you. You are never lost to Him.",
-      "moralAudio": "st_lost-sheep_m.mp3"
+      "moralAudio": "st_lost-sheep_m.mp3",
+      "free": true,
+      "moralVisual": {
+        "art": "lost-sheep-found",
+        "symbol": "home",
+        "motion": "glow"
+      }
     },
     {
       "id": "good-samaritan",
@@ -4328,31 +5195,62 @@
         {
           "text": "A man was walking on a lonely road. Robbers hurt him and left him there.",
           "icon": "road",
-          "audio": "st_good-samaritan_1.mp3"
+          "audio": "st_good-samaritan_1.mp3",
+          "visual": {
+            "art": "good-samaritan-road",
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "A busy man walked by. He did not stop.",
           "icon": "walk",
-          "audio": "st_good-samaritan_2.mp3"
+          "audio": "st_good-samaritan_2.mp3",
+          "visual": {
+            "art": "good-samaritan-passing",
+            "symbol": "footsteps",
+            "motion": "glow"
+          }
         },
         {
           "text": "Another man walked by. He looked away and kept going.",
           "icon": "walk",
-          "audio": "st_good-samaritan_3.mp3"
+          "audio": "st_good-samaritan_3.mp3",
+          "visual": {
+            "art": "good-samaritan-passing",
+            "symbol": "sad",
+            "motion": "glow"
+          }
         },
         {
           "text": "Then a stranger stopped. He cleaned the hurts, gave water, and took him to rest.",
           "icon": "hug",
-          "audio": "st_good-samaritan_4.mp3"
+          "audio": "st_good-samaritan_4.mp3",
+          "visual": {
+            "art": "good-samaritan",
+            "symbol": "water",
+            "motion": "float"
+          }
         },
         {
           "text": "Jesus said: be like the kind stranger. Help anyone who needs it.",
           "icon": "heart",
-          "audio": "st_good-samaritan_5.mp3"
+          "audio": "st_good-samaritan_5.mp3",
+          "visual": {
+            "art": "good-samaritan",
+            "symbol": "hands",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "Being kind to someone who needs help is a prayer with your hands.",
-      "moralAudio": "st_good-samaritan_m.mp3"
+      "moralAudio": "st_good-samaritan_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "good-samaritan",
+        "symbol": "heart",
+        "motion": "glow"
+      }
     },
     {
       "id": "mustard-seed",
@@ -4363,31 +5261,62 @@
         {
           "text": "Jesus held up a mustard seed. It was tiny, smaller than a crumb.",
           "icon": "seed",
-          "audio": "st_mustard-seed_1.mp3"
+          "audio": "st_mustard-seed_1.mp3",
+          "visual": {
+            "art": "mustard-seed-tiny",
+            "symbol": "seed",
+            "motion": "grow"
+          }
         },
         {
           "text": "Someone planted it in the garden and waited.",
           "icon": "sprout",
-          "audio": "st_mustard-seed_2.mp3"
+          "audio": "st_mustard-seed_2.mp3",
+          "visual": {
+            "art": "mustard-seed-tiny",
+            "symbol": "water",
+            "motion": "float"
+          }
         },
         {
           "text": "It grew, and grew, and grew into a big tree!",
           "icon": "tree",
-          "audio": "st_mustard-seed_3.mp3"
+          "audio": "st_mustard-seed_3.mp3",
+          "visual": {
+            "art": "mustard-seed",
+            "symbol": "tree",
+            "motion": "grow"
+          }
         },
         {
           "text": "Birds came and made nests in its branches.",
           "icon": "bird",
-          "audio": "st_mustard-seed_4.mp3"
+          "audio": "st_mustard-seed_4.mp3",
+          "visual": {
+            "art": "mustard-seed-birds",
+            "symbol": "bird",
+            "motion": "float"
+          }
         },
         {
           "text": "Jesus said: a little faith grows big. Even tiny prayers grow.",
           "icon": "heart",
-          "audio": "st_mustard-seed_5.mp3"
+          "audio": "st_mustard-seed_5.mp3",
+          "visual": {
+            "art": "mustard-seed",
+            "symbol": "leaf",
+            "motion": "grow"
+          }
         }
       ],
       "moral": "Your small prayer is a seed. God makes it grow.",
-      "moralAudio": "st_mustard-seed_m.mp3"
+      "moralAudio": "st_mustard-seed_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "mustard-seed-birds",
+        "symbol": "heart",
+        "motion": "glow"
+      }
     },
     {
       "id": "calm-storm",
@@ -4398,31 +5327,62 @@
         {
           "text": "Jesus and his friends sailed across the lake in a boat.",
           "icon": "boat",
-          "audio": "st_calm-storm_1.mp3"
+          "audio": "st_calm-storm_1.mp3",
+          "visual": {
+            "art": "calm-storm",
+            "symbol": "boat",
+            "motion": "glow"
+          }
         },
         {
           "text": "A big storm came. Waves splashed in! The friends were scared.",
           "icon": "storm",
-          "audio": "st_calm-storm_2.mp3"
+          "audio": "st_calm-storm_2.mp3",
+          "visual": {
+            "art": "calm-storm-waves",
+            "symbol": "cloud",
+            "motion": "float"
+          }
         },
         {
           "text": "Jesus was asleep. They woke him: Help us!",
           "icon": "sleepy",
-          "audio": "st_calm-storm_3.mp3"
+          "audio": "st_calm-storm_3.mp3",
+          "visual": {
+            "art": "calm-storm-wake",
+            "symbol": "help",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus stood up and said: Quiet! Be still. The wind stopped.",
           "icon": "calm",
-          "audio": "st_calm-storm_4.mp3"
+          "audio": "st_calm-storm_4.mp3",
+          "visual": {
+            "art": "calm-storm",
+            "symbol": "water",
+            "motion": "float"
+          }
         },
         {
           "text": "The friends whispered: even the wind listens to Him.",
           "icon": "heart",
-          "audio": "st_calm-storm_5.mp3"
+          "audio": "st_calm-storm_5.mp3",
+          "visual": {
+            "art": "calm-storm",
+            "symbol": "ear",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "When you are scared, tell Jesus. He can calm the storm inside you.",
-      "moralAudio": "st_calm-storm_m.mp3"
+      "moralAudio": "st_calm-storm_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "calm-storm",
+        "symbol": "shield",
+        "motion": "glow"
+      }
     },
     {
       "id": "loaves-fish",
@@ -4433,31 +5393,62 @@
         {
           "text": "A huge crowd came to hear Jesus. Everyone was hungry.",
           "icon": "people",
-          "audio": "st_loaves-fish_1.mp3"
+          "audio": "st_loaves-fish_1.mp3",
+          "visual": {
+            "art": "loaves-fish-crowd",
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "A boy had five small breads and two fish. He shared them.",
           "icon": "bread",
-          "audio": "st_loaves-fish_2.mp3"
+          "audio": "st_loaves-fish_2.mp3",
+          "visual": {
+            "art": "loaves-fish",
+            "symbol": "food",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus said thank you to God, and broke the bread.",
           "icon": "pray",
-          "audio": "st_loaves-fish_3.mp3"
+          "audio": "st_loaves-fish_3.mp3",
+          "visual": {
+            "art": "loaves-fish",
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Everyone ate until they were full. Thousands of people!",
           "icon": "happy",
-          "audio": "st_loaves-fish_4.mp3"
+          "audio": "st_loaves-fish_4.mp3",
+          "visual": {
+            "art": "loaves-fish-crowd",
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "There were twelve baskets left over.",
           "icon": "plate",
-          "audio": "st_loaves-fish_5.mp3"
+          "audio": "st_loaves-fish_5.mp3",
+          "visual": {
+            "art": "loaves-fish-baskets",
+            "symbol": "basket",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "Say thank you before you eat, and share what you have. God makes it enough.",
-      "moralAudio": "st_loaves-fish_m.mp3"
+      "moralAudio": "st_loaves-fish_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "loaves-fish",
+        "symbol": "hands",
+        "motion": "glow"
+      }
     },
     {
       "id": "zacchaeus",
@@ -4468,31 +5459,62 @@
         {
           "text": "Zacchaeus was very short and nobody liked him. He took too much money.",
           "icon": "sad",
-          "audio": "st_zacchaeus_1.mp3"
+          "audio": "st_zacchaeus_1.mp3",
+          "visual": {
+            "art": "zacchaeus-alone",
+            "symbol": "coin",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus was coming! Zacchaeus climbed a tree to see.",
           "icon": "tree",
-          "audio": "st_zacchaeus_2.mp3"
+          "audio": "st_zacchaeus_2.mp3",
+          "visual": {
+            "art": "zacchaeus",
+            "symbol": "tree",
+            "motion": "grow"
+          }
         },
         {
           "text": "Jesus stopped and said: Zacchaeus, come down. I want to visit your house!",
           "icon": "house",
-          "audio": "st_zacchaeus_3.mp3"
+          "audio": "st_zacchaeus_3.mp3",
+          "visual": {
+            "art": "zacchaeus",
+            "symbol": "home",
+            "motion": "glow"
+          }
         },
         {
           "text": "Zacchaeus was so happy. He gave the money back, and more.",
           "icon": "happy",
-          "audio": "st_zacchaeus_4.mp3"
+          "audio": "st_zacchaeus_4.mp3",
+          "visual": {
+            "art": "zacchaeus-sharing",
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus is a friend to everyone, even when others say no.",
           "icon": "heart",
-          "audio": "st_zacchaeus_5.mp3"
+          "audio": "st_zacchaeus_5.mp3",
+          "visual": {
+            "art": "zacchaeus-sharing",
+            "symbol": "people",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "Jesus wants to be your friend, exactly as you are.",
-      "moralAudio": "st_zacchaeus_m.mp3"
+      "moralAudio": "st_zacchaeus_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "zacchaeus",
+        "symbol": "heart",
+        "motion": "glow"
+      }
     },
     {
       "id": "jesus-children",
@@ -4503,31 +5525,62 @@
         {
           "text": "Moms and dads brought their kids to see Jesus.",
           "icon": "family",
-          "audio": "st_jesus-children_1.mp3"
+          "audio": "st_jesus-children_1.mp3",
+          "visual": {
+            "art": "jesus-children-arriving",
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "The helpers said: go away, Jesus is too busy for kids!",
           "icon": "grab",
-          "audio": "st_jesus-children_2.mp3"
+          "audio": "st_jesus-children_2.mp3",
+          "visual": {
+            "art": "jesus-children-waiting",
+            "symbol": "ear",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus said: No! Let the children come to me.",
           "icon": "wave",
-          "audio": "st_jesus-children_3.mp3"
+          "audio": "st_jesus-children_3.mp3",
+          "visual": {
+            "art": "jesus-children",
+            "symbol": "hands",
+            "motion": "glow"
+          }
         },
         {
           "text": "He hugged them and blessed them, one by one.",
           "icon": "hug",
-          "audio": "st_jesus-children_4.mp3"
+          "audio": "st_jesus-children_4.mp3",
+          "visual": {
+            "art": "jesus-children",
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "Jesus said: kids know how to trust. Everyone should be like them.",
           "icon": "heart",
-          "audio": "st_jesus-children_5.mp3"
+          "audio": "st_jesus-children_5.mp3",
+          "visual": {
+            "art": "jesus-children",
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "You are never too small to talk to God. He loves your voice.",
-      "moralAudio": "st_jesus-children_m.mp3"
+      "moralAudio": "st_jesus-children_m.mp3",
+      "free": true,
+      "moralVisual": {
+        "art": "jesus-children",
+        "symbol": "ear",
+        "motion": "glow"
+      }
     },
     {
       "id": "prodigal-son",
@@ -4538,31 +5591,62 @@
         {
           "text": "A son took his money and ran far away from home.",
           "icon": "walk",
-          "audio": "st_prodigal-son_1.mp3"
+          "audio": "st_prodigal-son_1.mp3",
+          "visual": {
+            "art": "prodigal-son-leaving",
+            "symbol": "road",
+            "motion": "glow"
+          }
         },
         {
           "text": "He spent it all. Soon he was hungry and sad.",
           "icon": "sad",
-          "audio": "st_prodigal-son_2.mp3"
+          "audio": "st_prodigal-son_2.mp3",
+          "visual": {
+            "art": "prodigal-son-hungry",
+            "symbol": "sad",
+            "motion": "glow"
+          }
         },
         {
           "text": "He thought: I will go home and say I'm sorry.",
           "icon": "heart-mend",
-          "audio": "st_prodigal-son_3.mp3"
+          "audio": "st_prodigal-son_3.mp3",
+          "visual": {
+            "art": "prodigal-son-hungry",
+            "symbol": "home",
+            "motion": "glow"
+          }
         },
         {
           "text": "His dad saw him far away and ran to hug him!",
           "icon": "hug",
-          "audio": "st_prodigal-son_4.mp3"
+          "audio": "st_prodigal-son_4.mp3",
+          "visual": {
+            "art": "prodigal-son",
+            "symbol": "heart",
+            "motion": "glow"
+          }
         },
         {
           "text": "They had a party. Dad said: my son was lost, now he's found.",
           "icon": "happy",
-          "audio": "st_prodigal-son_5.mp3"
+          "audio": "st_prodigal-son_5.mp3",
+          "visual": {
+            "art": "prodigal-son",
+            "symbol": "happy",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "When you say sorry, God runs to hug you. Always.",
-      "moralAudio": "st_prodigal-son_m.mp3"
+      "moralAudio": "st_prodigal-son_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "prodigal-son",
+        "symbol": "forgive",
+        "motion": "glow"
+      }
     },
     {
       "id": "two-houses",
@@ -4573,31 +5657,62 @@
         {
           "text": "Jesus told about two builders.",
           "icon": "blocks",
-          "audio": "st_two-houses_1.mp3"
+          "audio": "st_two-houses_1.mp3",
+          "visual": {
+            "art": "two-houses-building",
+            "symbol": "people",
+            "motion": "glow"
+          }
         },
         {
           "text": "One built his house on sand. Easy and fast!",
           "icon": "sand",
-          "audio": "st_two-houses_2.mp3"
+          "audio": "st_two-houses_2.mp3",
+          "visual": {
+            "art": "two-houses",
+            "symbol": "sand",
+            "motion": "glow"
+          }
         },
         {
           "text": "The other built on rock. It took longer.",
           "icon": "rock",
-          "audio": "st_two-houses_3.mp3"
+          "audio": "st_two-houses_3.mp3",
+          "visual": {
+            "art": "two-houses-building",
+            "symbol": "rock",
+            "motion": "glow"
+          }
         },
         {
           "text": "Rain came, wind blew. The sand house fell down. Splash!",
           "icon": "storm",
-          "audio": "st_two-houses_4.mp3"
+          "audio": "st_two-houses_4.mp3",
+          "visual": {
+            "art": "two-houses-rain",
+            "symbol": "cloud",
+            "motion": "float"
+          }
         },
         {
           "text": "The rock house stood strong. Jesus said: listen to my words, and you are on rock.",
           "icon": "house",
-          "audio": "st_two-houses_5.mp3"
+          "audio": "st_two-houses_5.mp3",
+          "visual": {
+            "art": "two-houses",
+            "symbol": "shield",
+            "motion": "glow"
+          }
         }
       ],
       "moral": "Praying every day builds your house on rock.",
-      "moralAudio": "st_two-houses_m.mp3"
+      "moralAudio": "st_two-houses_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "two-houses",
+        "symbol": "rock",
+        "motion": "glow"
+      }
     },
     {
       "id": "sower",
@@ -4608,31 +5723,62 @@
         {
           "text": "A farmer threw seeds everywhere.",
           "icon": "seeds",
-          "audio": "st_sower_1.mp3"
+          "audio": "st_sower_1.mp3",
+          "visual": {
+            "art": "sower",
+            "symbol": "seed",
+            "motion": "grow"
+          }
         },
         {
           "text": "Some fell on the path. Birds ate them.",
           "icon": "bird",
-          "audio": "st_sower_2.mp3"
+          "audio": "st_sower_2.mp3",
+          "visual": {
+            "art": "sower-birds",
+            "symbol": "bird",
+            "motion": "float"
+          }
         },
         {
           "text": "Some fell on rocks. They dried up in the sun.",
           "icon": "rock",
-          "audio": "st_sower_3.mp3"
+          "audio": "st_sower_3.mp3",
+          "visual": {
+            "art": "sower-weeds",
+            "symbol": "rock",
+            "motion": "glow"
+          }
         },
         {
           "text": "Some fell in weeds and got squished.",
           "icon": "bush",
-          "audio": "st_sower_4.mp3"
+          "audio": "st_sower_4.mp3",
+          "visual": {
+            "art": "sower-weeds",
+            "symbol": "leaf",
+            "motion": "grow"
+          }
         },
         {
           "text": "Some fell on good soil and grew tall. A hundred times more!",
           "icon": "sprout",
-          "audio": "st_sower_5.mp3"
+          "audio": "st_sower_5.mp3",
+          "visual": {
+            "art": "sower",
+            "symbol": "wheat",
+            "motion": "grow"
+          }
         }
       ],
       "moral": "Keep your heart like good soil: listen, and God's words will grow.",
-      "moralAudio": "st_sower_m.mp3"
+      "moralAudio": "st_sower_m.mp3",
+      "free": false,
+      "moralVisual": {
+        "art": "sower",
+        "symbol": "heart",
+        "motion": "glow"
+      }
     }
   ],
   "scenes": [
@@ -4717,5 +5863,175 @@
       },
       "prayerId": "place-car"
     }
-  ]
+  ],
+  "companion": {
+    "ui": {
+      "brand": "Capy Prayer",
+      "tagline": "A little closer, every day.",
+      "welcome": "I’m glad you’re here.",
+      "greeting": "Hi, {kidName}.",
+      "today": "OUR LITTLE MOMENT",
+      "start": "Let’s pray together",
+      "duration": "3–5 min · with Capy",
+      "completed": "A lovely little moment.",
+      "completedHint": "You prayed today. There’s always room for a little more calm.",
+      "explore": "A LITTLE MORE TO EXPLORE",
+      "feelings": "How is your heart today?",
+      "feelingsHint": "Every feeling is welcome here.",
+      "moments": "Little prayers, big feelings.",
+      "momentsHint": "There’s a little prayer for right now.",
+      "bedtime": "Time to wind down",
+      "bedtimeHint": "A soft landing for a busy day.",
+      "stories": "Story time",
+      "storiesHint": "Little stories of great love",
+      "places": "Let’s explore",
+      "placesHint": "God is with us everywhere",
+      "pond": "Our little pond",
+      "pondHint": "Look how we’re growing",
+      "journey": "Your prayer path",
+      "journeyHint": "One little step at a time.",
+      "back": "Back to Capy",
+      "close": "Close",
+      "parents": "Grown-ups",
+      "tapCapy": "Say hello to Capy",
+      "progress": "{count} of {total} little steps",
+      "saved": "A little light for today.",
+      "savedHint": "Every prayer matters. Your pond keeps growing at your own pace.",
+      "loading": "Capy is getting ready…",
+      "storyReady": "Read together",
+      "storyLocked": "We’ll discover this on your prayer path.",
+      "allDone": "Look how far we’ve come!",
+      "allDoneHint": "You can revisit your prayers and stories whenever you like.",
+      "breatheIn": "Breathe in…",
+      "breatheOut": "Breathe out…"
+    },
+    "feelings": [
+      {
+        "id": "happy",
+        "label": "Happy",
+        "icon": "happy",
+        "lessonId": "moment-happy"
+      },
+      {
+        "id": "sad",
+        "label": "Sad",
+        "icon": "sad",
+        "lessonId": "moment-sad"
+      },
+      {
+        "id": "worried",
+        "label": "Worried",
+        "icon": "scared",
+        "lessonId": "moment-worried"
+      },
+      {
+        "id": "thankful",
+        "label": "Thankful",
+        "icon": "heart",
+        "lessonId": "moment-thankful"
+      },
+      {
+        "id": "sleepy",
+        "label": "Sleepy",
+        "icon": "sleepy",
+        "lessonId": "moment-sleepy"
+      }
+    ],
+    "moments": [
+      {
+        "id": "happy",
+        "title": "A happy little prayer",
+        "description": "Share a good thing with God.",
+        "icon": "happy",
+        "lessonId": "moment-happy",
+        "minutes": 1
+      },
+      {
+        "id": "sad",
+        "title": "When my heart feels heavy",
+        "description": "A little comfort for a hard day.",
+        "icon": "sad",
+        "lessonId": "moment-sad",
+        "minutes": 1
+      },
+      {
+        "id": "worried",
+        "title": "A little courage",
+        "description": "Bring your worries, just as they are.",
+        "icon": "scared",
+        "lessonId": "moment-worried",
+        "minutes": 1
+      },
+      {
+        "id": "thankful",
+        "title": "Thank you for today",
+        "description": "Notice one small, lovely thing.",
+        "icon": "heart",
+        "lessonId": "moment-thankful",
+        "minutes": 1
+      },
+      {
+        "id": "sleepy",
+        "title": "Ready to rest",
+        "description": "A gentle prayer for a sleepy heart.",
+        "icon": "sleepy",
+        "lessonId": "moment-sleepy",
+        "minutes": 1
+      },
+      {
+        "id": "sorry",
+        "title": "Let’s try again",
+        "description": "Find kind words after an argument.",
+        "icon": "heart",
+        "lessonId": "moment-sorry",
+        "minutes": 1
+      },
+      {
+        "id": "family",
+        "title": "Someone I love",
+        "description": "A prayer for the people in your heart.",
+        "icon": "heart",
+        "lessonId": "moment-family",
+        "minutes": 1
+      },
+      {
+        "id": "morning",
+        "title": "Hello, new day",
+        "description": "Start small, with God beside you.",
+        "icon": "sun",
+        "lessonId": "moment-morning",
+        "minutes": 1
+      }
+    ],
+    "prayerDefaults": {
+      "person": "the people I love",
+      "thankfulFor": "the good things around me",
+      "mistake": "the times I was unkind",
+      "feeling": "a little unsure",
+      "need": "what is on my heart",
+      "favorite": "little things that make me smile"
+    },
+    "breathing": {
+      "prompt": {
+        "text": "Now let's be quiet. Breathe in… breathe out… God is right here.",
+        "audio": "quiet_breathe_20.mp3"
+      },
+      "eyebrow": "A MOMENT OF PEACE",
+      "title": "Breathe with Capy",
+      "ready": "Follow the gentle glow",
+      "pace": "Breathe at your own pace.",
+      "inhaleHint": "Let the light grow.",
+      "exhaleHint": "Let the air out gently.",
+      "paused": "Take your time",
+      "pausedHint": "Capy is right here.",
+      "complete": "A little moment with God.",
+      "completeHint": "Carry this quiet with you.",
+      "progress": "Breath {current} of {total}",
+      "start": "Let's breathe",
+      "pause": "Pause",
+      "resume": "Keep breathing",
+      "finish": "I'm ready",
+      "continue": "Continue"
+    }
+  }
 }

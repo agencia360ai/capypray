@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import type { Pack, Minigame } from "@capy/content";
+import { Animated, Easing, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import type { Pack, Minigame, VisualCue } from "@capy/content";
 import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
 import { speak } from "@/audio/voice";
@@ -11,10 +11,13 @@ import { REWARD_BURST_MS } from "./RewardBurst";
 import * as haptics from "./haptics";
 import { getPack } from "@/content/pack";
 import { T } from "./theme";
-import { glyph } from "./icons";
 import { useAvatar } from "@/avatar/AvatarView";
 import { speakCapMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
+import { useReducedMotion } from "./motion";
+import { BreathingMoment } from "./BreathingMoment";
+import { storyCover } from "./illustrations";
+import { NarrativePanel } from "./NarrativePanel";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Audio leads (kids 4–6 don't read): plain lines advance by themselves once spoken, anything that needs the
@@ -24,7 +27,7 @@ const NUDGE_MS = 9000;
 const AUTO_SAY_MS = 1800;
 const AUTO_REWARD_MS = REWARD_BURST_MS + 500; // the lantern lights up and floats to the pond first (RewardBurst on the stage)
 
-export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void }) {
+export function BeatView({ step, pack, onNext, onAnswer, quiet = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; quiet?: boolean }) {
   const avatar = useAvatar();
   switch (step.kind) {
     case "say":
@@ -36,6 +39,7 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
           text={step.text}
           audio={step.audio}
           badge="pray"
+          visual={step.prayer.lines[step.lineIndex]?.visual}
           hint={`${step.lineIndex + 1} / ${step.prayer.lines.length}`}
           label={pack.ui.iSaidIt}
           icon={<Mic />}
@@ -68,12 +72,14 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
       const mg = pack.minigames.find((m) => m.id === step.minigameId)!;
       return <MinigameView key={mg.id} mg={mg} onDone={onNext} />;
     }
+    case "story":
+      return <StoryBeat key={`${step.story.id}:${step.pageIndex}`} step={step} onNext={onNext} />;
     case "listen":
-      return <ListenTimer seconds={step.seconds} text={step.text} audio={step.audio} onDone={onNext} />;
+      return <BreathingMoment key={`${step.text}:${step.seconds}`} seconds={step.seconds} text={step.text} audio={step.audio} onDone={onNext} />;
     case "choose_people":
       return <PeoplePicker text={step.text} audio={step.audio} min={step.min} max={step.max} defaults={pack.people.defaults} allowAdd onDone={onNext} />;
     case "reward":
-      return <RewardBeat lanterns={step.lanterns} label={pack.ui.yay} onNext={onNext} />;
+      return <RewardBeat quiet={quiet} lanterns={step.lanterns} label={pack.ui.yay} onNext={onNext} />;
     case "parent_prompt":
       return (
         <Sheet>
@@ -118,14 +124,16 @@ function useGuide(spoken: boolean, nudge?: Nudge, enabled = true) {
   return hint;
 }
 
-function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext }: { text: string; audio?: string; badge: string; hint?: string; label: string; icon: React.ReactNode; autoMs?: number; nudge: Nudge; onNext: () => void }) {
+function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, visual, onNext }: { text: string; audio?: string; badge: string; hint?: string; label: string; icon: React.ReactNode; autoMs?: number; nudge: Nudge; visual?: VisualCue; onNext: () => void }) {
+  const compact = useWindowDimensions().height < 700;
   const [spoken, setSpoken] = useState(false);
   const showHint = useGuide(spoken, autoMs ? undefined : nudge);
   return (
     <>
       {/* prayer lines: when Capy stops talking he settles into the full praying pose instead of idling, so the paws stay together for the whole prayer */}
-      <SpeechBubble text={text} audio={audio} badge={badge} hint={hint} rest={badge === "pray" ? "pray_hands" : undefined} onSpoken={() => setSpoken(true)} />
+      <SpeechBubble text={text} audio={audio} badge={badge} hint={hint} compact={compact && !!visual} rest={badge === "pray" ? "pray_hands" : undefined} onSpoken={() => setSpoken(true)} />
       <Sheet>
+        {visual && <NarrativePanel cue={visual} variant="prayer" />}
         <BigButton label={label} icon={icon} onPress={onNext} hint={showHint && !autoMs} autoAdvanceMs={spoken && autoMs ? autoMs : undefined} />
       </Sheet>
     </>
@@ -134,13 +142,15 @@ function LineBeat({ text, audio, badge, hint, label, icon, autoMs, nudge, onNext
 
 /** Capy tells a Bible story: big picture card per page, narrated, auto-turning once spoken. */
 function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; onNext: () => void }) {
+  const compact = useWindowDimensions().height < 700;
   const pack = getPack();
   const [spoken, setSpoken] = useState(false);
   const showHint = useGuide(spoken, nudgeTap(pack.ui));
   const pages = step.story.pages.length + 1;
+  const visual = step.last ? step.story.moralVisual : step.story.pages[step.pageIndex]?.visual;
   return (
     <>
-      <SpeechBubble text={step.text} audio={step.audio} badge="book" onSpoken={() => setSpoken(true)} />
+      <SpeechBubble text={step.text} audio={step.audio} badge="book" compact={compact} onSpoken={() => setSpoken(true)} />
       <Sheet>
         <View style={styles.storyHead}>
           <Text style={styles.storyTitle}>{step.story.title}</Text>
@@ -150,9 +160,7 @@ function StoryBeat({ step, onNext }: { step: Extract<Step, { kind: "story" }>; o
             ))}
           </View>
         </View>
-        <View style={[styles.picture, step.last && styles.pictureEnd]}>
-          <Text style={styles.pictureGlyph}>{glyph(step.icon)}</Text>
-        </View>
+        <NarrativePanel cue={visual} fallbackArt={storyCover(step.story.id)} variant="story" />
         <BigButton label={step.last ? pack.ui.theEnd : pack.ui.storyPage} icon={<Arrow />} onPress={onNext} hint={showHint} autoAdvanceMs={spoken ? 3200 : undefined} />
       </Sheet>
     </>
@@ -173,7 +181,7 @@ function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; aud
   );
 }
 
-function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: string; onNext: () => void }) {
+function RewardBeat({ lanterns, label, onNext, quiet }: { lanterns: number; label: string; onNext: () => void; quiet: boolean }) {
   // confetti bursts when the lantern lights up (RewardBurst timing: scale-in spring + 250 ms), not on mount
   const [burst, setBurst] = useState(0);
   useEffect(() => {
@@ -182,8 +190,8 @@ function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: stri
   }, []);
   return (
     <>
-      <Confetti trigger={burst} />
-      <SpeechBubble text={`🏮 +${lanterns}`} badge="lantern" />
+      {!quiet && <Confetti trigger={burst} />}
+      <SpeechBubble text={getPack().companion.ui.saved} badge="lantern" />
       <Sheet>
         <BigButton label={label} icon={<Check />} onPress={onNext} autoAdvanceMs={AUTO_REWARD_MS} />
       </Sheet>
@@ -194,6 +202,9 @@ function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: stri
 function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const pack = getPack();
   const [msg, setMsg] = useState<{ text: string; audio?: string } | null>(null);
+  const finished = useRef(false);
+  const completionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(completionTimer.current), []);
   const [picked, setPicked] = useState<string[]>([]);
   const [burst, setBurst] = useState(0);
   const [shake, setShake] = useState(0);
@@ -210,6 +221,8 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
   const [startedAt] = useState(() => Date.now());
   const [misses, setMisses] = useState(0);
   const finish = (line: { text: string; audio?: string }) => {
+    if (finished.current) return;
+    finished.current = true;
     setTouched(true);
     setMsg(line);
     void track("minigame_complete", { type: mg.type, id: mg.id, score: Math.max(0, 3 - misses), durationMs: Date.now() - startedAt });
@@ -217,9 +230,9 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     void haptics.success();
     avatar.send({ type: "mood", value: "happy" });
     avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "celebrate" });
-    setTimeout(onDone, 1900);
   };
   const retry = (line: { text: string; audio?: string }) => {
+    if (finished.current) return;
     setTouched(true);
     setMsg(line);
     setMisses((m) => m + 1);
@@ -227,10 +240,16 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     void haptics.nope();
     avatar.send({ type: "speak", durationMs: speakCapMs(line.text), clip: "sad" });
   };
-  const bubble = (hint?: string) => (
+  const bubble = (text: string, hint?: string) => (
     <>
       <Confetti trigger={burst} />
-      <SpeechBubble text={msg?.text ?? mg.prompt.text} audio={msg ? msg.audio : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => setSpoken(true)} />
+      <SpeechBubble key={`${msg?.text ?? mg.id}:${misses}`} text={text} audio={msg ? msg.audio : mg.prompt.audio} badge="game" hint={hint} shake={shake} onSpoken={() => {
+        setSpoken(true);
+        if (finished.current) {
+          clearTimeout(completionTimer.current);
+          completionTimer.current = setTimeout(onDone, 500);
+        }
+      }} />
     </>
   );
 
@@ -238,7 +257,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "tap_choice":
       return (
         <>
-          {bubble()}
+          {bubble(msg?.text ?? mg.prompt.text)}
           <Sheet>
             <Grid hint={showHint}>
               {mg.cards.map((c) => (
@@ -251,7 +270,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "collect":
       return (
         <>
-          {bubble(`${picked.length} / ${mg.target}`)}
+          {bubble(msg?.text ?? mg.prompt.text, `${picked.length} / ${mg.target}`)}
           <Sheet>
             <Grid hint={showHint}>
               {mg.items.map((c) => (
@@ -288,11 +307,11 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
         />
       );
     case "listen_timer":
-      return <ListenTimer seconds={mg.seconds} text={mg.prompt.text} audio={mg.prompt.audio} onDone={onDone} />;
+      return <BreathingMoment key={mg.id} seconds={mg.seconds} text={mg.prompt.text} audio={mg.prompt.audio} onDone={onDone} />;
     case "sequence":
       return (
         <>
-          {bubble()}
+          {bubble(msg?.text ?? mg.prompt.text)}
           <Sheet>
             <View style={styles.slots}>
               {mg.order.map((_, i) => (
@@ -329,7 +348,7 @@ function MinigameView({ mg, onDone }: { mg: Minigame; onDone: () => void }) {
     case "fill_blank":
       return (
         <>
-          {bubble(mg.sentence.replace("___", picked[0] ?? "____"))}
+          {bubble(msg?.text ?? mg.prompt.text, mg.sentence.replace("___", picked[0] ?? "____"))}
           <Sheet>
             <Grid hint={showHint}>
               {mg.options.map((o) => (
@@ -385,6 +404,16 @@ function PeoplePicker({ text, audio, min, max, defaults, allowAdd, onDone }: { t
 
 function ListenTimer({ seconds, text, audio, onDone, dark }: { seconds: number; text: string; audio?: string; onDone: () => void; dark?: boolean }) {
   const [left, setLeft] = useState(seconds);
+  const reduced = useReducedMotion();
+  const breath = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (reduced) { breath.setValue(0.5); return; }
+    const loop = Animated.loop(Animated.sequence([
+      Animated.timing(breath, { toValue: 1, duration: 4000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      Animated.timing(breath, { toValue: 0, duration: 4000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+    ]));
+    loop.start(); return () => loop.stop();
+  }, [breath, reduced]);
   const avatar = useAvatar();
   const done = useRef(onDone);
   done.current = onDone;
@@ -400,14 +429,14 @@ function ListenTimer({ seconds, text, audio, onDone, dark }: { seconds: number; 
   useEffect(() => {
     if (left <= 0) done.current();
   }, [left]);
-  const size = 110 + (1 - left / seconds) * 110; // GDD §6.5: circle that grows while breathing with Capy
   return (
     <>
       {!dark && <SpeechBubble text={text} audio={audio} badge="ear" />}
       <Sheet style={dark ? styles.dark : undefined}>
         {dark && <Text style={styles.darkText}>{text}</Text>}
         <View style={styles.circleWrap}>
-          <View style={[styles.circle, dark && styles.circleDark, { width: size, height: size, borderRadius: size / 2 }]} />
+          <Animated.View style={[styles.circle, dark && styles.circleDark, { width: 170, height: 170, borderRadius: 85, transform: [{ scale: breath.interpolate({ inputRange: [0, 1], outputRange: [0.72, 1.12] }) }] }]} />
+          <Text style={{ position: "absolute", fontFamily: T.font.bold, color: dark ? "#FFF4E1" : T.color.ink }}>{(seconds - left) % 8 < 4 ? getPack().companion.ui.breatheIn : getPack().companion.ui.breatheOut}</Text>
         </View>
       </Sheet>
     </>
@@ -420,9 +449,6 @@ const styles = StyleSheet.create({
   dots: { flexDirection: "row", gap: 5 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: T.color.tan },
   dotOn: { backgroundColor: T.color.primary, transform: [{ scale: 1.4 }] },
-  picture: { alignSelf: "center", width: 150, height: 150, borderRadius: 75, backgroundColor: "#FFF5E0", borderWidth: 4, borderColor: T.color.primary, alignItems: "center", justifyContent: "center", ...T.shadow },
-  pictureEnd: { backgroundColor: "#FFE7EE", borderColor: T.color.coral },
-  pictureGlyph: { fontSize: 76 },
   parent: { fontFamily: T.font.regular, fontSize: 16, color: T.color.brown, lineHeight: 22 },
   slots: { gap: 6 },
   slot: { fontFamily: T.font.bold, fontSize: 18, color: T.color.brown, textAlign: "center", padding: 8, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.6)" },

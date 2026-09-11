@@ -2,6 +2,7 @@ import * as THREE from "three";
 import clipMap from "../../../tools/avatar/clip-map.json";
 import type { Mood } from "./bridge";
 import { buildGestureClips, buildProbeClip } from "./gestures";
+import { RigGestures } from "./rigGestures";
 
 // GDD §8.2 state machine:
 // idle → (speak: talk_a|talk_b random, crossfade 0.25s) → idle
@@ -26,6 +27,9 @@ const IDLE_BY_MOOD: Record<Mood, string[]> = {
 
 export class CapyStateMachine {
   private mixer: THREE.AnimationMixer;
+  private gestureMixer: THREE.AnimationMixer;
+  private rig: RigGestures;
+  private look = new THREE.Vector2();
   private actions = new Map<string, THREE.AnimationAction>();
   private current?: THREE.AnimationAction;
   private mood: Mood = "calm";
@@ -42,10 +46,12 @@ export class CapyStateMachine {
 
   constructor(root: THREE.Object3D, clips: THREE.AnimationClip[]) {
     this.mixer = new THREE.AnimationMixer(root);
+    this.rig = new RigGestures(root, clips);
+    this.gestureMixer = new THREE.AnimationMixer(this.rig.controls);
     for (const c of clips) this.actions.set(c.name, this.mixer.clipAction(c));
-    // procedural additive gestures layer over the base clip (wave while talking, nod while listening…)
+    // Gesture controls have their own mixer; the rig applies coherent poses after the source clip.
     for (const c of buildGestureClips(root)) {
-      const a = this.mixer.clipAction(c);
+      const a = this.gestureMixer.clipAction(c);
       a.blendMode = THREE.AdditiveAnimationBlendMode;
       a.setLoop(THREE.LoopOnce, 1);
       a.clampWhenFinished = false;
@@ -53,20 +59,21 @@ export class CapyStateMachine {
       // "<gesture>:hold": the same clip cut before its release keys, clamped, so the pose stays up until gestureStop()
       const hold = HOLD[c.name];
       if (hold) {
-        const h = this.mixer.clipAction(THREE.AnimationUtils.subclip(c, `${c.name}:hold`, 0, Math.round(hold * 60), 60));
+        const h = this.gestureMixer.clipAction(THREE.AnimationUtils.subclip(c, `${c.name}:hold`, 0, Math.round(hold * 60), 60));
         h.blendMode = THREE.AdditiveAnimationBlendMode;
         h.setLoop(THREE.LoopOnce, 1);
         h.clampWhenFinished = true;
         this.holds.set(c.name, h);
       }
     }
-    this.mixer.addEventListener("finished", (e) => {
+    this.gestureMixer.addEventListener("finished", (e) => {
       const name = (e.action as THREE.AnimationAction).getClip().name;
-      if (this.gestures.has(name) || name.endsWith(":hold")) {
-        if (this.gesture?.getClip().name === name && !name.endsWith(":hold")) this.gesture = undefined;
-        this.onClipEnd?.(name.replace(/:hold$/, ""));
-        return;
-      }
+      if (this.gesture === e.action && !name.endsWith(":hold")) this.gesture = undefined;
+      this.onClipEnd?.(name.replace(/:hold$/, ""));
+    });
+    this.mixer.addEventListener("finished", (e) => {
+      if (e.action !== this.current) return;
+      const name = (e.action as THREE.AnimationAction).getClip().name;
       const requested = this.oneShotClip ?? name;
       this.oneShotClip = undefined;
       this.onClipEnd?.(requested);
@@ -112,7 +119,7 @@ export class CapyStateMachine {
   probe(root: THREE.Object3D, bone: string, rot: [number, number, number]) {
     const clip = buildProbeClip(root, bone, rot);
     if (!clip) return false;
-    const a = this.mixer.clipAction(clip);
+    const a = this.gestureMixer.clipAction(clip);
     a.blendMode = THREE.AdditiveAnimationBlendMode;
     a.setLoop(THREE.LoopRepeat, Infinity);
     a.play();
@@ -158,7 +165,7 @@ export class CapyStateMachine {
     const next = this.actions.get(name)!;
     const loop = opts.loop ?? LOOPS[name] ?? false;
     const fade = opts.fade ?? 0.25;
-    if (name !== clip) this.oneShotClip = clip;
+    this.oneShotClip = name !== clip ? clip : undefined;
     next.reset();
     next.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
     next.clampWhenFinished = !loop;
@@ -197,6 +204,7 @@ export class CapyStateMachine {
       this.gesturePlay(lead, { hold: lead in HOLD });
       return;
     }
+    this.gestureStop();
     this.speaking = true;
     window.clearTimeout(this.speakTimeout);
     this.speakTimeout = window.setTimeout(() => this.idle(), durationMs);
@@ -213,6 +221,7 @@ export class CapyStateMachine {
 
   lightsOut() {
     this.speaking = false;
+    this.gestureStop();
     window.clearTimeout(this.speakTimeout);
     this.sleepChain = true;
     this.play("yawn", { loop: false });
@@ -220,12 +229,24 @@ export class CapyStateMachine {
   private sleepChain = false;
 
   update(dt: number) {
+    this.rig.restore();
     this.mixer.update(dt);
+    this.gestureMixer.update(dt);
+    this.rig.apply(this.look);
     // re-roll idle variant every ~8s so a looping idle does not feel frozen
     if (!this.speaking && this.current && LOOPS[this.current.getClip().name] && this.current.getClip().name !== "sleep") {
       this.idleTimer += dt;
       if (this.idleTimer > 8) this.idle();
     }
+  }
+
+  lookAt(x: number, y: number) { this.look.set(THREE.MathUtils.clamp(x, -1, 1), THREE.MathUtils.clamp(y, -1, 1)); }
+
+  dispose() {
+    window.clearTimeout(this.speakTimeout);
+    this.rig.restore();
+    this.mixer.stopAllAction();
+    this.gestureMixer.stopAllAction();
   }
 }
 

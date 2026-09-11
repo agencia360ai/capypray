@@ -1,63 +1,27 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Link, router } from "expo-router";
+import { ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
 import { getPack } from "@/content/pack";
+import { availableStoryIds } from "@/content/stories";
 import { useKid } from "@/store/kid";
-import { glyph } from "@/ui/icons";
+import { CollectionScreen } from "@/ui/CollectionScreen";
+import { CompanionIcon } from "@/ui/CompanionIcon";
 import { T } from "@/ui/theme";
-import { useStageInsets } from "@/ui/useStageInsets";
+import { storyCover } from "@/ui/illustrations";
 
-// Story shelf: every parable Capy has told in a lesson stays here to hear again (GDD §9 "Nothing withers").
 export default function Stories() {
-  const pack = getPack();
-  const completed = useKid((s) => s.completed);
-  const onBottomLayout = useStageInsets();
-  const heard = new Set<string>();
-  for (const l of pack.lessons) if (completed[l.id]) for (const b of l.beats) if (b.type === "story") heard.add(b.storyId);
-  return (
-    <View style={styles.root}>
-      <Pressable style={styles.close} onPress={() => router.back()} hitSlop={8}>
-        <Text style={styles.closeText}>×</Text>
-      </Pressable>
-      <View style={styles.spacer} />
-      <View onLayout={onBottomLayout} style={styles.sheetWrap}>
-        <ScrollView style={styles.sheet} contentContainerStyle={styles.sheetContent}>
-          <Text style={styles.title}>{pack.ui.storiesTitle}</Text>
-          <View style={styles.grid}>
-            {pack.stories.map((st) => {
-              const open = heard.has(st.id);
-              return (
-                <Link key={st.id} href={{ pathname: "/story/[id]", params: { id: st.id } }} asChild>
-                  <Pressable disabled={!open} style={({ pressed }) => [styles.card, !open && styles.locked, pressed && styles.pressed]}>
-                    <Text style={styles.cardGlyph}>{open ? glyph(st.icon) : "🔒"}</Text>
-                    <Text style={styles.cardTitle} numberOfLines={2}>
-                      {st.title}
-                    </Text>
-                    {!open ? <Text style={styles.soon}>{pack.ui.locked}</Text> : null}
-                  </Pressable>
-                </Link>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
-    </View>
-  );
+  const pack = getPack(), completed = useKid(s => s.completed), copy = pack.companion.ui;
+  const available = availableStoryIds(pack, completed);
+  return <CollectionScreen title={copy.stories} subtitle={copy.storiesHint}>
+    <View style={styles.grid}>{pack.stories.map((story) => {
+      const open = available.has(story.id);
+      return <Pressable key={story.id} accessibilityRole="button" accessibilityState={{ disabled: !open }} disabled={!open} onPress={() => router.push({ pathname: "/story/[id]", params: { id: story.id } })} style={({ pressed }) => [styles.card, pressed && { opacity: 0.8 }]}>
+        <ImageBackground source={storyCover(story.id)} style={styles.cover} imageStyle={{ width: "100%", height: "100%" }} resizeMode="cover" accessible={false} testID={`story-cover-${story.id}`}>
+          {!storyCover(story.id) && <CompanionIcon name="book" size={54} />}
+          {!open && <View style={styles.lock}><CompanionIcon name="lock" size={19} /></View>}
+        </ImageBackground>
+        <View style={styles.copy}><Text style={styles.title}>{story.title}</Text><Text style={styles.hint}>{open ? copy.storyReady : copy.storyLocked}</Text></View>
+      </Pressable>;
+    })}</View>
+  </CollectionScreen>;
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  spacer: { flex: 1 },
-  close: { position: "absolute", top: 52, right: 20, zIndex: 2, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.85)", alignItems: "center", justifyContent: "center" },
-  closeText: { fontSize: 26, color: T.color.brown, lineHeight: 30 },
-  sheetWrap: { maxHeight: "62%" },
-  sheet: { backgroundColor: "rgba(255,247,230,0.94)", borderTopLeftRadius: 32, borderTopRightRadius: 32 },
-  sheetContent: { padding: 20, paddingBottom: 34, gap: 14 },
-  title: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
-  card: { width: 104, paddingVertical: 12, paddingHorizontal: 6, borderRadius: T.radius.md, backgroundColor: T.color.paper, borderWidth: 3, borderColor: T.color.tan, borderBottomWidth: 6, alignItems: "center", gap: 4 },
-  locked: { opacity: 0.55 },
-  pressed: { borderBottomWidth: 3, transform: [{ translateY: 3 }] },
-  cardGlyph: { fontSize: 38 },
-  cardTitle: { fontFamily: T.font.bold, fontSize: 13, color: T.color.ink, textAlign: "center" },
-  soon: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown },
-});
+const styles = StyleSheet.create({ grid: { flexDirection: "row", flexWrap: "wrap", gap: 14 }, card: { width: "46%", flexGrow: 1, borderRadius: 23, overflow: "hidden", borderWidth: 1, borderColor: "#E8E6D9", backgroundColor: "white" }, cover: { width: "100%", aspectRatio: 1, backgroundColor: "#E9ECDC", alignItems: "center", justifyContent: "center" }, lock: { position: "absolute", bottom: 9, right: 9, width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: "#FFFBF2F0" }, copy: { padding: 15, gap: 8 }, title: { fontFamily: T.font.bold, fontSize: 17, lineHeight: 22, color: T.color.ink }, hint: { fontFamily: T.font.regular, fontSize: 11, lineHeight: 17, color: "#7B806E" } });

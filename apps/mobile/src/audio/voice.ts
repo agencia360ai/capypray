@@ -2,20 +2,21 @@ import * as Speech from "expo-speech";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import { Platform } from "react-native";
 import { AUDIO } from "./manifest";
+import { getPack } from "@/content/pack";
 
 // Capy's voice. Pre-rendered lines (pack `audio` refs → apps/mobile/assets/audio, see tools/tts-batch.ts,
 // tools/audio-fetch.mjs, tools/audio-manifest.mjs) play natively; anything without a file falls back to
 // on-device TTS so the app never goes silent. No child audio is ever recorded (GDD §11); this only speaks.
 
 let voiceId: string | undefined;
-let picked = false;
+let picked: string | undefined;
 let token = 0;
 let player: AudioPlayer | null = null;
 let modeSet = false;
 
 async function pickVoice(language: string) {
-  if (picked) return;
-  picked = true;
+  if (picked === language) return;
+  picked = language;
   try {
     const voices = await Speech.getAvailableVoicesAsync();
     const lang = voices.filter((v) => v.language.toLowerCase().startsWith(language.slice(0, 2)));
@@ -38,8 +39,9 @@ export function speak(text: string, opts: Opts = {}): SpeakHandle {
   const done = () => {
     if (my === token) opts.onDone?.();
   };
-  const file = opts.audio ? AUDIO[opts.audio] : undefined;
-  if (!file && !/[a-zA-Z]/.test(clean)) {
+  const language = opts.language ?? getPack().locale;
+  const file = opts.audio && language === "en-US" ? AUDIO[opts.audio] : undefined;
+  if (!file && !/\p{L}/u.test(clean)) {
     opts.onDone?.();
     return { cancel: () => {} };
   }
@@ -68,10 +70,10 @@ export function speak(text: string, opts: Opts = {}): SpeakHandle {
         // fall through to TTS
       }
     }
-    await pickVoice(opts.language ?? "en-US");
+    await pickVoice(language);
     if (my !== token) return;
     Speech.speak(clean, {
-      language: opts.language ?? "en-US",
+      language,
       voice: voiceId,
       rate: Platform.OS === "ios" ? 0.5 : 0.88, // calm, but not so slow that it drones (GDD §8.1)
       pitch: 1.05,

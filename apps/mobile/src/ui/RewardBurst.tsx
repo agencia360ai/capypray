@@ -3,6 +3,7 @@ import { Animated, Easing, StyleSheet, View } from "react-native";
 import { Lantern, Sparkle } from "./art";
 import * as haptics from "./haptics";
 import { LANTERN_SLOTS, lanternSlot } from "./StageDecor";
+import { useReducedMotion } from "./motion";
 
 // The lantern moment (GDD §4.1 "se enciende 1 linterna en el Estanque"): a big unlit lantern rises in front of Capy,
 // lights up with a glow ring, then floats to its slot on the pond so the kid sees today's prayer join the week's.
@@ -10,6 +11,7 @@ import { LANTERN_SLOTS, lanternSlot } from "./StageDecor";
 export const REWARD_BURST_MS = 3400;
 
 export function RewardBurst({ slot, onLit }: { slot: number; onLit?: () => void }) {
+  const reduced = useReducedMotion();
   const [size, setSize] = useState({ width: 0, height: 0 });
   const rise = useRef(new Animated.Value(0)).current; // 0 → 1: scale in
   const glow = useRef(new Animated.Value(0)).current; // ring pulse
@@ -19,10 +21,13 @@ export function RewardBurst({ slot, onLit }: { slot: number; onLit?: () => void 
 
   useEffect(() => {
     if (!size.width) return;
-    Animated.sequence([
+    if (reduced) { rise.setValue(1); fly.setValue(1); glow.setValue(1); setLit(true); return; }
+    const animation = Animated.sequence([
       Animated.spring(rise, { toValue: 1, useNativeDriver: true, friction: 5, tension: 90 }),
       Animated.delay(250),
-    ]).start(() => {
+    ]);
+    animation.start(({ finished }) => {
+      if (!finished) return;
       setLit(true);
       onLit?.();
       void haptics.success();
@@ -31,7 +36,8 @@ export function RewardBurst({ slot, onLit }: { slot: number; onLit?: () => void 
         Animated.sequence([Animated.delay(650), Animated.timing(fly, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.cubic), useNativeDriver: true })]),
       ]).start();
     });
-  }, [size.width, rise, glow, fly, onLit]);
+    return () => { animation.stop(); rise.stopAnimation(); glow.stopAnimation(); fly.stopAnimation(); };
+  }, [size.width, rise, glow, fly, onLit, reduced]);
 
   const target = lanternSlot(slot);
   // centre of the stage → the slot: StageDecor draws slot lanterns at left 50%+x·100%, bottom y (lantern ~24px)

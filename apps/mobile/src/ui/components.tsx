@@ -6,24 +6,27 @@ import { useAvatar } from "@/avatar/AvatarView";
 import { speak } from "@/audio/voice";
 import * as haptics from "./haptics";
 import { HandPointer, Lantern } from "./art";
+import { useReducedMotion } from "./motion";
 
 /** Capy's line, drawn as a speech bubble whose tail points up at the avatar. */
 export function SpeechBubble({ text, hint, mute, shake, audio, badge, rest, compact, onSpoken }: { text: string; hint?: string; mute?: boolean; shake?: number; audio?: string; badge?: string; /** clip Capy settles into when the line ends (prayer lines: paws stay together) instead of idle */ rest?: string; /** smaller bubble for dense screens (parent onboarding) */ compact?: boolean; onSpoken?: () => void }) {
   const pop = useRef(new Animated.Value(0.92)).current;
+  const reduced = useReducedMotion();
   const wobble = useRef(new Animated.Value(0)).current;
   const avatar = useAvatar();
   const spoken = useRef(onSpoken);
   spoken.current = onSpoken;
   useEffect(() => {
+    if (reduced) { pop.setValue(1); return; }
     pop.setValue(0.92);
     Animated.spring(pop, { toValue: 1, useNativeDriver: true, friction: 6 }).start();
-  }, [text, pop]);
+  }, [text, pop, reduced]);
   // wrong answer: a gentle "no-no" head shake of the bubble, never a harsh buzz
   useEffect(() => {
-    if (!shake) return;
+    if (!shake || reduced) return;
     wobble.setValue(0);
     Animated.sequence([-1, 1, -0.6, 0.6, 0].map((v) => Animated.timing(wobble, { toValue: v, duration: 55, useNativeDriver: true }))).start();
-  }, [shake, wobble]);
+  }, [shake, wobble, reduced]);
   // Every bubble line is spoken (kids 4–6 don't read). The lesson runner already started the talk clip;
   // when the voice ends, Capy goes back to idle so mouth and voice stay in sync.
   useEffect(() => {
@@ -61,19 +64,20 @@ export function SpeechBubble({ text, hint, mute, shake, audio, badge, rest, comp
  * `autoAdvanceMs` fills the button and presses it by itself (audio-led beats: no reading required).
  */
 export function BigButton({ label, onPress, disabled, tone = "primary", icon, hint, autoAdvanceMs }: { label: string; onPress: () => void; disabled?: boolean; tone?: "primary" | "night" | "ghost"; icon?: ReactNode; hint?: boolean; autoAdvanceMs?: number }) {
+  const reduced = useReducedMotion();
   const breathe = useRef(new Animated.Value(1)).current;
   const fill = useRef(new Animated.Value(0)).current;
   const press = useRef(onPress);
   press.current = onPress;
   useEffect(() => {
-    if (!hint) {
+    if (!hint || reduced) {
       breathe.setValue(1);
       return;
     }
     const loop = Animated.loop(Animated.sequence([Animated.timing(breathe, { toValue: 1.06, duration: 520, useNativeDriver: true }), Animated.timing(breathe, { toValue: 1, duration: 520, useNativeDriver: true })]));
     loop.start();
     return () => loop.stop();
-  }, [hint, breathe]);
+  }, [hint, breathe, reduced]);
   useEffect(() => {
     fill.setValue(0);
     if (!autoAdvanceMs) return;
@@ -179,10 +183,12 @@ export function Chip({ children, style }: { children: ReactNode; style?: ViewSty
 
 /** Bottom panel that sits over the stage. Slides up when it mounts (each beat gets a fresh one), so a new step feels like it arrives. */
 export function Sheet({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+  const reduced = useReducedMotion();
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    if (reduced) { v.setValue(1); return; }
     Animated.spring(v, { toValue: 1, useNativeDriver: true, friction: 8, tension: 70 }).start();
-  }, [v]);
+  }, [v, reduced]);
   return (
     <Animated.View style={[styles.sheet, style, { opacity: v, transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [36, 0] }) }] }]}>
       {children}
@@ -206,10 +212,12 @@ export function Grid({ children, hint }: { children: ReactNode; hint?: boolean }
 }
 
 function PopIn({ children, delay }: { children: ReactNode; delay: number }) {
+  const reduced = useReducedMotion();
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    Animated.spring(v, { toValue: 1, delay, useNativeDriver: true, friction: 5, tension: 90 }).start();
-  }, [v, delay]);
+    if (reduced) { v.setValue(1); return; }
+    Animated.spring(v, { toValue: 1, delay: Math.min(delay, 240), useNativeDriver: true, friction: 5, tension: 90 }).start();
+  }, [v, delay, reduced]);
   return <Animated.View style={{ opacity: v, transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }] }}>{children}</Animated.View>;
 }
 

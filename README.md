@@ -6,6 +6,7 @@ Prayer buddy for kids 4–8. Capy, a 3D capybara, guides 3–5 minute daily Pray
 
 ```bash
 pnpm install
+pnpm audio:prepare                    # download existing Arthur recordings + generate Metro manifest
 pnpm content:validate                  # pack schema + references
 pnpm --filter @capy/content test
 pnpm --filter @capy/avatar-web build   # → apps/mobile/assets/avatar
@@ -33,7 +34,7 @@ Clip names come from `tools/avatar/clip-map.json`. Drop Mixamo FBX clips (export
 | Mobile: AvatarView, lesson runner, all 6 minigame types, Pond screen, streak + Grace Days, lights_out | ✅ typecheck + Metro export pass |
 | Supabase schema + RLS, rc-webhook, weekly-report | ✅ migrations written, not yet applied |
 | Missing clips: wave_hello, pray_hands, kneel_pray, listen_nod, clap, heart, think, celebrate | ⏳ Mixamo step (manual) |
-| Audio (ElevenLabs) | ⏳ `tools/tts-batch.ts` ready, needs API key |
+| Audio | 352 existing Arthur recordings available via `pnpm audio:prepare`; 65 current pack lines still need narration. See `docs/voice.md`. |
 | Parent onboarding, parental gate, Parent Corner (bedtime, reminder, people + notes, delete data) | ✅ |
 | Premium gating (`useEntitlement`, lock UI, sandbox switch) | ✅ · RevenueCat adapter on dev build (`apps/mobile/src/entitlements/revenuecat.md`) |
 | Kids Category / COPPA checklist | `docs/COMPLIANCE.md` |

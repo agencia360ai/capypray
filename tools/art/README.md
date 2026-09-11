@@ -9,3 +9,7 @@
 
   Download the chosen image from Higgsfield, resize to 1080×1920 (JPEG, quality ~82, under 400 KB) and save it as `apps/mobile/assets/backgrounds/meadow.jpg`. No code change needed.
 - Keep the lower third quiet: Capy stands there and the bottom sheet covers part of it.
+
+## Storybook scene update
+
+The app now uses built-in ChatGPT Images illustrations for every background. See [storybook-scenes.md](../../docs/storybook-scenes.md) for the eight additional scenes, exact prompts, bundled paths, and verification. The older SVG/JPEG files remain archival placeholders and are no longer selected by the runtime background registry. Do not run the old rendering workflow to replace the new storybook assets.

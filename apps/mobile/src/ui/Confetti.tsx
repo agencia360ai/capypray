@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { useReducedMotion } from "./motion";
 
 // Lightweight celebration burst (no native deps): 18 emoji particles fly up and fall.
 const PIECES = ["🏮", "⭐", "✨", "🌼", "💛"];
 
 export function Confetti({ trigger, count = 18 }: { trigger: number; count?: number }) {
+  const reduced = useReducedMotion();
   const anims = useRef(Array.from({ length: count }, () => new Animated.Value(0))).current;
   const seeds = useMemo(
     () =>
@@ -20,13 +22,14 @@ export function Confetti({ trigger, count = 18 }: { trigger: number; count?: num
     [trigger],
   );
   useEffect(() => {
-    if (!trigger) return;
+    if (!trigger || reduced) return;
     anims.forEach((a, i) => {
       a.setValue(0);
       Animated.timing(a, { toValue: 1, duration: 1300 + Math.random() * 400, delay: seeds[i]!.delay, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
     });
-  }, [trigger, anims, seeds]);
-  if (!trigger) return null;
+    return () => anims.forEach(a => a.stopAnimation());
+  }, [trigger, anims, seeds, reduced]);
+  if (!trigger || reduced) return null;
   return (
     <View pointerEvents="none" style={styles.layer}>
       {anims.map((a, i) => {

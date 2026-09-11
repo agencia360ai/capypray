@@ -1,6 +1,7 @@
 import { Pack, type Pack as PackT, type Lesson, type Minigame } from "./schema";
 
 export * from "./schema";
+export * from "./visuals";
 
 export type ValidationIssue = { path: string; message: string };
 
@@ -16,6 +17,12 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   const prayers = new Set(pack.prayers.map((p) => p.id));
   const minigames = new Map(pack.minigames.map((m) => [m.id, m] as const));
   const lessons = new Map(pack.lessons.map((l) => [l.id, l] as const));
+  for (const item of [...pack.companion.feelings, ...pack.companion.moments]) {
+    const lesson = lessons.get(item.lessonId);
+    if (!lesson || lesson.routine !== "moment" || !lesson.free) {
+      issues.push({ path: `companion.${item.id}`, message: "companion entry must reference a free moment lesson" });
+    }
+  }
   const weeks = new Set(pack.worlds.flatMap((w) => w.weeks));
 
   const dup = (arr: string[], what: string) => {
@@ -131,6 +138,7 @@ function validateMinigame(m: Minigame): ValidationIssue[] {
 export function listAudio(pack: PackT): string[] {
   const out = new Set<string>();
   const add = (a?: string) => a && out.add(a);
+  add(pack.companion.breathing.prompt.audio);
   for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b) add(b.audio);
   for (const p of pack.prayers) for (const line of p.lines) add(line.audio);
   for (const t of pack.ui.tapLines) add(t.audio);
