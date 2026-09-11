@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import { useKid } from "@/store/kid";
 import { Lantern, Sparkle } from "./art";
+import { useReducedMotion } from "./motion";
 
 // Living pond: this week's lit lanterns float beside Capy (GDD §4.1 "se enciende 1 linterna en el Estanque"),
 // fireflies drift at night. Pure Animated, no native deps.
@@ -27,8 +28,10 @@ export function StageDecor({ night, extraLit = 0 }: { night?: boolean; extraLit?
 }
 
 function Float({ children, x, y, delay, amp }: { children: React.ReactNode; x: number; y: number; delay: number; amp: number }) {
+  const reduced = useReducedMotion();
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    if (reduced) { v.setValue(0); return; }
     const loop = Animated.loop(
       Animated.sequence([
         Animated.delay(delay),
@@ -38,7 +41,7 @@ function Float({ children, x, y, delay, amp }: { children: React.ReactNode; x: n
     );
     loop.start();
     return () => loop.stop();
-  }, [v, delay]);
+  }, [v, delay, reduced]);
   return (
     <Animated.View style={[styles.float, { left: `${50 + x * 100}%`, bottom: y, transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, -amp] }) }, { rotate: v.interpolate({ inputRange: [0, 1], outputRange: ["-4deg", "4deg"] }) }] }]}>
       {children}
@@ -47,8 +50,10 @@ function Float({ children, x, y, delay, amp }: { children: React.ReactNode; x: n
 }
 
 function Firefly({ x, top, delay }: { x: number; top: number; delay: number }) {
+  const reduced = useReducedMotion();
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    if (reduced) { v.setValue(0.5); return; }
     const loop = Animated.loop(
       Animated.sequence([
         Animated.delay(delay),
@@ -58,7 +63,7 @@ function Firefly({ x, top, delay }: { x: number; top: number; delay: number }) {
     );
     loop.start();
     return () => loop.stop();
-  }, [v, delay]);
+  }, [v, delay, reduced]);
   return (
     <Animated.View style={[styles.firefly, { left: `${x * 100}%`, top, opacity: v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.1, 1, 0.2] }), transform: [{ translateX: v.interpolate({ inputRange: [0, 1], outputRange: [0, 22] }) }, { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, -30] }) }] }]}>
       <Sparkle size={16} color="#FFF1B8" />

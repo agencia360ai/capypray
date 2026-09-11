@@ -107,8 +107,8 @@ export function AvatarProvider({ children }: PropsWithChildren) {
     <Ctx.Provider value={renderer}>
       <StageCtx.Provider value={{ stage, setStage }}>
         <View style={styles.stage} pointerEvents="none">
-          <ImageBackground source={backgroundFor(stage.biome)} style={styles.bg} resizeMode="cover">
-            {stage.night && !stage.dark && <View style={styles.nightTint} />}
+          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: stage.biome === "meadow" ? "72%" : "100%" }} resizeMode="cover">
+            {stage.night && stage.biome !== "meadow" && !stage.dark && <View style={styles.nightTint} />}
             {stage.dark && <View style={styles.dim} />}
             {uri && (
               <WebView

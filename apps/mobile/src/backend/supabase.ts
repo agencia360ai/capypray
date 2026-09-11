@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@/store/persistence";
 
 // GDD §12.3. Configured through EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_ANON_KEY (apps/mobile/.env).
 // When they are missing the app runs fully offline (Expo Go beta) and every backend call is a no-op.

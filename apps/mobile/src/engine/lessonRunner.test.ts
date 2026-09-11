@@ -6,6 +6,17 @@ import { createRunner, estimateMs } from "./lessonRunner";
 const { pack } = validatePack(rawPack);
 
 describe("lessonRunner", () => {
+  it("never exposes unresolved prayer variables after the shorter onboarding", () => {
+    for (const lesson of pack!.lessons) {
+      const runner = createRunner(pack!, lesson, { kidName: "Mia" });
+      let result = runner.start();
+      for (let guard = 0; result.state.step.kind !== "done" && guard < 200; guard++) {
+        if ("text" in result.state.step) expect(result.state.step.text).not.toMatch(/\{\w+\}/);
+        result = runner.next();
+      }
+      expect(runner.summary().done).toBe(true);
+    }
+  });
   it("walks W1D1 beat by beat, line by line, and counts lanterns", () => {
     const lesson = pack!.lessons.find((l) => l.id === "w1d1")!;
     const r = createRunner(pack!, lesson, { kidName: "Mia" });
@@ -45,29 +56,16 @@ describe("lessonRunner", () => {
     expect(r.summary().done).toBe(true);
   });
 
-  it("Meet Capy: answers flow into the first prayer", () => {
-    const intro = pack!.lessons.find((l) => l.id === "meet-capy")!;
-    const r = createRunner(pack!, intro, { kidName: "Leo" });
-    r.start();
-    let s = r.next();
-    s = r.next(); // first ask: favorite
-    expect(s.state.step.kind).toBe("ask");
-    r.answer("favorite", "Dogs");
-    s = r.next();
-    expect((s.state.step as { text: string }).text).toContain("Dogs!");
-    s = r.next(); // ask thankfulFor
-    r.answer("thankfulFor", "Hugs");
-    s = r.next(); // ask feeling
-    r.answer("feeling", "Happy");
-    r.next();
-    r.next();
-    s = r.next(); // repeat line 1
-    expect(s.state.step.kind).toBe("repeat");
-    s = r.next();
-    expect((s.state.step as { text: string }).text).toBe("Thank you for Hugs.");
-    s = r.next();
-    expect((s.state.step as { text: string }).text).toBe("I feel Happy today.");
-    expect(r.vars.favorite).toBe("Dogs");
+  it("Meet Capy reaches a personalized prayer after two welcoming lines", () => {
+    const intro = pack!.lessons.find(l => l.id === "meet-capy")!;
+    const runner = createRunner(pack!, intro, { kidName: "Leo" });
+    expect(runner.start().state.step).toMatchObject({ kind: "say" });
+    expect(runner.next().state.step.kind).toBe("say");
+    expect(runner.next().state.step).toMatchObject({ kind: "repeat", text: "Hi God, it’s me, Leo." });
+    runner.next(); runner.next();
+    expect(runner.next().state.step.kind).toBe("reward");
+    runner.next(); runner.next();
+    expect(runner.summary()).toMatchObject({ lanterns: 1, done: true });
   });
 
   it("estimates speech duration slowly", () => {

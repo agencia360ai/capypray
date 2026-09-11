@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -100,146 +100,20 @@
         {
           "type": "avatar_say",
           "clip": "wave_hello",
-          "text": "Hi {kidName}! I'm Capy. I live in this pond.",
-          "audio": "intro_01.mp3",
-          "mood": "happy"
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_a",
-          "text": "I want to know you! Can I ask you some things?",
-          "audio": "intro_02.mp3"
-        },
-        {
-          "type": "ask",
-          "key": "favorite",
-          "clip": "think",
-          "text": "What do you love the most?",
-          "audio": "intro_03.mp3",
-          "options": [
-            {
-              "id": "dog",
-              "label": "Dogs",
-              "icon": "dog"
-            },
-            {
-              "id": "cat",
-              "label": "Cats",
-              "icon": "cat"
-            },
-            {
-              "id": "ice",
-              "label": "Ice cream",
-              "icon": "ice"
-            },
-            {
-              "id": "ball",
-              "label": "Playing ball",
-              "icon": "ball"
-            },
-            {
-              "id": "music",
-              "label": "Music",
-              "icon": "music"
-            },
-            {
-              "id": "rainbow",
-              "label": "Rainbows",
-              "icon": "rainbow"
-            }
-          ]
+          "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+          "mood": "happy",
+          "audio": "meet_capy_v08_1.mp3"
         },
         {
           "type": "avatar_say",
           "clip": "heart",
-          "text": "{favorite}! Me too. I love oranges and my bird friend.",
-          "audio": "intro_04.mp3",
-          "mood": "happy"
-        },
-        {
-          "type": "ask",
-          "key": "thankfulFor",
-          "clip": "think",
-          "text": "What made you happy today?",
-          "audio": "intro_05.mp3",
-          "options": [
-            {
-              "id": "family",
-              "label": "My family",
-              "icon": "family"
-            },
-            {
-              "id": "food",
-              "label": "Yummy food",
-              "icon": "apple"
-            },
-            {
-              "id": "friends",
-              "label": "My friends",
-              "icon": "friends"
-            },
-            {
-              "id": "sun",
-              "label": "Sunshine",
-              "icon": "sun"
-            },
-            {
-              "id": "toys",
-              "label": "My toys",
-              "icon": "blocks"
-            },
-            {
-              "id": "hugs",
-              "label": "Hugs",
-              "icon": "heart"
-            }
-          ]
-        },
-        {
-          "type": "ask",
-          "key": "feeling",
-          "clip": "listen_nod",
-          "text": "How do you feel right now?",
-          "audio": "intro_06.mp3",
-          "options": [
-            {
-              "id": "happy",
-              "label": "Happy",
-              "icon": "happy"
-            },
-            {
-              "id": "calm",
-              "label": "Calm",
-              "icon": "calm"
-            },
-            {
-              "id": "sleepy",
-              "label": "Sleepy",
-              "icon": "sleepy"
-            },
-            {
-              "id": "scared",
-              "label": "A bit scared",
-              "icon": "scared"
-            }
-          ]
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_b",
-          "text": "Thank you for telling me. Now I'll tell you my secret.",
-          "audio": "intro_07.mp3"
-        },
-        {
-          "type": "avatar_say",
-          "clip": "talk_a",
-          "text": "I talk to God every day. It's called praying. Let's try together!",
-          "audio": "intro_08.mp3",
-          "mood": "calm"
+          "text": "We can talk to God together. I’ll go first.",
+          "audio": "meet_capy_v08_2.mp3"
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "first-prayer"
+          "prayerId": "first-prayer",
+          "clip": "pray_hands"
         },
         {
           "type": "reward",
@@ -247,10 +121,10 @@
         },
         {
           "type": "avatar_say",
-          "clip": "celebrate",
-          "text": "You did it! Your first lantern is on the pond.",
-          "audio": "intro_10.mp3",
-          "mood": "happy"
+          "clip": "heart",
+          "text": "Our first little light! Come back whenever you’re ready.",
+          "mood": "happy",
+          "audio": "meet_capy_v08_5.mp3"
         }
       ]
     },
@@ -2654,6 +2528,326 @@
           "mood": "happy"
         }
       ]
+    },
+    {
+      "id": "moment-happy",
+      "skillId": "thank-you",
+      "title": "A happy little prayer",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Something good happened? Let’s share it with God!",
+          "mood": "calm",
+          "audio": "moment_happy_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_happy_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-happy-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Keep a little kindness with you today.",
+          "mood": "calm",
+          "audio": "moment_happy_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sad",
+      "skillId": "please-help",
+      "title": "When my heart feels heavy",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "It’s okay to feel sad. I’ll sit with you.",
+          "mood": "calm",
+          "audio": "moment_sad_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sad_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sad-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You can tell a trusted grown-up how you feel.",
+          "mood": "calm",
+          "audio": "moment_sad_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-worried",
+      "skillId": "please-help",
+      "title": "A little courage",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Big worries can feel heavy. Let’s take a little breath.",
+          "mood": "calm",
+          "audio": "moment_worried_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_worried_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-worried-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You don’t have to carry a worry alone.",
+          "mood": "calm",
+          "audio": "moment_worried_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-thankful",
+      "skillId": "thank-you",
+      "title": "Thank you for today",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Let’s think of one little thing we’re thankful for.",
+          "mood": "calm",
+          "audio": "moment_thankful_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_thankful_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-thankful-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "You can say thank you to someone today, too.",
+          "mood": "calm",
+          "audio": "moment_thankful_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sleepy",
+      "skillId": "listen",
+      "title": "Ready to rest",
+      "free": true,
+      "routine": "moment",
+      "scene": "bedroom",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "yawn",
+          "text": "Let’s put the busy day down for a little while.",
+          "mood": "calm",
+          "audio": "moment_sleepy_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sleepy_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sleepy-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Rest is good. A new day can wait.",
+          "mood": "calm",
+          "audio": "moment_sleepy_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sorry",
+      "skillId": "sorry",
+      "title": "Let’s try again",
+      "free": true,
+      "routine": "moment",
+      "scene": "park",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Sometimes we hurt someone’s feelings. We can try again.",
+          "mood": "calm",
+          "audio": "moment_sorry_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_sorry_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-sorry-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "When you’re ready, ask a grown-up to help you reconnect.",
+          "mood": "calm",
+          "audio": "moment_sorry_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-family",
+      "skillId": "others",
+      "title": "Someone I love",
+      "free": true,
+      "routine": "moment",
+      "scene": "pond",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "Think of someone you love. We can pray for them.",
+          "mood": "calm",
+          "audio": "moment_family_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_family_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-family-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "A kind word can be a little gift.",
+          "mood": "calm",
+          "audio": "moment_family_v08_5.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-morning",
+      "skillId": "hello",
+      "title": "Hello, new day",
+      "free": true,
+      "routine": "moment",
+      "scene": "garden",
+      "beats": [
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "A new day is here. Let’s start it together.",
+          "mood": "calm",
+          "audio": "moment_morning_v08_1.mp3"
+        },
+        {
+          "type": "listen_timer",
+          "seconds": 15,
+          "text": "Breathe gently. God is here with us.",
+          "clip": "listen_nod",
+          "audio": "moment_morning_v08_2.mp3"
+        },
+        {
+          "type": "repeat_after_me",
+          "prayerId": "moment-morning-prayer",
+          "clip": "pray_hands"
+        },
+        {
+          "type": "reward",
+          "lantern": 1
+        },
+        {
+          "type": "avatar_say",
+          "clip": "heart",
+          "text": "One little act of kindness is a lovely start.",
+          "mood": "calm",
+          "audio": "moment_morning_v08_5.mp3"
+        }
+      ]
     }
   ],
   "prayers": [
@@ -2904,26 +3098,20 @@
       "title": "My First Prayer",
       "lines": [
         {
-          "text": "Hi God, it's me, {kidName}.",
-          "audio": "p_hello_01.mp3"
+          "text": "Hi God, it’s me, {kidName}.",
+          "audio": "first_prayer_v08_1.mp3"
         },
         {
-          "text": "Thank you for {thankfulFor}.",
-          "audio": "p_first_02.mp3"
+          "text": "Thank you for listening and loving me.",
+          "audio": "first_prayer_v08_2.mp3"
         },
         {
-          "text": "I feel {feeling} today.",
-          "audio": "p_first_03.mp3"
-        },
-        {
-          "text": "Thank you for listening. Amen.",
-          "audio": "p_hello_02b.mp3"
+          "text": "Please be with me today. Amen.",
+          "audio": "first_prayer_v08_3.mp3"
         }
       ],
       "variables": [
-        "kidName",
-        "thankfulFor",
-        "feeling"
+        "kidName"
       ]
     },
     {
@@ -3301,6 +3489,174 @@
         }
       ],
       "variables": []
+    },
+    {
+      "id": "moment-happy-prayer",
+      "skillId": "thank-you",
+      "title": "A happy little prayer",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for this happy moment.",
+          "audio": "moment_happy_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help me share a little kindness today.",
+          "audio": "moment_happy_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Thank you for loving me. Amen.",
+          "audio": "moment_happy_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sad-prayer",
+      "skillId": "please-help",
+      "title": "When my heart feels heavy",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, my heart feels sad today.",
+          "audio": "moment_sad_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Please comfort me and help me ask for a hug.",
+          "audio": "moment_sad_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Thank you for being with me. Amen.",
+          "audio": "moment_sad_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-worried-prayer",
+      "skillId": "please-help",
+      "title": "A little courage",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, I feel worried right now.",
+          "audio": "moment_worried_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help me take one small, brave step.",
+          "audio": "moment_worried_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Help me tell a grown-up what I need. Amen.",
+          "audio": "moment_worried_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-thankful-prayer",
+      "skillId": "thank-you",
+      "title": "Thank you for today",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for the good things around me.",
+          "audio": "moment_thankful_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help me notice something kind today.",
+          "audio": "moment_thankful_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Thank you for the people who care for me. Amen.",
+          "audio": "moment_thankful_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sleepy-prayer",
+      "skillId": "listen",
+      "title": "Ready to rest",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, thank you for being with me today.",
+          "audio": "moment_sleepy_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help my body rest and my thoughts grow quiet.",
+          "audio": "moment_sleepy_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Please be with my family tonight. Amen.",
+          "audio": "moment_sleepy_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-sorry-prayer",
+      "skillId": "sorry",
+      "title": "Let’s try again",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, I’m sorry for my unkind words.",
+          "audio": "moment_sorry_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help me listen and say a caring sorry.",
+          "audio": "moment_sorry_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Show me one kind thing I can do. Amen.",
+          "audio": "moment_sorry_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-family-prayer",
+      "skillId": "others",
+      "title": "Someone I love",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Dear God, please be with the person in my heart.",
+          "audio": "moment_family_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Give them comfort and people who care.",
+          "audio": "moment_family_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Help me show them love today. Amen.",
+          "audio": "moment_family_prayer_v08_3.mp3"
+        }
+      ]
+    },
+    {
+      "id": "moment-morning-prayer",
+      "skillId": "hello",
+      "title": "Hello, new day",
+      "source": "original",
+      "variables": [],
+      "lines": [
+        {
+          "text": "Good morning, God. Thank you for this new day.",
+          "audio": "moment_morning_prayer_v08_1.mp3"
+        },
+        {
+          "text": "Help me learn, listen, and be kind.",
+          "audio": "moment_morning_prayer_v08_2.mp3"
+        },
+        {
+          "text": "Please be with me wherever I go. Amen.",
+          "audio": "moment_morning_prayer_v08_3.mp3"
+        }
+      ]
     }
   ],
   "minigames": [
@@ -4309,7 +4665,8 @@
         }
       ],
       "moral": "God always comes looking for you. You are never lost to Him.",
-      "moralAudio": "st_lost-sheep_m.mp3"
+      "moralAudio": "st_lost-sheep_m.mp3",
+      "free": true
     },
     {
       "id": "good-samaritan",
@@ -4344,7 +4701,8 @@
         }
       ],
       "moral": "Being kind to someone who needs help is a prayer with your hands.",
-      "moralAudio": "st_good-samaritan_m.mp3"
+      "moralAudio": "st_good-samaritan_m.mp3",
+      "free": false
     },
     {
       "id": "mustard-seed",
@@ -4379,7 +4737,8 @@
         }
       ],
       "moral": "Your small prayer is a seed. God makes it grow.",
-      "moralAudio": "st_mustard-seed_m.mp3"
+      "moralAudio": "st_mustard-seed_m.mp3",
+      "free": false
     },
     {
       "id": "calm-storm",
@@ -4414,7 +4773,8 @@
         }
       ],
       "moral": "When you are scared, tell Jesus. He can calm the storm inside you.",
-      "moralAudio": "st_calm-storm_m.mp3"
+      "moralAudio": "st_calm-storm_m.mp3",
+      "free": false
     },
     {
       "id": "loaves-fish",
@@ -4449,7 +4809,8 @@
         }
       ],
       "moral": "Say thank you before you eat, and share what you have. God makes it enough.",
-      "moralAudio": "st_loaves-fish_m.mp3"
+      "moralAudio": "st_loaves-fish_m.mp3",
+      "free": false
     },
     {
       "id": "zacchaeus",
@@ -4484,7 +4845,8 @@
         }
       ],
       "moral": "Jesus wants to be your friend, exactly as you are.",
-      "moralAudio": "st_zacchaeus_m.mp3"
+      "moralAudio": "st_zacchaeus_m.mp3",
+      "free": false
     },
     {
       "id": "jesus-children",
@@ -4519,7 +4881,8 @@
         }
       ],
       "moral": "You are never too small to talk to God. He loves your voice.",
-      "moralAudio": "st_jesus-children_m.mp3"
+      "moralAudio": "st_jesus-children_m.mp3",
+      "free": true
     },
     {
       "id": "prodigal-son",
@@ -4554,7 +4917,8 @@
         }
       ],
       "moral": "When you say sorry, God runs to hug you. Always.",
-      "moralAudio": "st_prodigal-son_m.mp3"
+      "moralAudio": "st_prodigal-son_m.mp3",
+      "free": false
     },
     {
       "id": "two-houses",
@@ -4589,7 +4953,8 @@
         }
       ],
       "moral": "Praying every day builds your house on rock.",
-      "moralAudio": "st_two-houses_m.mp3"
+      "moralAudio": "st_two-houses_m.mp3",
+      "free": false
     },
     {
       "id": "sower",
@@ -4624,7 +4989,8 @@
         }
       ],
       "moral": "Keep your heart like good soil: listen, and God's words will grow.",
-      "moralAudio": "st_sower_m.mp3"
+      "moralAudio": "st_sower_m.mp3",
+      "free": false
     }
   ],
   "scenes": [
@@ -4709,5 +5075,153 @@
       },
       "prayerId": "place-car"
     }
-  ]
+  ],
+  "companion": {
+    "ui": {
+      "brand": "Capy Prayer",
+      "tagline": "A little closer, every day.",
+      "welcome": "I’m glad you’re here.",
+      "greeting": "Hi, {kidName}.",
+      "today": "OUR LITTLE MOMENT",
+      "start": "Let’s pray together",
+      "duration": "3–5 min · with Capy",
+      "completed": "A lovely little moment.",
+      "completedHint": "You prayed today. There’s always room for a little more calm.",
+      "explore": "A LITTLE MORE TO EXPLORE",
+      "feelings": "How is your heart today?",
+      "feelingsHint": "Every feeling is welcome here.",
+      "moments": "Little prayers, big feelings.",
+      "momentsHint": "There’s a little prayer for right now.",
+      "bedtime": "Time to wind down",
+      "bedtimeHint": "A soft landing for a busy day.",
+      "stories": "Story time",
+      "storiesHint": "Little stories of great love",
+      "places": "Let’s explore",
+      "placesHint": "God is with us everywhere",
+      "pond": "Our little pond",
+      "pondHint": "Look how we’re growing",
+      "journey": "Your prayer path",
+      "journeyHint": "One little step at a time.",
+      "back": "Back to Capy",
+      "close": "Close",
+      "parents": "Grown-ups",
+      "tapCapy": "Say hello to Capy",
+      "progress": "{count} of {total} little steps",
+      "saved": "A little light for today.",
+      "savedHint": "Every prayer matters. Your pond keeps growing at your own pace.",
+      "loading": "Capy is getting ready…",
+      "storyReady": "Read together",
+      "storyLocked": "We’ll discover this on your prayer path.",
+      "allDone": "Look how far we’ve come!",
+      "allDoneHint": "You can revisit your prayers and stories whenever you like.",
+      "breatheIn": "Breathe in…",
+      "breatheOut": "Breathe out…"
+    },
+    "feelings": [
+      {
+        "id": "happy",
+        "label": "Happy",
+        "icon": "happy",
+        "lessonId": "moment-happy"
+      },
+      {
+        "id": "sad",
+        "label": "Sad",
+        "icon": "sad",
+        "lessonId": "moment-sad"
+      },
+      {
+        "id": "worried",
+        "label": "Worried",
+        "icon": "scared",
+        "lessonId": "moment-worried"
+      },
+      {
+        "id": "thankful",
+        "label": "Thankful",
+        "icon": "heart",
+        "lessonId": "moment-thankful"
+      },
+      {
+        "id": "sleepy",
+        "label": "Sleepy",
+        "icon": "sleepy",
+        "lessonId": "moment-sleepy"
+      }
+    ],
+    "moments": [
+      {
+        "id": "happy",
+        "title": "A happy little prayer",
+        "description": "Share a good thing with God.",
+        "icon": "happy",
+        "lessonId": "moment-happy",
+        "minutes": 1
+      },
+      {
+        "id": "sad",
+        "title": "When my heart feels heavy",
+        "description": "A little comfort for a hard day.",
+        "icon": "sad",
+        "lessonId": "moment-sad",
+        "minutes": 1
+      },
+      {
+        "id": "worried",
+        "title": "A little courage",
+        "description": "Bring your worries, just as they are.",
+        "icon": "scared",
+        "lessonId": "moment-worried",
+        "minutes": 1
+      },
+      {
+        "id": "thankful",
+        "title": "Thank you for today",
+        "description": "Notice one small, lovely thing.",
+        "icon": "heart",
+        "lessonId": "moment-thankful",
+        "minutes": 1
+      },
+      {
+        "id": "sleepy",
+        "title": "Ready to rest",
+        "description": "A gentle prayer for a sleepy heart.",
+        "icon": "sleepy",
+        "lessonId": "moment-sleepy",
+        "minutes": 1
+      },
+      {
+        "id": "sorry",
+        "title": "Let’s try again",
+        "description": "Find kind words after an argument.",
+        "icon": "heart",
+        "lessonId": "moment-sorry",
+        "minutes": 1
+      },
+      {
+        "id": "family",
+        "title": "Someone I love",
+        "description": "A prayer for the people in your heart.",
+        "icon": "heart",
+        "lessonId": "moment-family",
+        "minutes": 1
+      },
+      {
+        "id": "morning",
+        "title": "Hello, new day",
+        "description": "Start small, with God beside you.",
+        "icon": "sun",
+        "lessonId": "moment-morning",
+        "minutes": 1
+      }
+    ],
+    "prayerDefaults": {
+      "person": "the people I love",
+      "thankfulFor": "the good things around me",
+      "mistake": "the times I was unkind",
+      "feeling": "a little unsure",
+      "need": "what is on my heart",
+      "favorite": "little things that make me smile"
+    }
+  }
 }

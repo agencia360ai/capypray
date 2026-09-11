@@ -16,6 +16,12 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   const prayers = new Set(pack.prayers.map((p) => p.id));
   const minigames = new Map(pack.minigames.map((m) => [m.id, m] as const));
   const lessons = new Map(pack.lessons.map((l) => [l.id, l] as const));
+  for (const item of [...pack.companion.feelings, ...pack.companion.moments]) {
+    const lesson = lessons.get(item.lessonId);
+    if (!lesson || lesson.routine !== "moment" || !lesson.free) {
+      issues.push({ path: `companion.${item.id}`, message: "companion entry must reference a free moment lesson" });
+    }
+  }
   const weeks = new Set(pack.worlds.flatMap((w) => w.weeks));
 
   const dup = (arr: string[], what: string) => {

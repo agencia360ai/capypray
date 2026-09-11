@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "./persistence";
 
 // Offline-first local state (GDD §12.4). AsyncStorage so the app runs in Expo Go during beta;
 // swap to react-native-mmkv once we move to dev builds. Synced to Supabase in background (S2).
@@ -90,6 +90,7 @@ export const useKid = create<KidState>()(
       prayedFor: (ids) => set((s) => ({ people: s.people.map((p) => (ids.includes(p.id) ? { ...p, prayedCount: p.prayedCount + 1 } : p)) })),
       completeLesson: (lessonId, lanterns, today = isoDate(new Date())) => {
         const s = get();
+        if (s.completed[lessonId]) return;
         const total = s.lanterns + lanterns;
         set({
           completed: { ...s.completed, [lessonId]: { at: Date.now(), lanterns } },
@@ -136,11 +137,11 @@ export function bumpStreak(st: KidState["streak"], today: string): KidState["str
   return { current, best: Math.max(st.best, current), lastActive: today, graceUsedWeek: grace, weekStart };
 }
 
-export const isoDate = (d: Date) => d.toISOString().slice(0, 10);
+export const isoDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const uid = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 const daysBetween = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
 function startOfWeek(iso: string) {
   const d = new Date(iso);
   d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
-  return isoDate(d);
+  return d.toISOString().slice(0, 10);
 }

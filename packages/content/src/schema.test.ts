@@ -78,7 +78,7 @@ describe("week 1 curriculum (GDD §7.1)", () => {
   });
   it("only W1 and bedtime are free (GDD §10.1: paywall B with bedtime escape)", () => {
     const { pack } = validatePack(load());
-    const free = pack!.lessons.filter((l) => l.free).map((l) => l.id);
+    const free = pack!.lessons.filter((l) => l.free && l.routine !== "moment").map((l) => l.id);
     expect(free).toEqual(["meet-capy", "w1d1", "bedtime-w1"]);
   });
   it("bedtime routine ends with lights_out and is free", () => {
@@ -90,13 +90,15 @@ describe("week 1 curriculum (GDD §7.1)", () => {
 });
 
 describe("Meet Capy intro (get-to-know-you)", () => {
-  it("asks 3 things and uses two of them in the first prayer", () => {
+  it("reaches a short first prayer without a questionnaire", () => {
     const { pack } = validatePack(load());
     const intro = pack!.lessons.find((l) => l.id === pack!.routines.intro!.lessonId)!;
     const asks = intro.beats.filter((b) => b.type === "ask");
-    expect(asks).toHaveLength(3);
+    expect(asks).toHaveLength(0);
+    expect(intro.beats.findIndex(b => b.type === "repeat_after_me")).toBe(2);
     const prayer = pack!.prayers.find((p) => p.id === "first-prayer")!;
-    expect(prayer.variables).toEqual(expect.arrayContaining(["thankfulFor", "feeling"]));
+    expect(prayer.variables).toEqual(["kidName"]);
+    expect(prayer.lines).toHaveLength(3);
   });
 });
 

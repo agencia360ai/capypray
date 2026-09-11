@@ -146,7 +146,7 @@ export const Lesson = z.object({
   title: z.string().max(60),
   free: z.boolean().default(false),
   // "any" = curriculum lesson (needs week/day); "bedtime"/"morning" = routine, replayable daily
-  routine: z.enum(["any", "morning", "bedtime", "intro"]).default("any"),
+  routine: z.enum(["any", "morning", "bedtime", "intro", "moment"]).default("any"),
   /** where this Prayer Moment happens (pack.scenes); default: the pond */
   scene: ID.optional(),
   beats: z.array(Beat).min(3).max(24),
@@ -155,6 +155,7 @@ export type Lesson = z.infer<typeof Lesson>;
 
 export const Story = z.object({
   id: ID,
+  free: z.boolean().default(false),
   title: z.string().max(40),
   /** scripture reference shown to grown-ups (e.g. "Luke 15:3-7") */
   ref: z.string().max(40),
@@ -230,6 +231,24 @@ export const UiStrings = z.object({
 });
 export type UiStrings = z.infer<typeof UiStrings>;
 
+/** Locale-owned copy and curated, replayable moments; IDs stay stable across translations. */
+export const Companion = z.object({
+  prayerDefaults: z.object({ person: z.string(), thankfulFor: z.string(), mistake: z.string(), feeling: z.string(), need: z.string(), favorite: z.string() }),
+  ui: z.object({
+    brand: z.string(), tagline: z.string(), welcome: z.string(), greeting: z.string(),
+    today: z.string(), start: z.string(), duration: z.string(), completed: z.string(),
+    completedHint: z.string(), explore: z.string(), feelings: z.string(), feelingsHint: z.string(),
+    moments: z.string(), momentsHint: z.string(), bedtime: z.string(), bedtimeHint: z.string(),
+    stories: z.string(), storiesHint: z.string(), places: z.string(), placesHint: z.string(),
+    pond: z.string(), pondHint: z.string(), journey: z.string(), journeyHint: z.string(),
+    back: z.string(), close: z.string(), parents: z.string(), tapCapy: z.string(),
+    progress: z.string(), saved: z.string(), savedHint: z.string(), loading: z.string(),
+    storyReady: z.string(), storyLocked: z.string(), allDone: z.string(), allDoneHint: z.string(), breatheIn: z.string(), breatheOut: z.string(),
+  }),
+  feelings: z.array(z.object({ id: ID, label: z.string(), icon: ID, lessonId: ID })).min(1),
+  moments: z.array(z.object({ id: ID, title: z.string(), description: z.string(), icon: ID, lessonId: ID, minutes: z.number().int().min(1).max(5) })).min(1),
+});
+
 export const Pack = z.object({
   id: ID,
   version: z.string().regex(/^\d+\.\d+\.\d+$/),
@@ -249,6 +268,7 @@ export const Pack = z.object({
   rewards: z.array(Reward),
   people: z.object({ defaults: z.array(z.string()).min(1), friends: z.array(z.string()).min(1).default(["bird", "duck", "frog", "turtle", "bunny", "fish"]) }),
   ui: UiStrings,
+  companion: Companion,
   routines: z.object({
     bedtime: z.object({ defaultHour: z.number().int().min(17).max(22), closingPrayerId: ID, lessonId: ID.optional(), notificationText: z.string().max(80).optional() }),
     meal: z.object({ prayerId: ID }),

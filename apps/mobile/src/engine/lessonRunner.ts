@@ -29,7 +29,7 @@ export type AvatarEffect =
   | { type: "lights_out" };
 
 export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now = () => Date.now()) {
-  const vars: Vars = { ...initialVars };
+  const vars: Vars = { ...pack.companion.prayerDefaults, ...initialVars };
   const prayers = new Map(pack.prayers.map((p) => [p.id, p]));
   const stories = new Map(pack.stories.map((st) => [st.id, st]));
   let state: RunnerState = { beatIndex: -1, lineIndex: 0, step: { kind: "done" }, lanternsEarned: 0, startedAt: now() };
@@ -52,17 +52,17 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
         return { kind: "story", story, pageIndex: lineIndex, text: last ? story.moral : page.text, icon: last ? story.icon : page.icon, audio: last ? story.moralAudio : page.audio, last };
       }
       case "listen_timer":
-        return { kind: "listen", seconds: beat.seconds, text: beat.text, audio: beat.audio, clip: beat.clip };
+        return { kind: "listen", seconds: beat.seconds, text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip };
       case "choose_people":
-        return { kind: "choose_people", min: beat.min, max: beat.max, text: beat.text, audio: beat.audio };
+        return { kind: "choose_people", min: beat.min, max: beat.max, text: interpolate(beat.text, vars), audio: beat.audio };
       case "reward":
         return { kind: "reward", lanterns: beat.lantern };
       case "ask":
         return { kind: "ask", key: beat.key, text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, options: beat.options };
       case "parent_prompt":
-        return { kind: "parent_prompt", text: beat.text };
+        return { kind: "parent_prompt", text: interpolate(beat.text, vars) };
       case "lights_out":
-        return { kind: "lights_out", seconds: beat.seconds, text: beat.text, audio: beat.audio };
+        return { kind: "lights_out", seconds: beat.seconds, text: interpolate(beat.text, vars), audio: beat.audio };
     }
   };
 
@@ -77,7 +77,7 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
       case "story":
         return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.last ? "heart" : step.pageIndex % 2 ? "listen_nod" : "think" }];
       case "reward":
-        return [{ type: "mood", value: "happy" }, { type: "play", clip: "celebrate", loop: false }];
+        return [{ type: "mood", value: "happy" }, { type: "play", clip: lesson.routine === "bedtime" || lesson.routine === "moment" ? "heart" : "celebrate", loop: false }];
       case "ask":
         return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.clip }];
       case "lights_out":

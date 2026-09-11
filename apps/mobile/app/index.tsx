@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Link, Redirect } from "expo-router";
+import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Link, Redirect, router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
@@ -8,18 +9,13 @@ import { biomeFor } from "@/store/rewards";
 import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
-import { Chip, LanternMeter } from "@/ui/components";
-import { Friends } from "@/ui/Friends";
-import { StageDecor } from "@/ui/StageDecor";
 import { CapyTapZone } from "@/ui/CapyTapZone";
-import { glyph } from "@/ui/icons";
+import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
+import { Reveal } from "@/ui/motion";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { startSync } from "@/backend/sync";
-import * as haptics from "@/ui/haptics";
 
-// Lobby: Capy at the pond + four doors (today's Prayer Moment, Stories, Places, Pond) + bedtime.
-// One curriculum lesson per day (GDD §4.2); the other doors keep the kid busy until tomorrow.
 export default function Home() {
   const onboarded = useKid((s) => s.onboarded);
   const introDone = useKid((s) => s.introDone);
@@ -28,136 +24,56 @@ export default function Home() {
   if (!introDone && pack.routines.intro) return <Redirect href={{ pathname: "/lesson/[id]", params: { id: pack.routines.intro.lessonId } }} />;
   return <KidHome />;
 }
-
 function KidHome() {
-  const pack = getPack();
-  const { completed, lanterns, beacons, streak, kidName, skinId, biomeId, freePlay } = useKid();
+  const pack = getPack(), copy = pack.companion.ui, kid = useKid();
   const { premium } = useEntitlement();
-  const avatar = useAvatar();
-  const { setStage } = useStage();
+  const avatar = useAvatar(), { setStage } = useStage(), insets = useSafeAreaInsets();
   const curriculum = pack.lessons.filter((l) => l.routine === "any");
-  const nextLesson = curriculum.find((l) => !completed[l.id]) ?? curriculum[curriculum.length - 1]!;
-  const doneToday = !freePlay && lessonDoneToday(completed, new Set(curriculum.map((l) => l.id)));
-  const bedtime = pack.lessons.find((l) => l.id === pack.routines.bedtime.lessonId);
-  const skill = (id: string) => pack.skills.find((s) => s.id === id);
-  const world = pack.worlds.find((w) => nextLesson.week && w.weeks.includes(nextLesson.week));
-  const onBottomLayout = useStageInsets();
-
+  const next = curriculum.find((l) => !kid.completed[l.id]);
+  const doneToday = !kid.freePlay && lessonDoneToday(kid.completed, new Set(curriculum.map((l) => l.id)));
+  const doneCount = curriculum.filter((l) => kid.completed[l.id]).length;
+  const onBottomLayout = useStageInsets(0.17);
   useEffect(() => {
-    setStage({ dark: false, night: false, biome: biomeFor(pack, { beacons, completed, biomeId }) });
-    avatar.send({ type: "skin", id: skinId });
-    avatar.send({ type: "mood", value: "calm" });
-    avatar.send({ type: "idle" });
-    startSync();
+    setStage({ dark: false, night: false, biome: biomeFor(pack, kid) });
+    avatar.send({ type: "skin", id: kid.skinId });
+    avatar.send({ type: "mood", value: "calm" }); avatar.send({ type: "idle" }); startSync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
-
-  const lessonHref = isLessonLocked(nextLesson, premium) ? ({ pathname: "/parent/gate", params: { next: "paywall" } } as const) : ({ pathname: "/lesson/[id]", params: { id: nextLesson.id } } as const);
-
-  return (
-    <View style={styles.root}>
-      {/* Top bar = two things only: this week's lanterns (→ pond) and the grown-ups door. Beacons live in the pond,
-          the streak is part of Capy's greeting — a 4–8 year old can't read four unlabeled counters. */}
-      <View style={styles.top}>
-        <Link href="/pond" asChild>
-          <Pressable style={styles.meter} onPress={() => void haptics.tap()}>
-            <LanternMeter lanterns={lanterns} />
-          </Pressable>
-        </Link>
-        <Link href={{ pathname: "/parent/gate", params: { next: "corner" } }} asChild>
-          <Pressable style={styles.parent} hitSlop={10} accessibilityLabel="Parents">
-            <Text style={styles.parentText}>👤</Text>
-          </Pressable>
-        </Link>
-      </View>
-
-      <View style={styles.spacer}>
-        <StageDecor />
-        <CapyTapZone />
-        <View style={styles.friends}>
-          <Friends />
-        </View>
-      </View>
-
-      <View onLayout={onBottomLayout}>
-        <View style={styles.sheet}>
-          <View style={styles.helloRow}>
-            <Text style={styles.hello}>{interpolate(pack.ui.hi, { kidName: kidName || pack.ui.friend })}</Text>
-            {streak.current > 1 && pack.ui.streak ? <Chip style={styles.streak}>🔥 {interpolate(pack.ui.streak, { n: String(streak.current) })}</Chip> : null}
-          </View>
-
-          {doneToday ? (
-            <View style={styles.today}>
-              <Text style={styles.todayIcon}>🌙</Text>
-              <View style={styles.todayText}>
-                <Text style={styles.todayTitle}>{pack.ui.comeBackTomorrow}</Text>
-                <Text style={styles.todayEyebrow}>{pack.ui.tomorrowHint}</Text>
-              </View>
-            </View>
-          ) : (
-            <Link href={lessonHref} asChild>
-              <Pressable style={({ pressed }) => [styles.today, styles.todayLive, pressed && styles.todayPressed]} onPress={() => void haptics.tap()}>
-                <Text style={styles.todayIcon}>{glyph(skill(nextLesson.skillId)?.icon)}</Text>
-                <View style={styles.todayText}>
-                  <Text style={styles.todayEyebrow}>
-                    {pack.ui.todayTitle} · {world?.title}
-                  </Text>
-                  <Text style={styles.todayTitle}>{nextLesson.title}</Text>
-                </View>
-                <Text style={styles.todayGo}>▶</Text>
-              </Pressable>
-            </Link>
-          )}
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.doors}>
-            <Door href="/stories" icon="book" label={pack.ui.storiesTitle} color="#FFE7EE" />
-            <Door href="/places" icon="city" label={pack.ui.placesTitle} color="#E3F4FF" />
-            <Door href="/pond" icon="lantern" label={pack.ui.pondTitle} color="#EAF7DF" />
-            {bedtime ? <Door href={{ pathname: "/lesson/[id]", params: { id: bedtime.id } }} icon="moon" label={pack.ui.bedtimeTitle} color="#E6E3F7" /> : null}
-          </ScrollView>
-        </View>
-      </View>
+  const pray = () => {
+    if (!next || doneToday) { router.push("/moments"); return; }
+    router.push(isLessonLocked(next, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: next.id } });
+  };
+  return <View style={s.root}>
+    <View style={[s.top, { paddingTop: insets.top + 14 }]}>
+      <View><Text style={s.brand}>{copy.brand}</Text><Text style={s.tagline}>{copy.tagline}</Text></View>
+      <Link href="/parent/gate?next=corner" asChild><Pressable accessibilityRole="button" accessibilityLabel={copy.parents} style={s.parent}><Icon name="parent" size={23} /></Pressable></Link>
     </View>
-  );
+    <View style={s.stage}><View style={s.greeting}><Text style={s.greetingText}>{interpolate(copy.greeting, { kidName: kid.kidName || pack.ui.friend })}</Text><Text style={s.greetingSub}>{copy.welcome}</Text></View><CapyTapZone /></View>
+    <View style={s.sheetWrap} onLayout={onBottomLayout}><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
+      <View style={s.handle} />
+      <Reveal><View style={s.titleRow}><Text style={s.eyebrow}>{copy.today}</Text><Text style={s.time}>{copy.duration}</Text></View>
+        <Text style={s.title}>{!next ? copy.allDone : doneToday ? copy.completed : next.title}</Text>
+        {doneToday || !next ? <Text style={s.description}>{!next ? copy.allDoneHint : copy.completedHint}</Text> : null}
+        <Pressable onPress={pray} accessibilityRole="button" style={({ pressed }) => [s.primary, pressed && s.pressed]}><Icon name="heart" size={23} color="#FFF8E9" /><Text style={s.primaryText}>{doneToday || !next ? copy.moments : copy.start}</Text><Icon name="arrow" size={22} color="#FFF8E9" /></Pressable>
+      </Reveal>
+      <Reveal delay={70} style={{ gap: 10 }}><Text style={s.sectionTitle}>{copy.feelings}</Text><View style={s.feelings}>{pack.companion.feelings.map(f => <Pressable key={f.id} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: f.lessonId } })} accessibilityRole="button" accessibilityLabel={f.label} style={({ pressed }) => [s.feeling, pressed && s.pressed]}><Icon name={f.icon} size={38} /><Text style={s.feelingLabel}>{f.label}</Text></Pressable>)}</View></Reveal>
+      <Reveal delay={130}><Pressable onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId! } })} accessibilityRole="button" style={({ pressed }) => [s.bedtime, pressed && s.pressed]}><ImageBackground source={require("../assets/backgrounds/meadow-storybook-night.png")} style={s.bedArt}><View style={s.bedShade}><Icon name="moon" size={37} color="#F6D486" /><View style={{ flex: 1 }}><Text style={s.bedTitle}>{copy.bedtime}</Text><Text style={s.bedHint}>{copy.bedtimeHint}</Text></View><Icon name="arrow" size={22} color="#FFF8E9" /></View></ImageBackground></Pressable></Reveal>
+      <Text style={s.eyebrow}>{copy.explore}</Text>
+      <View style={s.doors}><Door href="/stories" icon="book" title={copy.stories} subtitle={copy.storiesHint} color="#FAEAD8" /><Door href="/places" icon="garden" title={copy.places} subtitle={copy.placesHint} color="#E8EFDE" /><Door href="/pond" icon="lantern" title={copy.pond} subtitle={copy.pondHint} color="#F9EFCF" /><Door href="/moments" icon="heart" title={copy.moments} subtitle={copy.momentsHint} color="#F7E6DF" /></View>
+      <Link href="/journey" asChild><Pressable accessibilityRole="button" style={s.journey}><View style={s.titleRow}><Text style={s.sectionTitle}>{copy.journey}</Text><Icon name="arrow" size={20} /></View><View style={s.track}><View style={[s.fill, { width: `${curriculum.length ? doneCount / curriculum.length * 100 : 0}%` }]} /></View><Text style={s.description}>{interpolate(copy.progress, { count: String(doneCount), total: String(curriculum.length) })}</Text></Pressable></Link>
+    </ScrollView></View>
+  </View>;
 }
-
-function Door({ href, icon, label, color }: { href: React.ComponentProps<typeof Link>["href"]; icon: string; label: string; color: string }) {
-  return (
-    <Link href={href} asChild>
-      <Pressable style={({ pressed }) => [styles.door, { backgroundColor: color }, pressed && styles.doorPressed]} onPress={() => void haptics.tap()}>
-        <Text style={styles.doorGlyph}>{glyph(icon)}</Text>
-        <Text style={styles.doorLabel} numberOfLines={1}>
-          {label}
-        </Text>
-      </Pressable>
-    </Link>
-  );
+function Door({ href, icon, title, subtitle, color }: { href: React.ComponentProps<typeof Link>["href"]; icon: string; title: string; subtitle: string; color: string }) {
+  return <Pressable onPress={() => router.push(href)} accessibilityRole="button" style={({ pressed }) => [s.door, { backgroundColor: color }, pressed && s.pressed]}><Icon name={icon} size={35} /><Text style={s.doorTitle}>{title}</Text><Text style={s.doorHint}>{subtitle}</Text></Pressable>;
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  spacer: { flex: 1, justifyContent: "flex-end" },
-  friends: { marginBottom: -6 },
-  top: { paddingTop: 56, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  meter: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.75)", borderRadius: T.radius.pill, paddingVertical: 6, paddingHorizontal: 10 },
-  topRight: { flexDirection: "row", alignItems: "center", gap: 8 },
-  parent: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.6)", alignItems: "center", justifyContent: "center", opacity: 0.8 },
-  parentText: { fontSize: 15 },
-  sheet: { padding: 20, paddingBottom: 30, gap: 14, backgroundColor: "rgba(255,247,230,0.94)", borderTopLeftRadius: 32, borderTopRightRadius: 32, ...T.shadow },
-  helloRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" },
-  hello: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink },
-  streak: { backgroundColor: "#FFE9C7" },
-  today: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: T.color.paper, borderRadius: T.radius.lg, padding: 16, borderWidth: 3, borderColor: T.color.tan },
-  todayLive: { backgroundColor: T.color.primary, borderWidth: 0, borderBottomWidth: 6, borderBottomColor: T.color.primaryDark },
-  todayPressed: { borderBottomWidth: 2, transform: [{ translateY: 4 }] },
-  todayIcon: { fontSize: 40 },
-  todayText: { flex: 1 },
-  todayEyebrow: { fontFamily: T.font.bold, fontSize: 12, letterSpacing: 0.5, color: T.color.brown },
-  todayTitle: { fontFamily: T.font.black, fontSize: 20, color: T.color.ink },
-  todayGo: { fontSize: 22, color: T.color.ink },
-  doors: { gap: 12, paddingVertical: 4 },
-  door: { width: 108, height: 96, borderRadius: T.radius.md, alignItems: "center", justifyContent: "center", gap: 4, borderBottomWidth: 5, borderBottomColor: "rgba(59,42,26,0.15)" },
-  doorPressed: { borderBottomWidth: 2, transform: [{ translateY: 3 }] },
-  doorGlyph: { fontSize: 36 },
-  doorLabel: { fontFamily: T.font.bold, fontSize: 14, color: T.color.ink },
+const s = StyleSheet.create({
+  root: { flex: 1 }, top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24 }, brand: { fontFamily: T.font.black, fontSize: 21, color: T.color.ink }, tagline: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown }, parent: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF9EAEF", alignItems: "center", justifyContent: "center" },
+  stage: { flex: 1, minHeight: 150 }, greeting: { alignSelf: "center", marginTop: 10, paddingHorizontal: 18, paddingVertical: 7, backgroundColor: "#FFF9EAEF", borderRadius: 18 }, greetingText: { fontFamily: T.font.black, fontSize: 17, textAlign: "center", color: T.color.ink }, greetingSub: { fontFamily: T.font.regular, fontSize: 12, textAlign: "center", color: T.color.brown },
+  sheetWrap: { maxHeight: "59%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow }, sheet: { paddingHorizontal: 24, gap: 19 }, handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#DFD8C5", alignSelf: "center", marginTop: 10, marginBottom: -4 },
+  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }, eyebrow: { fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1.8, color: "#768474" }, time: { backgroundColor: "#EEF0E3", borderRadius: 10, paddingHorizontal: 9, paddingVertical: 4, fontFamily: T.font.regular, fontSize: 10, color: "#65785C" }, title: { fontFamily: T.font.black, fontSize: 25, lineHeight: 30, color: T.color.ink, marginTop: 9, marginBottom: 13 },
+  primary: { minHeight: 55, borderRadius: 19, backgroundColor: "#476D58", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, padding: 12, borderBottomWidth: 4, borderBottomColor: "#335641" }, primaryText: { flexShrink: 1, textAlign: "center", fontFamily: T.font.bold, fontSize: 17, color: "#FFF8E9" }, pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] }, sectionTitle: { fontFamily: T.font.bold, fontSize: 17, color: T.color.ink },
+  feelings: { flexDirection: "row", flexWrap: "wrap", gap: 4, justifyContent: "space-between" }, feeling: { alignItems: "center", gap: 5, minWidth: 52, minHeight: 64, paddingVertical: 4, flex: 1 }, feelingLabel: { fontFamily: T.font.bold, fontSize: 11, color: T.color.brown },
+  bedtime: { borderRadius: 20, overflow: "hidden" }, bedArt: { minHeight: 96, overflow: "hidden", borderRadius: 20 }, bedShade: { flex: 1, backgroundColor: "#23355490", flexDirection: "row", alignItems: "center", padding: 16, gap: 12 }, bedTitle: { fontFamily: T.font.bold, fontSize: 17, color: "#FFF4DB" }, bedHint: { fontFamily: T.font.regular, fontSize: 12, color: "#E5E5E7", marginTop: 3 },
+  doors: { flexDirection: "row", flexWrap: "wrap", gap: 12 }, door: { width: "47%", flexGrow: 1, borderRadius: 22, padding: 17, gap: 6, minHeight: 132 }, doorTitle: { fontFamily: T.font.bold, fontSize: 16, color: T.color.ink }, doorHint: { fontFamily: T.font.regular, fontSize: 12, lineHeight: 17, color: T.color.brown }, journey: { borderWidth: 1, borderColor: "#E5E7D9", borderRadius: 20, padding: 16, gap: 10 }, track: { height: 7, backgroundColor: "#E8EBDD", borderRadius: 5, overflow: "hidden" }, fill: { height: 7, backgroundColor: "#80A576", borderRadius: 5 }, description: { fontFamily: T.font.regular, fontSize: 12, lineHeight: 18, color: "#727666", marginBottom: 4 },
 });

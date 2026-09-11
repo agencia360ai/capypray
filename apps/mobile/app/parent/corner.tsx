@@ -9,6 +9,7 @@ import { AUDIO } from "@/audio/manifest";
 import { listAudio } from "@capy/content";
 import { cancelBedtimeReminder, scheduleBedtimeReminder } from "@/notifications/bedtime";
 import { BackupCard } from "@/parent/BackupCard";
+import { formatHour } from "@/i18n";
 
 // Parent Corner v1 (GDD §9, §11): bedtime, prayer people + notes, delete data, sandbox premium.
 export default function ParentCorner() {
@@ -63,7 +64,7 @@ function Corner() {
 
       <Text style={styles.h}>{P.corner.progress}</Text>
       <Text style={styles.stat}>
-        🏮 {kid.lanterns}  ⭐ {kid.beacons}  🔥 {kid.streak.current}  ·  {weekly} sessions
+        🏮 {kid.lanterns}  ⭐ {kid.beacons}  🔥 {kid.streak.current}  ·  {P.corner.sessions(weekly)}
       </Text>
 
       <Text style={styles.h}>{P.corner.bedtime}</Text>
@@ -71,7 +72,7 @@ function Corner() {
         <Pressable style={styles.pill} onPress={() => bedtime(-1)}>
           <Text style={styles.pillText}>−</Text>
         </Pressable>
-        <Text style={styles.stat}>{kid.profile.bedtimeHour > 12 ? kid.profile.bedtimeHour - 12 : kid.profile.bedtimeHour}:00 pm</Text>
+        <Text style={styles.stat}>{formatHour(kid.profile.bedtimeHour, pack.locale)}</Text>
         <Pressable style={styles.pill} onPress={() => bedtime(1)}>
           <Text style={styles.pillText}>+</Text>
         </Pressable>

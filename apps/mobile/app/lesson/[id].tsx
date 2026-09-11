@@ -16,6 +16,7 @@ import { StageDecor } from "@/ui/StageDecor";
 import { RewardBurst, nextLanternSlot } from "@/ui/RewardBurst";
 import { biomeFor } from "@/store/rewards";
 import { isNight, sceneById } from "@/store/scenes";
+import { completionKey } from "@/store/completion";
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,7 +27,7 @@ export default function LessonScreen() {
   const avatar = useAvatar();
   const { setStage } = useStage();
   const runner = useMemo(
-    () => (lesson ? createRunner(pack, lesson, { kidName: kid.kidName || pack.ui.friend, ...kid.facts }) : null),
+    () => (lesson ? createRunner(pack, kid.completed[completionKey(lesson)] ? { ...lesson, beats: lesson.beats.filter(b => b.type !== "reward") } : lesson, { kidName: kid.kidName || pack.ui.friend, ...kid.facts }) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pack, lesson, kid.kidName],
   );
@@ -47,7 +48,7 @@ export default function LessonScreen() {
       apply(runner.start());
       void track("lesson_start", { lessonId: lesson?.id, routine: lesson?.routine });
     }
-    return () => setStage({ dark: false, night: false });
+    return () => { stopSpeaking(); setStage({ dark: false, night: false }); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner]);
 
@@ -60,7 +61,7 @@ export default function LessonScreen() {
     void track("lesson_complete", { lessonId: lesson.id, routine: lesson.routine, lanterns: sum.lanterns, durationMs: sum.durationMs });
     if (lesson.routine === "intro") kid.finishIntro();
     const before = { beacons: kid.beacons, completed: kid.completed };
-    kid.completeLesson(lesson.routine === "any" ? lesson.id : `${lesson.id}:${new Date().toISOString().slice(0, 10)}`, runner.state.lanternsEarned);
+    kid.completeLesson(completionKey(lesson), runner.state.lanternsEarned);
     const after = useKid.getState();
     const unlocks = newlyUnlocked(pack, before, after);
     if (after.beacons > before.beacons || unlocks.length) {
@@ -103,7 +104,7 @@ export default function LessonScreen() {
         {state.step.kind === "reward" && <RewardBurst key={state.beatIndex} slot={nextLanternSlot(kid.lanterns + state.lanternsEarned)} />}
       </View>
       <View onLayout={onBottomLayout}>
-        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} />
+        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} quiet={lesson.routine === "bedtime" || lesson.routine === "moment"} />
       </View>
     </View>
   );

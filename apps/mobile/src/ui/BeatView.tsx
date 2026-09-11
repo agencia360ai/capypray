@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import type { Pack, Minigame } from "@capy/content";
 import type { Step } from "@/engine/lessonRunner";
 import { useKid } from "@/store/kid";
@@ -15,6 +15,7 @@ import { glyph } from "./icons";
 import { useAvatar } from "@/avatar/AvatarView";
 import { speakCapMs } from "@/engine/lessonRunner";
 import { track } from "@/backend/events";
+import { useReducedMotion } from "./motion";
 
 // Renders the current beat. Capy's words live in a speech bubble under the avatar; actions in the bottom sheet.
 // Audio leads (kids 4–6 don't read): plain lines advance by themselves once spoken, anything that needs the
@@ -24,7 +25,7 @@ const NUDGE_MS = 9000;
 const AUTO_SAY_MS = 1800;
 const AUTO_REWARD_MS = REWARD_BURST_MS + 500; // the lantern lights up and floats to the pond first (RewardBurst on the stage)
 
-export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void }) {
+export function BeatView({ step, pack, onNext, onAnswer, quiet = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; quiet?: boolean }) {
   const avatar = useAvatar();
   switch (step.kind) {
     case "say":
@@ -68,12 +69,14 @@ export function BeatView({ step, pack, onNext, onAnswer }: { step: Step; pack: P
       const mg = pack.minigames.find((m) => m.id === step.minigameId)!;
       return <MinigameView key={mg.id} mg={mg} onDone={onNext} />;
     }
+    case "story":
+      return <StoryBeat key={`${step.story.id}:${step.pageIndex}`} step={step} onNext={onNext} />;
     case "listen":
       return <ListenTimer seconds={step.seconds} text={step.text} audio={step.audio} onDone={onNext} />;
     case "choose_people":
       return <PeoplePicker text={step.text} audio={step.audio} min={step.min} max={step.max} defaults={pack.people.defaults} allowAdd onDone={onNext} />;
     case "reward":
-      return <RewardBeat lanterns={step.lanterns} label={pack.ui.yay} onNext={onNext} />;
+      return <RewardBeat quiet={quiet} lanterns={step.lanterns} label={pack.ui.yay} onNext={onNext} />;
     case "parent_prompt":
       return (
         <Sheet>
@@ -168,7 +171,7 @@ function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; aud
   );
 }
 
-function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: string; onNext: () => void }) {
+function RewardBeat({ lanterns, label, onNext, quiet }: { lanterns: number; label: string; onNext: () => void; quiet: boolean }) {
   // confetti bursts when the lantern lights up (RewardBurst timing: scale-in spring + 250 ms), not on mount
   const [burst, setBurst] = useState(0);
   useEffect(() => {
@@ -177,8 +180,8 @@ function RewardBeat({ lanterns, label, onNext }: { lanterns: number; label: stri
   }, []);
   return (
     <>
-      <Confetti trigger={burst} />
-      <SpeechBubble text={`🏮 +${lanterns}`} badge="lantern" />
+      {!quiet && <Confetti trigger={burst} />}
+      <SpeechBubble text={getPack().companion.ui.saved} badge="lantern" />
       <Sheet>
         <BigButton label={label} icon={<Check />} onPress={onNext} autoAdvanceMs={AUTO_REWARD_MS} />
       </Sheet>
@@ -380,6 +383,16 @@ function PeoplePicker({ text, audio, min, max, defaults, allowAdd, onDone }: { t
 
 function ListenTimer({ seconds, text, audio, onDone, dark }: { seconds: number; text: string; audio?: string; onDone: () => void; dark?: boolean }) {
   const [left, setLeft] = useState(seconds);
+  const reduced = useReducedMotion();
+  const breath = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (reduced) { breath.setValue(0.5); return; }
+    const loop = Animated.loop(Animated.sequence([
+      Animated.timing(breath, { toValue: 1, duration: 4000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      Animated.timing(breath, { toValue: 0, duration: 4000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+    ]));
+    loop.start(); return () => loop.stop();
+  }, [breath, reduced]);
   const avatar = useAvatar();
   const done = useRef(onDone);
   done.current = onDone;
@@ -395,14 +408,14 @@ function ListenTimer({ seconds, text, audio, onDone, dark }: { seconds: number; 
   useEffect(() => {
     if (left <= 0) done.current();
   }, [left]);
-  const size = 110 + (1 - left / seconds) * 110; // GDD §6.5: circle that grows while breathing with Capy
   return (
     <>
       {!dark && <SpeechBubble text={text} audio={audio} badge="ear" />}
       <Sheet style={dark ? styles.dark : undefined}>
         {dark && <Text style={styles.darkText}>{text}</Text>}
         <View style={styles.circleWrap}>
-          <View style={[styles.circle, dark && styles.circleDark, { width: size, height: size, borderRadius: size / 2 }]} />
+          <Animated.View style={[styles.circle, dark && styles.circleDark, { width: 170, height: 170, borderRadius: 85, transform: [{ scale: breath.interpolate({ inputRange: [0, 1], outputRange: [0.72, 1.12] }) }] }]} />
+          <Text style={{ position: "absolute", fontFamily: T.font.bold, color: dark ? "#FFF4E1" : T.color.ink }}>{(seconds - left) % 8 < 4 ? getPack().companion.ui.breatheIn : getPack().companion.ui.breatheOut}</Text>
         </View>
       </Sheet>
     </>

@@ -1,5 +1,7 @@
 # GDD — "Capy Prayer — Prayer Buddy for Kids" (working title)
 
+> v0.8 implementation addendum (user-approved): see `docs/companion-design.md` for the shorter onboarding, first prayer before monetization, free situational moments, cartoon art direction, replay reward rules, and localization boundaries. Those decisions supersede the corresponding v0.1 flow descriptions below.
+
 v0.1 · 7 sep 2026 · Owner: Joe (Looplab) · Uso: spec de entrada para Claude Code (copiar a `/docs/GDD.md` del repo y referenciar desde `CLAUDE.md`).
 Idioma del GDD: español. Idioma del contenido del Pack v1: inglés (mercado USA).
 
