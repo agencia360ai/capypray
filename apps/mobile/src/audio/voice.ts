@@ -11,8 +11,29 @@ import { getPack } from "@/content/pack";
 let voiceId: string | undefined;
 let picked: string | undefined;
 let token = 0;
+// One reused player for the whole app: a single native player can only emit one source at a time, so advancing to
+// the next line (replace + play) can never overlap the one still sounding. Creating a fresh player per line raced —
+// remove() on a still-loading player didn't reliably cut it, so two lines bled together.
 let player: AudioPlayer | null = null;
+let onFinish: (() => void) | null = null;
 let modeSet = false;
+
+function ensurePlayer(file: number): AudioPlayer {
+  if (!player) {
+    const p = createAudioPlayer(file);
+    p.addListener("playbackStatusUpdate", (s) => {
+      if (s.didJustFinish) {
+        const f = onFinish;
+        onFinish = null;
+        f?.();
+      }
+    });
+    player = p;
+  } else {
+    player.replace(file);
+  }
+  return player;
+}
 
 async function pickVoice(language: string) {
   if (picked === language) return;
@@ -54,15 +75,8 @@ export function speak(text: string, opts: Opts = {}): SpeakHandle {
           await setAudioModeAsync({ playsInSilentMode: true });
         }
         if (my !== token) return;
-        const p = createAudioPlayer(file);
-        player = p;
-        p.addListener("playbackStatusUpdate", (s) => {
-          if (s.didJustFinish) {
-            p.remove();
-            if (player === p) player = null;
-            done();
-          }
-        });
+        const p = ensurePlayer(file);
+        onFinish = done;
         opts.onStart?.();
         p.play();
         return;
@@ -97,13 +111,12 @@ export function speak(text: string, opts: Opts = {}): SpeakHandle {
 
 function stopAll() {
   Speech.stop();
-  if (player) {
-    try {
-      player.remove();
-    } catch {
-      // already released
-    }
-    player = null;
+  onFinish = null;
+  // Pause (don't remove) so the single reused player is ready for the next line; a paused player emits nothing.
+  try {
+    player?.pause();
+  } catch {
+    // already released
   }
 }
 
