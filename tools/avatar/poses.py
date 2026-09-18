@@ -39,49 +39,13 @@ ARMS_HEART = {
 }
 
 # t0..t1: ease in, t2..t3: ease out (seconds). Bones without timing use the pose defaults.
-POSES = {
-    "pray_hands_full": {
-        "base": "stand.idle.01",
-        "duration": 3.0,
-        "timing": (0.0, 0.55, 2.5, 3.0),
-        "bones": {
-            **ARMS_PRAY,
-            "DEF-spine.006": {"rot": (12, 0, 0)},
-            "DEF-spine.004": {"rot": (4, 0, 0)},
-        },
-    },
-    "heart_full": {
-        "base": "stand.idle.01",
-        "duration": 2.2,
-        "timing": (0.0, 0.45, 1.7, 2.2),
-        "bones": {
-            **ARMS_HEART,
-            "DEF-spine.006": {"rot": (8, 0, -8)},
-        },
-    },
-    "kneel_pray": {
-        "base": "stand.idle.01",
-        "duration": 8.0,
-        "timing": (0.0, 0.8, 7.0, 8.0),
-        "bones": {
-            # whole body drops by the shin length (the FBX rig has two roots: `root` carries the DEF spine,
-            # `MCH-torso.parent` carries face, arms and legs), legs fold under with the shins on the ground
-            "root": {"loc": (0, 0, -0.36)},
-            "MCH-torso.parent": {"loc": (0, 0, -0.36)},
-            "DEF-thigh.L": {"rot": (-12, 0, 0)},
-            "DEF-thigh.R": {"rot": (-12, 0, 0)},
-            "DEF-shin.L": {"rot": (95, 0, 0)},
-            "DEF-shin.R": {"rot": (95, 0, 0)},
-            "DEF-foot.L": {"rot": (-40, 0, 0)},
-            "DEF-foot.R": {"rot": (-40, 0, 0)},
-            # hands join a beat later, head bows last
-            **{k: {**v, "timing": (0.5, 1.2, 6.6, 7.4)} for k, v in ARMS_PRAY.items()},
-            "DEF-spine.006": {"rot": (14, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
-            "DEF-spine.004": {"rot": (4, 0, 0), "timing": (0.9, 1.5, 6.4, 7.2)},
-        },
-    },
-}
-
+#
+# Empty since 18 sep 2026: pray_hands_full, heart_full and kneel_pray were hand-built here while the rig had no
+# authored prayer takes. Capi_02.fbx now carries real ones (Pray_stand_loop, heart_signal, Pray_knee_loop), mapped
+# in clip-map.json and imported with --takes-fbx, and an animator's curves beat bone offsets guessed in code —
+# the paws in particular never read right here. The machinery below stays: it is the cheap way to add a pose the
+# rig lacks, and anything defined here overrides the clip map, so re-add a key only to deliberately win over a take.
+POSES = {}
 
 def _smooth(t):
     t = max(0.0, min(1.0, t))

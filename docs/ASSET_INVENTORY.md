@@ -47,15 +47,28 @@ Bottom line: the two hard, expensive parts of GDD §8 (a rigged bipedal Capy wit
 | `celebrate` | `rise` | 75 | ⚠️ "rise" is a stand-up flourish; acceptable placeholder |
 | `capsule` (extra) | `capsule` | 160, loop | unused (Unity pet-capsule gimmick) |
 | `wave_hello` | procedural | 1.8 s | ✅ additive gesture (`packages/avatar-web/src/gestures.ts`) |
-| `listen_nod` | procedural | 2.4 s | ✅ additive gesture |
-| `pray_hands` | procedural + `pray_hands_full` (Blender) | 3.0 s | ✅ additive gesture while talking; baked full-body pose otherwise |
-| `kneel_pray` | Blender `tools/avatar/poses.py` | 8.0 s | ✅ kneels, paws together, head bowed; loops as a breathing prayer on listen beats |
-| `clap` | procedural | 1.6 s | ✅ additive gesture |
-| `heart` | procedural + `heart_full` (Blender) | 2.0 s | ✅ additive gesture while talking; baked paws-over-heart pose otherwise |
+| `listen_nod` | procedural + `listen_nod_full` (`Idle_01_nod`) | 2.4 s / 25 f | ✅ additive while talking; authored take otherwise |
+| `pray_hands` | procedural + `pray_hands_full` (`Pray_stand_loop`) | 3.0 s / 199 f loop | ✅ authored: palms together at the chest, head bowed |
+| `pray_hands_nod` | `Pray_stand_nod` | 60 f | ✅ authored: a nod while standing in prayer (repeat-after-me beats) |
+| `kneel_pray` | `Pray_knee_loop` | 219 f loop | ✅ authored: kneels, paws together, head bowed |
+| `kneel_pray_nod` | `Pray_knee_nod` | 25 f | ✅ authored: a nod while kneeling |
+| `clap` | procedural + `clap_full` (`Clapping`) | 1.6 s / 100 f | ✅ additive while talking; authored take otherwise |
+| `heart` | procedural + `heart_full` (`heart_signal`) | 2.0 s / 80 f | ✅ additive while talking; authored take otherwise |
 | `think` | procedural | 2.2 s | ✅ additive gesture (paw to chin, head tilt) |
 | `celebrate` | procedural | 1.6 s | ✅ additive gesture (arms up + hop) replaces the `rise` placeholder |
 
-Baked poses live in `tools/avatar/poses.py`: bone-local offsets layered on the idle take inside Blender (with the ORG twins so face, ears and shoulders follow), exported through the normal `pnpm avatar:build`. Fast iteration: `CAPY_ONLY_CLIPS=idle_breathe,kneel_pray blender -b --python tools/avatar/export_capy.py -- …` then `node scripts/shot.mjs "clip=kneel_pray&t=3" out.png` in `packages/avatar-web` (the `t=` scrub matters: software GL renders too slowly to trust wall-clock waits).
+Authored takes live in a second source, `tools/avatar/src/Capi_02.fbx`, imported with `--takes-fbx` (it holds several
+named takes, unlike `--extra-fbx`, which is one Mixamo clip per file named after the file). They are referenced by
+take name from `tools/avatar/clip-map.json`. The `_full` suffix is what the viewer prefers when Capy is **not**
+speaking, so the additive gesture still layers over the talk loop and the mouth keeps moving mid-sentence.
+
+`tools/avatar/poses.py` used to hand-build `pray_hands_full`, `heart_full` and `kneel_pray` from bone offsets while
+the rig had no authored prayer takes; its `POSES` dict is empty since 18 sep 2026 because the authored versions are
+better, the paws especially. The machinery stays for the next pose the rig lacks, and anything defined there still
+overrides the clip map. Fast iteration is unchanged:
+`CAPY_ONLY_CLIPS=idle_breathe,kneel_pray blender -b --python tools/avatar/export_capy.py -- …` then
+`node scripts/shot.mjs "clip=kneel_pray&t=5" out.png` in `packages/avatar-web` (the `t=` scrub matters: software GL
+renders too slowly to trust wall-clock waits).
 
 The procedural gestures are keyframed in code on the Rigify DEF bones and played as **additive** three.js clips on top of `idle`/`talk`, so Capy can wave or press paws together while speaking (`speak { clip: "heart" }`). They are deliberately simple; a real Mixamo clip added to `tools/avatar/clip-map.json` under the same name wins automatically (GDD §8.3 steps 3–4: upload the Rigify FBX to Mixamo, download "Praying", "Kneeling", "Waving", "Clapping", "Thinking", "Head Nod", merge with `tools/avatar/export_capy.py`). Tune a gesture with the preview: `/preview?gesture=heart&bare=1`, learn a bone's axes with `?probe=DEF-upper_arm.R:0,0,-60`.
 

@@ -40,6 +40,7 @@ def parse_args():
     p.add_argument("--out", required=True)
     p.add_argument("--tex-size", type=int, default=1024)
     p.add_argument("--extra-fbx", nargs="*", default=[])
+    p.add_argument("--takes-fbx", nargs="*", default=[], help="FBX holding several named takes; action names are kept and referenced from clip-map.json")
     return p.parse_args(argv)
 
 
@@ -247,6 +248,14 @@ def main():
     arm = find_armature()
     meshes = meshes_of(arm)
     log(f"armature={arm.name} bones={len(arm.data.bones)} meshes={[m.name for m in meshes]}")
+
+    for src in a.takes_fbx:
+        before = set(bpy.data.actions.keys())
+        bpy.ops.import_scene.fbx(filepath=src, use_anim=True, ignore_leaf_bones=True)
+        log(f"takes from {os.path.basename(src)}: {sorted(n.split('|')[-1] for n in set(bpy.data.actions.keys()) - before)}")
+        # keep only the actions: the duplicate rig and its meshes would fight the one we export
+        for o in [o for o in bpy.data.objects if o not in meshes and o != arm]:
+            bpy.data.objects.remove(o, do_unlink=True)
 
     for extra in a.extra_fbx:
         before = set(bpy.data.actions.keys())

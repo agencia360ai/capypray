@@ -9,11 +9,16 @@ if compgen -G "$ROOT/tools/avatar/src/mixamo/*.fbx" > /dev/null; then
   EXTRA=(--extra-fbx "$ROOT"/tools/avatar/src/mixamo/*.fbx)
 fi
 
+TAKES=()
+if [ -f "$ROOT/tools/avatar/src/Capi_02.fbx" ]; then
+  TAKES=(--takes-fbx "$ROOT/tools/avatar/src/Capi_02.fbx")
+fi
+
 blender -b --python "$ROOT/tools/avatar/export_capy.py" -- \
   --fbx "$ROOT/tools/avatar/src/Capi_rig.fbx" \
   --clip-map "$ROOT/tools/avatar/clip-map.json" \
   --out "$OUT/capy-raw.glb" \
-  --tex-size "${TEX_SIZE:-1024}" "${EXTRA[@]}"
+  --tex-size "${TEX_SIZE:-1024}" "${EXTRA[@]}" "${TAKES[@]}"
 
 # Optimize: dedup, prune, resample animation, quantize + meshopt, webp textures.
 pnpm dlx @gltf-transform/cli@4 optimize "$OUT/capy-raw.glb" "$OUT/capy-v1.glb" \
