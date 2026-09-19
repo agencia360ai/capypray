@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CapyPray · Journey art kit</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f4e9;color:#344c41;font:16px/1.5 system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:32px}
+header{border-bottom:1px solid #d9decc;margin-bottom:28px;padding-bottom:22px}small{letter-spacing:.14em;text-transform:uppercase;font-size:11px;font-weight:700;color:#6b806b}h1{font-size:clamp(28px,4vw,45px);letter-spacing:-.04em;margin:5px 0}p{max-width:720px;margin:8px 0;color:#657264}h2{font-size:20px;margin:0 0 12px}.layout{display:grid;grid-template-columns:minmax(270px,390px) 1fr;gap:36px;align-items:start}
+.scene{position:relative;width:100%;aspect-ratio:2/3;border-radius:32px;overflow:hidden;background:#dce6bd;box-shadow:0 16px 48px #314c4122}
+.backdrop{width:100%;height:100%;position:absolute;inset:0}.prop{position:absolute;height:auto;pointer-events:none}.treeL{width:49%;left:-13%;top:24%}.treeR{width:41%;right:-10%;top:31%;transform:scaleX(-1)}.gate{width:29%;left:40%;top:37%}.bush{width:46%;right:-12%;bottom:5%}.flowers{width:26%;left:0;bottom:5%}.bird{width:15%;left:16%;top:59%}.lamp{width:17%;left:66%;top:65%}.trail{position:absolute;width:100%;height:100%;inset:0}.stone{position:absolute;border-radius:50%;background:#eadac0;border:2px solid #c7b68e;box-shadow:0 3px #a8a67c;width:13%;height:3.4%;transform:rotate(-9deg)}.stone.done{background:#fff0bc;border-color:#f4c370}.scene iframe{position:absolute;left:29%;top:57%;width:42%;height:32%;border:0;pointer-events:none;background:transparent}.scene-note{position:absolute;top:17px;left:18px;right:18px;padding:10px 14px;border-radius:18px;background:#fffaf0db;font-size:12px;color:#425846}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}button{font:inherit;font-size:12px;font-weight:650;border:1px solid #b9c9ad;background:#fffdf4;color:#355843;border-radius:30px;padding:10px 14px;cursor:pointer}button:focus-visible{outline:3px solid #e7ac48;outline-offset:3px}button[aria-pressed=true]{background:#dbe8ce}button:disabled{opacity:.5}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{margin:0;background:#fffdf6;border:1px solid #e2e5d8;border-radius:19px;overflow:hidden;min-width:0}.swatch{aspect-ratio:1;display:grid;place-items:center;background-color:#fff;background-image:linear-gradient(45deg,#eef0e8 25%,transparent 25%),linear-gradient(-45deg,#eef0e8 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eef0e8 75%),linear-gradient(-45deg,transparent 75%,#eef0e8 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}.dark .swatch{background:#344c41}.swatch img{width:90%;height:90%;object-fit:contain}.card figcaption{padding:10px;font-size:12px;overflow-wrap:anywhere}.meta{display:block;color:#7a8776;font-size:10px}.notes{margin-top:22px;padding:19px;border-radius:18px;background:#e9eedf;font-size:13px}.notes p{margin:4px 0}.previewlabel{font-size:12px;margin-top:12px}.foot{font-size:12px;margin-top:24px}
+@media(max-width:800px){main{padding:20px}.layout{grid-template-columns:1fr}.scene{max-width:390px;margin:auto}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:360px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><main>
+<header><small>CapyPray / Meadow / Art kit 01</small><h1>A little world to grow into.</h1><p>Seven modular illustrations for the journey prototype. A layer assembly study, with the existing 3D character available for scale review.</p></header>
+<div class="layout"><section><div class="scene" id="scene">
+<img class="backdrop" src="/art/meadow-backdrop.jpg" alt="Warm meadow clearing">
+<svg class="trail" viewBox="0 0 390 585" aria-hidden="true"><path d="M200 590C270 500 90 493 166 409S255 363 216 294" fill="none" stroke="#dfcd9e" stroke-width="37" opacity=".72" stroke-linecap="round"/></svg>
+<div class="stone done" style="left:46%;top:91%"></div><div class="stone done" style="left:41%;top:82%"></div><div class="stone" style="left:35%;top:73%"></div><div class="stone" style="left:41%;top:66%"></div><div class="stone" style="left:52%;top:60%"></div><div class="stone" style="left:55%;top:55%"></div><div class="stone" style="left:49%;top:50%"></div>
+<img class="prop treeL" src="/art/oak-tree.png" alt=""><img class="prop treeR" src="/art/oak-tree.png" alt="">
+<img class="prop gate" src="/art/meadow-gateway.png" alt=""><img class="prop bird" src="/art/robin-friend.png" alt="">
+<img class="prop lamp" src="/art/lantern-lit.png" alt=""><img class="prop bush" src="/art/meadow-bush.png" alt=""><img class="prop flowers" src="/art/daisy-patch.png" alt="">
+<div class="scene-note">Layer assembly · illustrative placement</div></div>
+<div class="controls"><button id="avatar" aria-pressed="false">Show current 3D Capy</button></div>
+<p class="previewlabel">Path and stones are layout guides. The walking lobby, rewards and camera transitions are not implemented here.</p></section>
+<section><h2>Ready to compose</h2><div class="controls"><button id="contrast" aria-pressed="false">Check dark background</button></div><div class="grid" id="grid"></div>
+<div class="notes"><strong>Built for a layered world</strong><p>Six transparent PNG props + one JPEG backdrop. No baked-in text. Stable asset ids, dimensions and placement pivots are included in the manifest.</p><p>The backdrop suits a fixed camera. Sprites can become camera-facing scenery; objects Capy touches need matching 3D geometry.</p></div>
+<p class="foot">Generated with ChatGPT Images. Existing Capy model and animations are preserved. This page is a developer review tool, not a child-facing screen.</p></section></div></main>
+<script>
+fetch('/art/manifest.json').then(r=>r.json()).then(manifest=>{
+ for(const a of manifest.assets){
+  const card=document.createElement('figure');card.className='card';
+  const swatch=document.createElement('div');swatch.className='swatch';
+  const image=document.createElement('img');image.src='/art/'+a.file;image.alt=a.id;image.dataset.assetId=a.id;swatch.append(image);
+  const caption=document.createElement('figcaption');caption.textContent=a.id;
+  const meta=document.createElement('span');meta.className='meta';meta.textContent=a.width+' × '+a.height+' · '+Math.round(a.bytes/1024)+' KB';
+  caption.append(meta);card.append(swatch,caption);document.querySelector('#grid').append(card);
+ }
+ window.artManifest=manifest;
+});
+document.querySelector('#contrast').onclick=function(){const on=document.body.classList.toggle('dark');this.setAttribute('aria-pressed',String(on));};
+document.querySelector('#avatar').onclick=async function(){
+ const current=document.querySelector('#scene iframe');if(current){current.remove();this.setAttribute('aria-pressed','false');return;}
+ const response=await fetch('/avatar/embedded.html',{method:'HEAD'});
+ if(!response.ok){this.textContent='Build avatar-web to enable Capy';return;}
+ const frame=document.createElement('iframe');frame.title='Current Capy model — scale reference';frame.src='/avatar/embedded.html';
+ document.querySelector('#scene').append(frame);this.setAttribute('aria-pressed','true');
+};
+</script></body></html>

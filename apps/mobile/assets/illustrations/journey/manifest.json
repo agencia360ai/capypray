@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "coordinateSystem": "Top-left origin. Pivots are normalized; alphaBounds are pixels (alpha > 16). Pivots suggest placement, not collision shapes.",
+  "assets": [
+    {
+      "id": "meadow-backdrop",
+      "file": "meadow-backdrop.jpg",
+      "kind": "backdrop",
+      "width": 768,
+      "height": 1152,
+      "pivot": {
+        "y": 0.5,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 768,
+        "height": 1152,
+        "y": 0,
+        "x": 0
+      },
+      "bytes": 64093
+    },
+    {
+      "id": "oak-tree",
+      "file": "oak-tree.png",
+      "kind": "sprite",
+      "width": 768,
+      "height": 768,
+      "pivot": {
+        "y": 0.9635,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 710,
+        "height": 711,
+        "y": 29,
+        "x": 30
+      },
+      "bytes": 626534
+    },
+    {
+      "id": "meadow-bush",
+      "file": "meadow-bush.png",
+      "kind": "sprite",
+      "width": 512,
+      "height": 512,
+      "pivot": {
+        "y": 0.8027,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 476,
+        "height": 298,
+        "y": 113,
+        "x": 21
+      },
+      "bytes": 215161
+    },
+    {
+      "id": "daisy-patch",
+      "file": "daisy-patch.png",
+      "kind": "sprite",
+      "width": 512,
+      "height": 512,
+      "pivot": {
+        "y": 0.9551,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 448,
+        "height": 460,
+        "y": 29,
+        "x": 34
+      },
+      "bytes": 233291
+    },
+    {
+      "id": "robin-friend",
+      "file": "robin-friend.png",
+      "kind": "sprite",
+      "width": 512,
+      "height": 512,
+      "pivot": {
+        "y": 0.8906,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 371,
+        "height": 390,
+        "y": 66,
+        "x": 84
+      },
+      "bytes": 197018
+    },
+    {
+      "id": "lantern-lit",
+      "file": "lantern-lit.png",
+      "kind": "sprite",
+      "width": 512,
+      "height": 512,
+      "pivot": {
+        "y": 0.9062,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 331,
+        "height": 416,
+        "y": 48,
+        "x": 90
+      },
+      "bytes": 191445
+    },
+    {
+      "id": "meadow-gateway",
+      "file": "meadow-gateway.png",
+      "kind": "sprite",
+      "width": 768,
+      "height": 768,
+      "pivot": {
+        "y": 0.9466,
+        "x": 0.5
+      },
+      "alphaBounds": {
+        "width": 723,
+        "height": 694,
+        "y": 33,
+        "x": 28
+      },
+      "bytes": 473930
+    }
+  ]
+}

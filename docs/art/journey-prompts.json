@@ -1,0 +1,45 @@
+{
+  "generator": "Built-in ChatGPT Images",
+  "created": "2026-09-19",
+  "reference": "apps/mobile/assets/backgrounds/meadow-storybook.png",
+  "referenceRole": "Style and palette only",
+  "commonPrompt": "Use case: illustration-story. Production modular 2D scenery asset for CapyPray, a prayer companion for children ages 4–8. Input image is STYLE AND PALETTE REFERENCE ONLY, do not copy its layout or objects. Match its gentle rounded cartoon storybook style, restrained gouache texture, warm cream/honey light, sage/teal greens, simple clear silhouettes. Not photorealistic, not glossy 3D. No Capy character, no humans, no text, numbers, icons, borders, watermark or interface. Create ONLY the specified single asset, not a contact sheet. ",
+  "assets": [
+    {
+      "id": "meadow-backdrop",
+      "prompt": "Opaque portrait 2:3 backdrop (1024x1536). A softly painted meadow clearing at morning, pale honey sky in upper third, rounded distant sage hills, tiny soft treeline at far sides, an open muted green ground covering lower two thirds. Central 70% very quiet and unoccupied for separately placed path stones and a 3D character. No pond blocking the path. NO foreground trees, flowers, stones, paths, lanterns or props: those are separate assets. Gentle depth but no dramatic vanishing point. Fill full canvas. This is a backdrop, not a UI screenshot.",
+      "output": "apps/mobile/assets/illustrations/journey/meadow-backdrop.jpg"
+    },
+    {
+      "id": "oak-tree",
+      "prompt": "One entire small rounded oak tree prop, including trunk base, friendly cloud-like sage foliage and warm brown trunk. Slight three-quarter elevated view, squat toy proportions. Fill central 80% of square with padding around crown and ground contact. No soil island, no surrounding scenery or ground shadow. Genuinely transparent alpha background, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/oak-tree.png"
+    },
+    {
+      "id": "meadow-bush",
+      "prompt": "One low asymmetrical clump of rounded sage-green meadow bushes with a few larger leaves. Full shrub silhouette visible with small clear padding. Soft storybook painted volume, neutral three-quarter elevated view, fits beside a walking path. No flowers, no soil island, no scenery, no ground shadow. Square asset with genuinely transparent alpha background, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/meadow-bush.png"
+    },
+    {
+      "id": "daisy-patch",
+      "prompt": "One small charming patch of three cream daisies with honey-yellow centers and sage-green leaves, varied heights, growing together. Full stems and leaf tips visible. Neutral three-quarter view, square centered asset occupying 75% of canvas, generous transparent padding. No soil island, vase, scenery or ground shadow. Genuinely transparent alpha background, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/daisy-patch.png"
+    },
+    {
+      "id": "robin-friend",
+      "prompt": "One tiny friendly cartoon robin standing in three-quarter profile facing LEFT, warm cinnamon chest, tan-brown wings, two tiny feet, one visible round dark eye with a small highlight, calm curious expression, closed beak. Squat rounded storybook proportions. Whole bird visible with clear padding around tail, head and feet. No clothes, accessories, perch, ground shadow or scenery. Square centered asset with genuinely transparent alpha background, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/robin-friend.png"
+    },
+    {
+      "id": "lantern-lit",
+      "prompt": "One small squat glowing paper lantern prop, round cream-gold paper body with simple subtle vertical ribs, warm amber wooden top and flat base, short friendly handle. Standing upright, slight elevated three-quarter view. Warm light contained INSIDE the paper silhouette; no external glow or shadow. Square asset full object visible with padding. No flame visible, text, symbols, floating particles, ground or scenery. Genuinely transparent alpha background, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/lantern-lit.png"
+    },
+    {
+      "id": "meadow-gateway",
+      "prompt": "One small welcoming garden arch made from two rounded warm wood posts and a gently curved wooden top, with a few sage-green leaves and three cream daisies tucked at the top. Empty OPEN center must be transparent. No doors, fences, writing, ribbons, hanging objects, ground or shadow. Entire arch feet and leafy top visible, centered square sprite with padding. Slight elevated three-quarter view, soft painted cartoon style. Genuinely transparent alpha around and within the arch, not a checkerboard or solid color.",
+      "output": "apps/mobile/assets/illustrations/journey/meadow-gateway.png"
+    }
+  ],
+  "processing": "Size-only exports with alpha preserved. Backdrop: 768x1152 JPEG quality 88. Tree and gateway: 768x768 PNG. Other sprites: 512x512 PNG. Original generated PNGs retained in review outputs."
+}
