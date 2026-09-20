@@ -14,10 +14,12 @@ const BACKGROUNDS: Record<string, ImageSourcePropType> = {
   city: require("../../assets/backgrounds/city-storybook.jpg"),
   school: require("../../assets/backgrounds/school-storybook.jpg"),
   car: require("../../assets/backgrounds/car-storybook.jpg"),
+  // journey prototype (docs/journey-plan.md): the painted path from the art kit, used only by the trail lobby
+  trail: require("../../assets/illustrations/journey/meadow-trail.jpg"),
 };
 /* eslint-enable @typescript-eslint/no-require-imports */
 
-export const BIOMES = Object.keys(BACKGROUNDS).filter(id => !id.endsWith("-night"));
+export const BIOMES = Object.keys(BACKGROUNDS).filter((id) => !id.endsWith("-night") && id !== "trail");
 
 // Water stays behind Capy's standing area, including the shorter quiet-time stage.
 export const backgroundHeight = (biome: string) => ["meadow", "river", "mountain"].includes(biome) ? "72%" as const : "100%" as const;

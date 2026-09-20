@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -5903,7 +5903,11 @@
       "allDone": "Look how far we’ve come!",
       "allDoneHint": "You can revisit your prayers and stories whenever you like.",
       "breatheIn": "Breathe in…",
-      "breatheOut": "Breathe out…"
+      "breatheOut": "Breathe out…",
+      "trailContinue": "Continue our journey",
+      "trailStep": "Step {n}",
+      "trailMilestone": "{count} steps to {title}",
+      "trailHere": "You are here"
     },
     "feelings": [
       {

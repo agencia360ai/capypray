@@ -115,6 +115,11 @@ function Corner() {
         <Text style={styles.label}>{P.corner.premium}</Text>
         <Switch value={kid.premium} onValueChange={kid.setPremium} trackColor={{ true: "#FFB84D" }} />
       </View>
+      <Pressable accessibilityRole="button" onPress={() => router.push("/trail")} style={styles.row}>
+        <Text style={styles.label}>{P.corner.trail}</Text>
+        <Text style={styles.label}>›</Text>
+      </Pressable>
+      <Text style={styles.hint}>{P.corner.trailHint}</Text>
       <View style={styles.rowBetween}>
         <Text style={styles.label}>{P.corner.freePlay}</Text>
         <Switch value={kid.freePlay} onValueChange={kid.setFreePlay} trackColor={{ true: "#FFB84D" }} />

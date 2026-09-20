@@ -56,6 +56,8 @@ export const P = {
     progress: "This week",
     voice: "Capy's voice on this device",
     sessions: (n: number) => `${n} ${n === 1 ? "session" : "sessions"}`,
+    trail: "Try the journey lobby",
+    trailHint: "A prototype of the same prayer moments reached through a walked trail. Nothing your child has earned changes.",
     freePlay: "Free play (no daily limit)",
     freePlayHint: "Normally one Prayer Moment unlocks per day. Turn this on to try everything at once.",
     premium: "Premium (sandbox)",
