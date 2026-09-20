@@ -4,6 +4,7 @@ import manifest from "../../assets/illustrations/journey/manifest.json";
 /** Prepared scenery for the journey prototype; importing this module opts into bundling it. */
 export const JOURNEY_ART = {
   "meadow-backdrop": require("../../assets/illustrations/journey/meadow-backdrop.jpg") as ImageSourcePropType,
+  "meadow-trail": require("../../assets/illustrations/journey/meadow-trail.jpg") as ImageSourcePropType,
   "oak-tree": require("../../assets/illustrations/journey/oak-tree.png") as ImageSourcePropType,
   "meadow-bush": require("../../assets/illustrations/journey/meadow-bush.png") as ImageSourcePropType,
   "daisy-patch": require("../../assets/illustrations/journey/daisy-patch.png") as ImageSourcePropType,

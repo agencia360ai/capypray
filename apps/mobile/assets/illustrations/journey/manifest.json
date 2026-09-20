@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "coordinateSystem": "Top-left origin. Pivots are normalized; alphaBounds are pixels (alpha > 16). Pivots suggest placement, not collision shapes.",
   "assets": [
     {
@@ -19,6 +19,24 @@
         "x": 0
       },
       "bytes": 64093
+    },
+    {
+      "id": "meadow-trail",
+      "file": "meadow-trail.jpg",
+      "kind": "backdrop",
+      "width": 768,
+      "height": 1152,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "alphaBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 768,
+        "height": 1152
+      },
+      "bytes": 114014
     },
     {
       "id": "oak-tree",

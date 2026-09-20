@@ -9,7 +9,7 @@ const { chromium } = createRequire(path.resolve(__dirname, "../packages/avatar-w
   const page=await browser.newPage({viewport:{width:1180,height:1000},deviceScaleFactor:1});
   const errors=[];page.on("pageerror",e=>errors.push(String(e)));
   await page.goto(process.env.CAPY_ART_URL || "http://127.0.0.1:8084");
-  await page.waitForFunction(()=>window.artManifest?.assets.length===7);
+  await page.waitForFunction(()=>window.artManifest?.assets.length===8);
   const measurements=await page.evaluate(async()=>{
    const result=[];
    for(const a of window.artManifest.assets){
@@ -50,6 +50,6 @@ const { chromium } = createRequire(path.resolve(__dirname, "../packages/avatar-w
   }
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(out,"asset-validation.json"),JSON.stringify(measurements,null,2));
-  console.log("Passed: seven assets decoded, six true-alpha props, transparent arch opening, 320px layout, layered current Capy and three avatar preview clips.");
+  console.log("Passed: eight assets decoded, six true-alpha props, transparent arch opening, 320px layout, layered current Capy and three avatar preview clips.");
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

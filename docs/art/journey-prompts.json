@@ -11,6 +11,13 @@
       "output": "apps/mobile/assets/illustrations/journey/meadow-backdrop.jpg"
     },
     {
+      "id": "meadow-trail",
+      "reference": "apps/mobile/assets/illustrations/journey/meadow-backdrop.jpg",
+      "referenceRole": "Edit target; this standalone edit prompt replaces the common prompt.",
+      "prompt": "Use case: precise-object-edit. Edit target: the supplied portrait meadow backdrop. Create a finished children's storybook background for a cozy prayer companion game by adding ONLY a natural walking trail to the lower half of this meadow. Preserve the existing sky, clouds, distant hills, palette, painterly gouache texture, sunlight and framing. Keep portrait 2:3 composition.\nPath composition: an inviting warm sandy-earth path starts broadly at the bottom edge, centered around 50% of canvas width and spanning roughly 32% of canvas width. It gently curves LEFT to around x=44% at y=74%, then gently RIGHT to x=57% at y=60%, and ends narrow around x=54% at y=51% where a separate gateway will be placed. This is one subtle smooth bend, not a tight zigzag. It tapers continuously in perspective, from broad foreground to a narrow distant end. The path is visibly grounded in the meadow, with irregular softly painted grassy borders, small tufts along edges, warm cream and ochre soil variation, subtle dappled sunlight and a few tiny embedded pebbles. Include only three or four irregular FLAT stepping slabs embedded flush in the earth, smaller toward distance, low contrast warm sandstone, no outlines. Leave ample continuous earth for walking. No floating round discs, no repeated oval buttons, no raised platforms, no thick outlines, no UI markers or glow. Cheerful, handcrafted, softly cartoonish; clean readable at phone size. No new trees, props, characters, gateway, flowers, text or UI. Output a complete opaque backdrop.",
+      "output": "apps/mobile/assets/illustrations/journey/meadow-trail.jpg"
+    },
+    {
       "id": "oak-tree",
       "prompt": "One entire small rounded oak tree prop, including trunk base, friendly cloud-like sage foliage and warm brown trunk. Slight three-quarter elevated view, squat toy proportions. Fill central 80% of square with padding around crown and ground contact. No soil island, no surrounding scenery or ground shadow. Genuinely transparent alpha background, not a checkerboard or solid color.",
       "output": "apps/mobile/assets/illustrations/journey/oak-tree.png"

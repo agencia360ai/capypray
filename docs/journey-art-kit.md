@@ -2,10 +2,11 @@
 Prepared 2026-09-19 from 76c23f9, including the new Capi_02.fbx takes. This is an asset handoff and review tool; the application lobby is not replaced.
 
 ## Delivered 2D kit
-Seven original ChatGPT Images illustrations, visually matched to meadow-storybook.png:
+Eight original ChatGPT Images illustrations, visually matched to meadow-storybook.png:
 | Id | Export | Intended role |
 |---|---|---|
 | meadow-backdrop | 768 × 1152 JPEG | Fixed-camera meadow clearing behind the scene |
+| meadow-trail | 768 × 1152 JPEG | Alternative fixed-camera backdrop with a painted, tapering earth path |
 | oak-tree | 768 × 768 RGBA PNG | Side scenery, reusable with careful mirroring |
 | meadow-bush | 512 × 512 RGBA PNG | Foreground depth and soft path edges |
 | daisy-patch | 512 × 512 RGBA PNG | Gratitude encounter or decorative milestone |
@@ -13,7 +14,7 @@ Seven original ChatGPT Images illustrations, visually matched to meadow-storyboo
 | lantern-lit | 512 × 512 RGBA PNG | Distant placed reward, or interface illustration |
 | meadow-gateway | 768 × 768 RGBA PNG | Milestone landmark; open center is transparent |
 
-Production files total 2,001,472 bytes (about 2 MB). All imagery is text-free. No generated words are embedded in the scenery. Original PNGs remain in the review outputs; full prompts and the reference role are recorded in [journey-prompts.json](art/journey-prompts.json).
+Production files total 2,115,486 bytes (about 2 MB). All imagery is text-free. No generated words are embedded in the scenery. Original PNGs remain in the review outputs; full prompts and the reference role are recorded in [journey-prompts.json](art/journey-prompts.json).
 
 Assets: apps/mobile/assets/illustrations/journey/.
 Static React Native image map: apps/mobile/src/ui/journeyArt.ts.
@@ -36,7 +37,7 @@ The JPEG is not a seamless texture or skybox. These sprites provide one authored
 
 For a modelled prop, use the current normalized Capy height (1.6 scene units) as scale reference. Start with broad readable shapes, painted base color and matte materials, matching this kit. Ground-contact objects need pivots at the base; a held lantern needs a documented grip point. Keep props separate from the character rig.
 
-Suggested prototype budgets, to verify on devices: 30 fps minimum on the agreed low-end Android test device; a small set of repeated meshes and materials; no extra realtime lights for every lantern. File size is not GPU memory: decoding all seven textures needs about 12.5 MB before mipmaps/overhead. Load only the current biome and constrain transparent overdraw.
+Suggested prototype budgets, to verify on devices: 30 fps minimum on the agreed low-end Android test device; a small set of repeated meshes and materials; no extra realtime lights for every lantern. File size is not GPU memory: decoding all eight textures needs about 15.8 MB before mipmaps/overhead. The two backdrops are alternatives; load only one at a time. Load only the current biome and constrain transparent overdraw.
 
 ## Animation inventory verified in the shipping GLB
 The binary has 19 clips. The seven authored additions are:
@@ -79,7 +80,7 @@ pnpm install --frozen-lockfile
 pnpm --filter @capy/avatar-web build
 node tools/journey-art-preview.mjs
 ~~~
-Open http://127.0.0.1:8084. The optional Show current 3D Capy button loads the built embedded viewer. The path and stones in this page are illustrative layout guides. This is not an implemented game loop.
+Open http://127.0.0.1:8084. The optional Show current 3D Capy button loads the built embedded viewer. The review uses meadow-trail: a painted earth path with perspective taper, grassy edges and embedded stones. It replaces the flat SVG ribbon and repeated CSS discs. Keep meadow-backdrop for a future geometry-driven path; do not stack both backdrops. The illustrated stones are decorative, not progression nodes. This is not an implemented game loop.
 
 Browser asset check:
 ~~~sh
@@ -87,7 +88,7 @@ Browser asset check:
 node tools/journey-art-check.cjs
 ~~~
 
-Verified: all seven image exports decode at their declared dimensions; six props have true alpha and transparent corners; the gateway center is transparent; light/dark compositing and a 320 px layout; current Capy composited over the kit; walk, standing prayer and kneeling prayer previews. Twenty content tests, mobile typecheck and the avatar build passed. This isolated art checkout does not prepare voice recordings or deploy the app. Physical-device walking, depth sorting and performance remain work for the lobby implementation.
+Verified: all eight image exports decode at their declared dimensions; six props have true alpha and transparent corners; the gateway center is transparent; light/dark compositing and a 320 px layout; current Capy composited over the kit; walk, standing prayer and kneeling prayer previews. Twenty content tests, mobile typecheck and the avatar build passed. This isolated art checkout does not prepare voice recordings or deploy the app. Physical-device walking, depth sorting and performance remain work for the lobby implementation.
 
 ![Kit overview](screenshots/journey-kit-overview.png)
 ![Layer assembly with current Capy](screenshots/journey-kit-with-capy.png)
