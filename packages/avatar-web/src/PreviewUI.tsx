@@ -12,6 +12,7 @@ export function Preview({ glb, gltf }: { glb?: string; gltf?: GLTF }) {
 
   const onMessage = useCallback((m: WebToRN) => {
     setLog((l) => [JSON.stringify(m), ...l].slice(0, 6));
+    (window as unknown as { __capyOnMessage?: (m: WebToRN) => void }).__capyOnMessage?.(m); // scripted checks listen here
     if (m.type === "ready") {
       setAvailable(m.clips);
       const q = new URLSearchParams(location.search);

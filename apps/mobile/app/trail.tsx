@@ -10,7 +10,7 @@ import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
-import { JourneyTrail } from "@/ui/JourneyTrail";
+import { JourneyTrail, stoneStageX } from "@/ui/JourneyTrail";
 import { Reveal, useReducedMotion } from "@/ui/motion";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
@@ -44,19 +44,26 @@ function TrailLobby() {
   const reduced = useReducedMotion();
   const arrival = pendingArrival(pack, kid.completed, kid.celebrated, { limit: PHASE_1_STOPS });
 
+  // the stone he is standing on, and the one he came from: they alternate sides, so an arrival is a walk across
+  const nextAt = view.window.findIndex((n) => n.state === "next");
+  const standAt = nextAt < 0 ? Math.max(0, view.window.length - 1) : nextAt;
+  const standX = stoneStageX(standAt);
+
   useEffect(() => {
     setStage({ biome: "trail", dark: false, night: false });
     avatar.send({ type: "skin", id: kid.skinId });
     avatar.send({ type: "mood", value: "calm" });
+    avatar.send({ type: "walk", to: standX, from: standX }); // no distance to cover: he is placed, not walked
     avatar.send({ type: "idle" }); // greeting: facing the child, three-quarter only while he walks
     return () => setStage({ biome: "meadow" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
-  // The arrival walk. The lantern, the beacon and the completion were persisted the moment the lesson ended, so this
-  // only decides what the child watches: it is marked when the walk actually reports back, an interruption replays it
-  // at most once more, and with reduced motion Capy acknowledges from where he stands. The fallback timer matters —
-  // if the stage never reports (WebGL refused, a slow cold start), the arrival must not stay owed forever.
+  // The arrival walk: from the stone he lit to the one he is standing on now. The lantern, the beacon and the
+  // completion were persisted the moment the lesson ended, so this only decides what the child watches. It is
+  // marked when the walk reports back, again when the screen goes away (a tap during the walk is not a reason to
+  // owe him the same celebration twice) and, if the stage never reports at all — WebGL refused, a slow cold start —
+  // by the fallback timer. No duration is asked for: the stage paces the leg so the stride matches the ground.
   useEffect(() => {
     if (!arrival) return;
     const key = arrival.id;
@@ -69,9 +76,9 @@ function TrailLobby() {
     const off = avatar.onEvent((e) => {
       if (e.type === "clipEnd" && e.clip === "walk") mark();
     });
-    avatar.send({ type: "walk", to: 0.28, durationMs: 2400, then: "heart_full" });
+    avatar.send({ type: "walk", from: stoneStageX(Math.max(0, standAt - 1)), to: standX, then: "heart_full" });
     const fallback = setTimeout(mark, 9000);
-    return () => { off(); clearTimeout(fallback); };
+    return () => { off(); clearTimeout(fallback); mark(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrival?.id, reduced]);
 

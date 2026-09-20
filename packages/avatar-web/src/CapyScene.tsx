@@ -5,6 +5,7 @@ import * as THREE from "three";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { CapyStateMachine, LYING } from "./stateMachine";
+import { HEADING, MIN_LEG, ease, easeRate, measureGroundSpeed, paceMs, strideRate } from "./walk";
 import { SkinManager } from "./skins";
 import type { RNToWeb, WebToRN } from "./bridge";
 
@@ -67,6 +68,8 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
   const skins = useMemo(() => new SkinManager(scene, scene.userData.capyScale as number), [scene]);
 
   const sm = useMemo(() => new CapyStateMachine(scene, gltf.animations), [scene, gltf.animations]);
+  // what the authored stride is worth in ground per second, measured off a clone before anything plays
+  const groundSpeed = useMemo(() => measureGroundSpeed(scene, gltf.animations), [scene, gltf.animations]);
 
   useEffect(() => {
     sm.onClipEnd = (clip) => onMessage({ type: "clipEnd", clip });
@@ -76,18 +79,22 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
       send: (m) => {
         switch (m.type) {
           case "play":
+            cutWalk();
             sm.cue(m.clip, { loop: m.loop, fade: m.fade });
             break;
           case "speak":
+            cutWalk();
             sm.speak(m.durationMs, m.clip);
             break;
           case "viewport":
             insets.current = { top: Math.max(0, Math.min(0.6, m.top)), bottom: Math.max(0, Math.min(0.8, m.bottom)), align: m.align ?? "center" };
             break;
           case "idle":
+            cutWalk();
             sm.idle();
             break;
           case "lights_out":
+            cutWalk();
             sm.lightsOut();
             break;
           case "skin":
@@ -103,7 +110,16 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
             // lobby only: a stroll across the stage. The walk clip is in-place, so the world position is animated
             // here and Capy turns to face the way he is going; the camera and the lesson framing are untouched.
             const to = THREE.MathUtils.clamp(m.to, -1, 1);
-            leg.current = { from: walk.current.x, to, t0: performance.now(), ms: Math.max(200, m.durationMs ?? Math.abs(to - walk.current.x) * 2600), then: m.then };
+            if (m.from !== undefined) walk.current.x = THREE.MathUtils.clamp(m.from, -1, 1); // the lobby knows where he was standing
+            const distance = Math.abs(to - walk.current.x) * halfWidth.current;
+            if (distance < MIN_LEG) {
+              // already there: stepping in place is the one thing a walk must never look like
+              leg.current = null;
+              walk.current.x = to;
+              if (m.then) { sm.cue(m.then); onMessage({ type: "clipEnd", clip: "walk" }); }
+              break;
+            }
+            leg.current = { from: walk.current.x, to, t: 0, ms: paceMs(distance, groundSpeed, m.durationMs), then: m.then };
             sm.play("walk", { loop: true, fade: 0.25 });
             break;
           }
@@ -112,7 +128,7 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
         }
       },
     });
-    (window as unknown as { __capy?: unknown }).__capy = { sm, scene }; // preview/debug handle
+    (window as unknown as { __capy?: unknown }).__capy = { sm, scene, walk, groundSpeed }; // preview/debug handle
     // preview-only axis probe: ?probe=DEF-upper_arm.R:0,0,60
     const probe = new URLSearchParams(window.location.search).get("probe");
     if (probe) {
@@ -125,7 +141,13 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
     return () => sm.dispose();
   }, [sm, skins, scene, onMessage, register]);
 
-  const leg = useRef<{ from: number; to: number; t0: number; ms: number; then?: string } | null>(null);
+  const leg = useRef<{ from: number; to: number; t: number; ms: number; then?: string } | null>(null);
+  /** Anything else the app asks for wins over a walk in progress: he stops where he is and the app hears the leg end. */
+  const cutWalk = () => {
+    if (!leg.current) return;
+    leg.current = null;
+    onMessage({ type: "clipEnd", clip: "walk" });
+  };
   const frame = useRef(0);
   const insets = useRef<{ top: number; bottom: number; align: "center" | "bottom" }>({ top: 0.1, bottom: 0.45, align: "center" });
   const bounds = useRef(new THREE.Box3());
@@ -142,15 +164,20 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
     sm.update(Math.min(dt, 1 / 20));
     const step = leg.current;
     if (step) {
-      const p = Math.min(1, (performance.now() - step.t0) / step.ms);
-      const eased = p * p * (3 - 2 * p); // ease in and out, so he leans into the walk and settles out of it
-      walk.current.x = step.from + (step.to - step.from) * eased;
+      // the leg runs on the mixer's clock, not the wall clock: a phone drawing at twelve frames a second advances
+      // the stride by a clamped delta, and a body that kept to wall time would glide away from its own feet
+      step.t += Math.min(dt, 1 / 20) * 1000;
+      const p = Math.min(1, step.t / step.ms);
+      walk.current.x = step.from + (step.to - step.from) * ease(p);
       const dir = step.to - step.from;
+      // the stride follows the body, not the other way round: he is easing in and out, so the cadence does too
+      sm.setRate(strideRate((Math.abs(dir) * halfWidth.current * easeRate(p)) / (step.ms / 1000), groundSpeed));
       // three-quarter, never a full profile and never his back: the child keeps seeing his face while he walks
-      if (Math.abs(dir) > 0.01) scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, Math.sign(dir) * THREE.MathUtils.degToRad(52), Math.min(1, dt * 6));
+      if (Math.abs(dir) > 0.01) scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, Math.sign(dir) * THREE.MathUtils.degToRad(HEADING), Math.min(1, dt * 6));
       if (p >= 1) {
         leg.current = null;
-        sm.play(step.then ?? "idle_breathe", { loop: true, fade: 0.35 });
+        // the clip's own loop flag decides: a settling gesture plays once and hands back to idle, an idle loops
+        sm.play(step.then ?? "idle_breathe", { fade: 0.35 });
         onMessage({ type: "clipEnd", clip: "walk" });
       }
     } else if (scene.rotation.y !== 0) {

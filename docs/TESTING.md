@@ -47,6 +47,8 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 # one pose at an exact clip time (software GL is slow, so scrub instead of waiting):
 #   cd packages/avatar-web && node scripts/shot.mjs "clip=kneel_pray&t=3" out.png
 # dump bone values over a clip: node scripts/dbg-clip.mjs kneel_pray
+# after a new walk take: node scripts/walk-check.mjs — drives a real leg and measures whether the planted foot
+#   carries Capy (stride/ground ≈ 1) instead of gliding. Add --shots for before/after frames of the arrival walk.
 ```
 
 ## "I still see the old app"

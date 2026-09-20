@@ -12,8 +12,10 @@ export type RNToWeb =
   | { type: "mood"; value: Mood }
   | { type: "idle" }
   /** Lobby only: walk to a spot on the stage. `to` is -1 (left edge) … 1 (right edge) of the framed band, so the
-   *  app never needs to know world units; the camera stays put, only Capy moves. `then` is the clip he settles into. */
-  | { type: "walk"; to: number; durationMs?: number; then?: string }
+   *  app never needs to know world units; the camera stays put, only Capy moves. `then` is the clip he settles into,
+   *  `from` puts him somewhere first (the lobby knows which stone he was standing on) and a leg with nothing to
+   *  cover is a snap, not a step in place. `durationMs` is honoured only as far as the stride can be retimed. */
+  | { type: "walk"; to: number; from?: number; durationMs?: number; then?: string }
   | { type: "lights_out" }
   /** Equip a reward skin (procedural accessory on the head/neck bone); id undefined = none. */
   | { type: "skin"; id?: string };

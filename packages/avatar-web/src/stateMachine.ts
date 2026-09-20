@@ -171,6 +171,7 @@ export class CapyStateMachine {
     next.clampWhenFinished = !loop;
     next.enabled = true;
     next.setEffectiveWeight(1);
+    next.setEffectiveTimeScale(1); // a clip retimed by an earlier walk must not start the next one at that rate
     if (this.current && this.current !== next) {
       next.crossFadeFrom(this.current, fade, true);
     }
@@ -178,6 +179,11 @@ export class CapyStateMachine {
     this.current = next;
     this.idleTimer = 0;
     return name;
+  }
+
+  /** Retime the clip playing now — the stage matches the walk cadence to the ground Capy actually covers. */
+  setRate(rate: number) {
+    this.current?.setEffectiveTimeScale(rate);
   }
 
   idle() {
@@ -234,7 +240,7 @@ export class CapyStateMachine {
     this.gestureMixer.update(dt);
     this.rig.apply(this.look);
     // re-roll idle variant every ~8s so a looping idle does not feel frozen
-    if (!this.speaking && this.current && LOOPS[this.current.getClip().name] && this.current.getClip().name !== "sleep") {
+    if (!this.speaking && this.current && LOOPS[this.current.getClip().name] && !["sleep", "walk"].includes(this.current.getClip().name)) {
       this.idleTimer += dt;
       if (this.idleTimer > 8) this.idle();
     }
