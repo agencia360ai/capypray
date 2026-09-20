@@ -7,8 +7,8 @@ const { pack } = validatePack(rawPack);
 
 describe("lessonRunner", () => {
   it("never exposes unresolved prayer variables after the shorter onboarding", () => {
-    for (const lesson of pack!.lessons) {
-      const runner = createRunner(pack!, lesson, { kidName: "Mia" });
+    for (const lesson of pack!.lessons) for (const opts of [{}, { intentions: true }]) {
+      const runner = createRunner(pack!, lesson, { kidName: "Mia" }, opts);
       let result = runner.start();
       for (let guard = 0; result.state.step.kind !== "done" && guard < 200; guard++) {
         if ("text" in result.state.step) expect(result.state.step.text).not.toMatch(/\{\w+\}/);
@@ -71,5 +71,65 @@ describe("lessonRunner", () => {
   it("estimates speech duration slowly", () => {
     expect(estimateMs("Hi")).toBe(1500);
     expect(estimateMs("one two three four five six seven eight nine ten")).toBeGreaterThan(3500);
+  });
+});
+
+describe("the prayer choice", () => {
+  const lesson = () => pack!.lessons.find((l) => l.id === "w1d4")!;
+  /** Run to the beat before the prayer, answering nothing. */
+  const runTo = (kind: string, opts?: { intentions?: boolean }) => {
+    const r = createRunner(pack!, lesson(), { kidName: "Mia" }, opts);
+    let res = r.start();
+    for (let guard = 0; res.state.step.kind !== kind && res.state.step.kind !== "done" && guard < 60; guard++) res = r.next();
+    return { r, res };
+  };
+
+  it("is not asked at all when the app runs without intentions", () => {
+    const { r, res } = runTo("repeat");
+    expect(res.state.step.kind).toBe("repeat");
+    expect((res.state.step as { prayer: { id: string } }).prayer.id).toBe("thank-you-v1"); // the lesson's own prayer
+    expect(r.intention).toBeUndefined();
+  });
+
+  it("offers both options and swaps in the one the child picks", () => {
+    const { r, res } = runTo("choose_intention", { intentions: true });
+    expect(res.state.step).toMatchObject({ kind: "choose_intention", clip: "think" });
+    expect((res.state.step as { options: { id: string }[] }).options.map((o) => o.id)).toEqual(["people", "world"]);
+
+    r.choose("world");
+    const echo = r.next(); // Capy says the choice back before the prayer starts
+    expect(echo.state.step).toMatchObject({ kind: "say", clip: "heart" });
+    expect((echo.state.step as { text: string }).text).toContain("the world outside");
+
+    const prayer = r.next();
+    expect((prayer.state.step as { prayer: { id: string } }).prayer.id).toBe("thank-you-world-v1");
+    expect(r.intention).toBe("thank-you-world-v1");
+  });
+
+  it("keeps the lesson's own prayer when the child is asked but picks nothing", () => {
+    const { r, res } = runTo("choose_intention", { intentions: true });
+    expect(res.state.step.kind).toBe("choose_intention");
+    const prayer = r.next(); // the screen moved on without a tap
+    expect((prayer.state.step as { prayer: { id: string } }).prayer.id).toBe("thank-you-v1");
+  });
+
+  it("prays every line of the chosen variant and reaches the end of the lesson", () => {
+    const { r } = runTo("choose_intention", { intentions: true });
+    r.choose("people");
+    let res = r.next();
+    const lines: string[] = [];
+    for (let guard = 0; res.state.step.kind !== "done" && guard < 60; guard++) {
+      if (res.state.step.kind === "repeat") lines.push(res.state.step.text);
+      res = r.next();
+    }
+    expect(lines).toEqual(pack!.prayers.find((p) => p.id === "thank-you-people-v1")!.lines.map((l) => l.text.replace("{person}", pack!.companion.prayerDefaults.person ?? "")));
+    expect(r.summary().done).toBe(true);
+  });
+
+  it("ignores an option that is not on the card the child was shown", () => {
+    const { r } = runTo("choose_intention", { intentions: true });
+    r.choose("nope");
+    const next = r.next();
+    expect((next.state.step as { prayer: { id: string } }).prayer.id).toBe("thank-you-v1");
   });
 });

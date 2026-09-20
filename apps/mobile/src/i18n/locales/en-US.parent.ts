@@ -58,6 +58,8 @@ export const P = {
     sessions: (n: number) => `${n} ${n === 1 ? "session" : "sessions"}`,
     trail: "Try the journey lobby",
     trailHint: "A prototype of the same prayer moments reached through a walked trail. Nothing your child has earned changes.",
+    intentions: "Let them choose the prayer",
+    intentionsHint: "In some lessons Capy offers two ways to pray the same prayer and your child picks one. Both are written by us; the lesson is the same either way. Keep it off while testing the trail, so you are only trying one new thing at a time.",
     freePlay: "Free play (no daily limit)",
     freePlayHint: "Normally one Prayer Moment unlocks per day. Turn this on to try everything at once.",
     premium: "Premium (sandbox)",

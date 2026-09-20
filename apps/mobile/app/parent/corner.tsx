@@ -121,6 +121,11 @@ function Corner() {
       </Pressable>
       <Text style={styles.hint}>{P.corner.trailHint}</Text>
       <View style={styles.rowBetween}>
+        <Text style={styles.label}>{P.corner.intentions}</Text>
+        <Switch value={kid.intentions} onValueChange={kid.setIntentions} trackColor={{ true: "#FFB84D" }} />
+      </View>
+      <Text style={styles.hint}>{P.corner.intentionsHint}</Text>
+      <View style={styles.rowBetween}>
         <Text style={styles.label}>{P.corner.freePlay}</Text>
         <Switch value={kid.freePlay} onValueChange={kid.setFreePlay} trackColor={{ true: "#FFB84D" }} />
       </View>

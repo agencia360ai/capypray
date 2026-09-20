@@ -55,6 +55,7 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
 
   const usedMinigames = new Set<string>();
   const usedPrayers = new Set<string>();
+  const prayerList = new Map(pack.prayers.map((p) => [p.id, p] as const));
   for (const l of pack.lessons) {
     const at = `lessons.${l.id}`;
     if (!skills.has(l.skillId)) issues.push({ path: `${at}.skillId`, message: `unknown skill "${l.skillId}"` });
@@ -74,6 +75,23 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
         usedMinigames.add(b.minigameId);
       }
       if (b.type === "story" && !stories.has(b.storyId)) issues.push({ path: bat, message: `unknown story "${b.storyId}"` });
+      if (b.type === "choose_intention") {
+        if (l.beats.filter((x) => x.type === "choose_intention").length > 1) issues.push({ path: bat, message: "a lesson may only ask for one intention" });
+        dup(b.options.map((o) => o.id), `${bat}.options`);
+        // the choice governs the next prayer in the lesson; without one there is nothing for it to change
+        const governed = l.beats.slice(i + 1).find((x) => x.type === "repeat_after_me");
+        const target = governed?.type === "repeat_after_me" ? prayerList.get(governed.prayerId) : undefined;
+        if (!governed) issues.push({ path: bat, message: "choose_intention needs a repeat_after_me beat after it" });
+        for (const o of b.options) {
+          const variant = prayerList.get(o.prayerId);
+          usedPrayers.add(o.prayerId);
+          if (!variant) issues.push({ path: `${bat}.options.${o.id}`, message: `unknown prayer "${o.prayerId}"` });
+          // an option may change what the prayer is about, never what the lesson teaches
+          else if (target && variant.skillId !== target.skillId) {
+            issues.push({ path: `${bat}.options.${o.id}`, message: `prayer "${o.prayerId}" teaches "${variant.skillId}", not "${target.skillId}"` });
+          }
+        }
+      }
     }
     if (l.scene && !scenes.has(l.scene)) issues.push({ path: `${at}.scene`, message: `unknown scene "${l.scene}"` });
     if (!l.beats.some((b) => b.type === "reward")) issues.push({ path: at, message: "lesson has no reward beat" });
@@ -139,7 +157,11 @@ export function listAudio(pack: PackT): string[] {
   const out = new Set<string>();
   const add = (a?: string) => a && out.add(a);
   add(pack.companion.breathing.prompt.audio);
-  for (const l of pack.lessons) for (const b of l.beats) if ("audio" in b) add(b.audio);
+  for (const l of pack.lessons)
+    for (const b of l.beats) {
+      if ("audio" in b) add(b.audio);
+      if (b.type === "choose_intention") for (const o of b.options) add(o.echoAudio);
+    }
   for (const p of pack.prayers) for (const line of p.lines) add(line.audio);
   for (const t of pack.ui.tapLines) add(t.audio);
   for (const a of [pack.ui.beaconLineAudio, pack.ui.nudgeTapAudio, pack.ui.nudgeRepeatAudio, pack.ui.nudgeChooseAudio]) add(a);

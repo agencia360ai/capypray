@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -334,6 +334,30 @@
           "clip": "think",
           "text": "What made you smile today? Let's tell God three things.",
           "audio": "w1d4_03.mp3"
+        },
+        {
+          "type": "choose_intention",
+          "clip": "think",
+          "text": "Should we thank God for someone we love, or for something outside?",
+          "audio": "w1d4_choice.mp3",
+          "options": [
+            {
+              "id": "people",
+              "label": "Someone I love",
+              "icon": "people",
+              "prayerId": "thank-you-people-v1",
+              "echo": "Let's thank God for someone you love.",
+              "echoAudio": "w1d4_echo_people.mp3"
+            },
+            {
+              "id": "world",
+              "label": "Something outside",
+              "icon": "tree",
+              "prayerId": "thank-you-world-v1",
+              "echo": "Let's thank God for the world outside.",
+              "echoAudio": "w1d4_echo_world.mp3"
+            }
+          ]
         },
         {
           "type": "repeat_after_me",
@@ -2919,6 +2943,72 @@
         "thankfulFor",
         "person"
       ]
+    },
+    {
+      "id": "thank-you-people-v1",
+      "skillId": "thank-you",
+      "title": "Thank You for People",
+      "lines": [
+        {
+          "text": "Dear God, thank you for the people who love me.",
+          "audio": "p_thanks_people_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for {person}.",
+          "audio": "p_thanks_02.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for today. Amen.",
+          "audio": "p_thanks_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ],
+      "variables": [
+        "person"
+      ]
+    },
+    {
+      "id": "thank-you-world-v1",
+      "skillId": "thank-you",
+      "title": "Thank You for God's World",
+      "lines": [
+        {
+          "text": "Dear God, thank you for the world you made.",
+          "audio": "p_thanks_world_01.mp3",
+          "visual": {
+            "symbol": "world",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for the sky, the trees, and the sun.",
+          "audio": "p_thanks_world_02.mp3",
+          "visual": {
+            "symbol": "tree",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for today. Amen.",
+          "audio": "p_thanks_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ],
+      "variables": []
     },
     {
       "id": "for-others-v1",

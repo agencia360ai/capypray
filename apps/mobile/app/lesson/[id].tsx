@@ -28,9 +28,17 @@ export default function LessonScreen() {
   const avatar = useAvatar();
   const { setStage } = useStage();
   const runner = useMemo(
-    () => (lesson ? createRunner(pack, kid.completed[completionKey(lesson)] ? { ...lesson, beats: lesson.beats.filter(b => b.type !== "reward") } : lesson, { kidName: kid.kidName || pack.ui.friend, ...kid.facts }) : null),
+    () =>
+      lesson
+        ? createRunner(
+            pack,
+            kid.completed[completionKey(lesson)] ? { ...lesson, beats: lesson.beats.filter((b) => b.type !== "reward") } : lesson,
+            { kidName: kid.kidName || pack.ui.friend, ...kid.facts },
+            { intentions: kid.intentions },
+          )
+        : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pack, lesson, kid.kidName],
+    [pack, lesson, kid.kidName, kid.intentions],
   );
   const [state, setState] = useState<RunnerState | null>(null);
   const onBottomLayout = useStageInsets();
@@ -59,7 +67,7 @@ export default function LessonScreen() {
   const finish = () => {
     stopSpeaking();
     const sum = runner.summary();
-    void track("lesson_complete", { lessonId: lesson.id, routine: lesson.routine, lanterns: sum.lanterns, durationMs: sum.durationMs });
+    void track("lesson_complete", { lessonId: lesson.id, routine: lesson.routine, lanterns: sum.lanterns, durationMs: sum.durationMs, intention: runner.intention });
     if (lesson.routine === "intro") kid.finishIntro();
     const before = { beacons: kid.beacons, completed: kid.completed };
     kid.completeLesson(completionKey(lesson), runner.state.lanternsEarned);
@@ -77,6 +85,11 @@ export default function LessonScreen() {
     const r = runner.next();
     apply(r);
     if (r.state.step.kind === "done") finish();
+  };
+
+  const choose = (optionId: string) => {
+    runner.choose(optionId);
+    void track("intention", { lessonId: lesson.id, optionId });
   };
 
   const answer = (key: string, value: string) => {
@@ -105,7 +118,7 @@ export default function LessonScreen() {
         {state.step.kind === "reward" && <RewardBurst key={state.beatIndex} slot={nextLanternSlot(kid.lanterns + state.lanternsEarned)} />}
       </View>
       <View onLayout={onBottomLayout}>
-        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} quiet={lesson.routine === "bedtime" || lesson.routine === "moment"} />
+        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} onChoose={choose} quiet={lesson.routine === "bedtime" || lesson.routine === "moment"} />
       </View>
     </View>
   );

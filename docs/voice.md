@@ -2,7 +2,7 @@
 
 Every recording uses Higgsfield's Juan voice (`6b528d43-c056-4a2f-9d82-1591a7ba13b0`, speech rate -10), recorded in `audio/voice.json` beside the URLs. They are referenced by URL and absent from the repository, so an unprepared checkout falls back to device speech. `pnpm audio:prepare` downloads them and regenerates the static Metro manifest. Rebuild or restart Expo after preparing audio.
 
-Coverage is complete: all 409 pack references plus the 8 parent-zone lines have a recording, 417 in total, and entries for retired references were removed. Spoken UI nudges and the Beacon Day line now carry their own audio ids, so nothing kid-facing falls back to device speech. Parent-zone narration is still listed separately by `CAPY_LINES`.
+Coverage is complete: all 415 pack references plus the 8 parent-zone lines have a recording, 423 in total, and entries for retired references were removed. The six newest are the prayer choice in W1D4 — the question, what Capy says back for each option, and the lines of the two prayer variants that are not shared with the original. Spoken UI nudges and the Beacon Day line now carry their own audio ids, so nothing kid-facing falls back to device speech. Parent-zone narration is still listed separately by `CAPY_LINES`.
 
 The fetcher keeps `apps/mobile/assets/audio/urls.lock.json` and names the voice it filled the folder from, so re-rendering in another voice replaces the files instead of skipping them. Parent Corner reads that name through the generated manifest: `device` there means the folder is empty.
 

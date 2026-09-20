@@ -133,6 +133,33 @@ export const Beat = z.discriminatedUnion("type", [
     clip: AvatarClip.default("think"),
     options: z.array(z.object({ id: ID, label: z.string().max(30), icon: z.string() })).min(2).max(8),
   }),
+  /**
+   * One optional, concrete choice inside the activity (docs/journey-plan.md): the child picks what the prayer that
+   * follows is about. Each option names an authored prayer, so a tap never rewrites theology or the learning goal —
+   * the validator holds every option to the skill of the prayer it replaces. Capy says the `echo` back, because a
+   * choice the child cannot hear or see change is not a choice. Skipped entirely when the app runs without
+   * intentions: the lesson's own prayer plays, unchanged.
+   */
+  z.object({
+    type: z.literal("choose_intention"),
+    text: z.string().max(140),
+    audio: Audio.optional(),
+    clip: AvatarClip.default("think"),
+    options: z
+      .array(
+        z.object({
+          id: ID,
+          label: z.string().max(30),
+          icon: z.string(),
+          prayerId: ID,
+          /** what Capy says once it is picked */
+          echo: z.string().max(140),
+          echoAudio: Audio.optional(),
+        }),
+      )
+      .min(2)
+      .max(3),
+  }),
   // Capy tells a Bible story / parable page by page (pack.stories)
   z.object({ type: z.literal("story"), storyId: ID }),
   z.object({ type: z.literal("parent_prompt"), text: z.string().max(400) }),

@@ -13,6 +13,7 @@ const BEAT_ICON: Record<Lesson["beats"][number]["type"], string> = {
   parent_prompt: "parent",
   lights_out: "moon",
   ask: "question",
+  choose_intention: "question",
   story: "book",
 };
 

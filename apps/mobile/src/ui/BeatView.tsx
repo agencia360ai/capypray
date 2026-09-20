@@ -27,7 +27,7 @@ const NUDGE_MS = 9000;
 const AUTO_SAY_MS = 1800;
 const AUTO_REWARD_MS = REWARD_BURST_MS + 500; // the lantern lights up and floats to the pond first (RewardBurst on the stage)
 
-export function BeatView({ step, pack, onNext, onAnswer, quiet = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; quiet?: boolean }) {
+export function BeatView({ step, pack, onNext, onAnswer, onChoose, quiet = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; onChoose?: (optionId: string) => void; quiet?: boolean }) {
   const avatar = useAvatar();
   switch (step.kind) {
     case "say":
@@ -61,6 +61,28 @@ export function BeatView({ step, pack, onNext, onAnswer, quiet = false }: { step
                   pick();
                   avatar.send({ type: "mood", value: "happy" });
                   onAnswer?.(step.key, o.label);
+                  onNext();
+                }}
+              />
+            ))
+          }
+        </ChoiceBeat>
+      );
+    // the same two-card shape as "ask": the child picks what the prayer that follows is about, and Capy says it back
+    case "choose_intention":
+      return (
+        <ChoiceBeat key={step.text} text={step.text} audio={step.audio} badge="question" nudge={nudgeChoose(pack.ui)}>
+          {(pick) =>
+            step.options.map((o) => (
+              <IconCard
+                key={o.id}
+                icon={o.icon}
+                label={o.label}
+                size="lg"
+                onPress={() => {
+                  pick();
+                  avatar.send({ type: "mood", value: "happy" });
+                  onChoose?.(o.id);
                   onNext();
                 }}
               />

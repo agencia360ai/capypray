@@ -15,6 +15,7 @@ export type Step =
   | { kind: "choose_people"; min: number; max: number; text: string; audio?: string }
   | { kind: "reward"; lanterns: number }
   | { kind: "ask"; key: AskKey; text: string; audio?: string; clip: string; options: { id: string; label: string; icon: string }[] }
+  | { kind: "choose_intention"; text: string; audio?: string; clip: string; options: { id: string; label: string; icon: string }[] }
   | { kind: "parent_prompt"; text: string }
   | { kind: "lights_out"; seconds: number; text: string; audio?: string }
   | { kind: "done" };
@@ -28,18 +29,25 @@ export type AvatarEffect =
   | { type: "idle" }
   | { type: "lights_out" };
 
-export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now = () => Date.now()) {
+/** `intentions`: show choose_intention beats. Off, the lesson plays with its own prayer, exactly as it did before. */
+export type RunnerOpts = { intentions?: boolean };
+
+export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, opts: RunnerOpts = {}, now = () => Date.now()) {
   const vars: Vars = { ...pack.companion.prayerDefaults, ...initialVars };
   const prayers = new Map(pack.prayers.map((p) => [p.id, p]));
   const stories = new Map(pack.stories.map((st) => [st.id, st]));
+  /** beat index → the prayer the child chose for it. Empty until a choose_intention beat is answered. */
+  const chosen = new Map<number, string>();
+  let echo: { text: string; audio?: string } | undefined;
+  const prayerFor = (beatIndex: number, prayerId: string) => prayers.get(chosen.get(beatIndex) ?? prayerId)!;
   let state: RunnerState = { beatIndex: -1, lineIndex: 0, step: { kind: "done" }, lanternsEarned: 0, startedAt: now() };
 
-  const buildStep = (beat: Beat, lineIndex: number): Step => {
+  const buildStep = (beat: Beat, lineIndex: number, beatIndex: number): Step => {
     switch (beat.type) {
       case "avatar_say":
         return { kind: "say", text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, mood: beat.mood };
       case "repeat_after_me": {
-        const prayer = prayers.get(beat.prayerId)!;
+        const prayer = prayerFor(beatIndex, beat.prayerId);
         const line = prayer.lines[lineIndex]!;
         return { kind: "repeat", prayer, lineIndex, text: interpolate(line.text, vars), audio: line.audio, clip: beat.clip };
       }
@@ -59,6 +67,8 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
         return { kind: "reward", lanterns: beat.lantern };
       case "ask":
         return { kind: "ask", key: beat.key, text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, options: beat.options };
+      case "choose_intention":
+        return { kind: "choose_intention", text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, options: beat.options.map(({ id, label, icon }) => ({ id, label, icon })) };
       case "parent_prompt":
         return { kind: "parent_prompt", text: interpolate(beat.text, vars) };
       case "lights_out":
@@ -79,6 +89,7 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
       case "reward":
         return [{ type: "mood", value: "happy" }, { type: "play", clip: lesson.routine === "bedtime" || lesson.routine === "moment" ? "heart" : "celebrate", loop: false }];
       case "ask":
+      case "choose_intention":
         return [{ type: "speak", durationMs: speakCapMs(step.text), clip: step.clip }];
       case "lights_out":
         // Capy says goodnight first; the screen triggers lights_out (yawn → lie down → sleep) when the voice ends
@@ -95,27 +106,36 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
   const advance = (): { state: RunnerState; effects: AvatarEffect[] } => {
     const cur = lesson.beats[state.beatIndex];
     if (cur?.type === "repeat_after_me") {
-      const prayer = prayers.get(cur.prayerId)!;
+      const prayer = prayerFor(state.beatIndex, cur.prayerId);
       if (state.lineIndex + 1 < prayer.lines.length) {
-        state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1) };
+        state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1, state.beatIndex) };
         return { state, effects: effectsFor(state.step) };
       }
     }
     if (cur?.type === "story") {
       const story = stories.get(cur.storyId)!;
       if (state.lineIndex < story.pages.length) {
-        state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1) };
+        state = { ...state, lineIndex: state.lineIndex + 1, step: buildStep(cur, state.lineIndex + 1, state.beatIndex) };
         return { state, effects: effectsFor(state.step) };
       }
     }
+    // Capy says the choice back before the prayer starts, so the child hears that the tap landed
+    if (echo) {
+      const step: Step = { kind: "say", text: interpolate(echo.text, vars), audio: echo.audio, clip: "heart" };
+      echo = undefined;
+      state = { ...state, step };
+      return { state, effects: effectsFor(step) };
+    }
     if (cur?.type === "reward") state = { ...state, lanternsEarned: state.lanternsEarned + cur.lantern };
-    const next = state.beatIndex + 1;
+    let next = state.beatIndex + 1;
+    // without intentions the question is not asked at all and the lesson keeps its own prayer
+    while (lesson.beats[next]?.type === "choose_intention" && !opts.intentions) next++;
     const beat = lesson.beats[next];
     if (!beat) {
       state = { ...state, beatIndex: next, step: { kind: "done" } };
       return { state, effects: [{ type: "idle" }] };
     }
-    state = { ...state, beatIndex: next, lineIndex: 0, step: buildStep(beat, 0) };
+    state = { ...state, beatIndex: next, lineIndex: 0, step: buildStep(beat, 0, next) };
     return { state, effects: effectsFor(state.step) };
   };
 
@@ -129,8 +149,25 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, now 
     answer: (key: AskKey, value: string) => {
       vars[key] = value;
     },
+    /**
+     * Pick an intention: the prayer beat it governs — the next one in the lesson — swaps to the authored variant
+     * the option names, and Capy echoes the choice on the way there. Nothing else in the lesson changes.
+     */
+    choose: (optionId: string) => {
+      const beat = lesson.beats[state.beatIndex];
+      if (beat?.type !== "choose_intention") return;
+      const option = beat.options.find((o) => o.id === optionId);
+      if (!option) return;
+      const target = lesson.beats.findIndex((b, i) => i > state.beatIndex && b.type === "repeat_after_me");
+      if (target >= 0) chosen.set(target, option.prayerId);
+      echo = { text: option.echo, audio: option.echoAudio };
+    },
     get vars() {
       return { ...vars };
+    },
+    /** Which intention the child picked, for the completion event. */
+    get intention() {
+      return [...chosen.values()][0];
     },
     /** Session summary for progress/events. */
     summary: () => ({ lessonId: lesson.id, lanterns: state.lanternsEarned, durationMs: now() - state.startedAt, done: state.step.kind === "done" }),

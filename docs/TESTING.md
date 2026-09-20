@@ -51,6 +51,13 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 #   carries Capy (stride/ground ≈ 1) instead of gliding. Add --shots for before/after frames of the arrival walk.
 ```
 
+## 4. The prayer choice
+
+Parent Corner → "Let them choose the prayer". Off by default and off for everything except W1D4, where Capy asks
+whether to thank God for someone the child loves or for something outside; each answer plays an authored prayer of
+the same lesson. With the switch off the lesson runs exactly as before, which is what makes it possible to test the
+trail and the choice one at a time (docs/journey-plan.md).
+
 ## "I still see the old app"
 
 ```powershell

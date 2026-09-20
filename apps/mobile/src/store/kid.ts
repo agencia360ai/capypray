@@ -33,6 +33,8 @@ type KidState = {
   biomeId?: string;
   /** Parent Corner: ignore the one-lesson-per-day pacing (testing / catch-up). */
   freePlay: boolean;
+  /** Parent Corner: offer the child the prayer choice where a lesson has one (docs/journey-plan.md, phase 2). */
+  intentions: boolean;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
   /** Completion keys whose arrival was already shown on the trail. Cosmetic only: it can never gate a reward. */
@@ -49,6 +51,7 @@ type KidState = {
   setSkin: (id?: string) => void;
   setBiome: (id?: string) => void;
   setFreePlay: (v: boolean) => void;
+  setIntentions: (v: boolean) => void;
   addPerson: (label: string, icon?: string) => void;
   removePerson: (id: string) => void;
   setPersonNote: (id: string, note: string) => void;
@@ -66,6 +69,7 @@ const initial = {
   facts: {} as Record<string, string>,
   introDone: false,
   freePlay: false,
+  intentions: false,
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
   celebrated: {} as KidState["celebrated"],
@@ -87,6 +91,7 @@ export const useKid = create<KidState>()(
       setSkin: (skinId) => set({ skinId }),
       setBiome: (biomeId) => set({ biomeId }),
       setFreePlay: (freePlay) => set({ freePlay }),
+      setIntentions: (intentions) => set({ intentions }),
       addPerson: (label, icon = "person") =>
         set((s) => (s.people.some((p) => p.label === label) ? s : { people: [...s.people, { id: uid(), label: label.trim().slice(0, 30), icon, prayedCount: 0 }] })),
       removePerson: (id) => set((s) => ({ people: s.people.filter((p) => p.id !== id) })),

@@ -112,3 +112,48 @@ describe("helpers", () => {
     expect(getLesson(pack!, "w1d2")?.title).toBe("You Can Pray Anywhere");
   });
 });
+
+describe("the prayer choice", () => {
+  const choiceLesson = (raw: ReturnType<typeof load>) => raw.lessons.find((l: { id: string }) => l.id === "w1d4");
+  const choice = (raw: ReturnType<typeof load>) => choiceLesson(raw).beats.find((b: { type: string }) => b.type === "choose_intention");
+
+  it("ships one, with two authored prayers of the same skill", () => {
+    const { pack } = validatePack(load());
+    const beat = pack!.lessons.find((l) => l.id === "w1d4")!.beats.find((b) => b.type === "choose_intention")!;
+    expect(beat.type).toBe("choose_intention");
+    if (beat.type !== "choose_intention") return;
+    expect(beat.options).toHaveLength(2);
+    const prayers = new Map(pack!.prayers.map((p) => [p.id, p]));
+    for (const o of beat.options) {
+      expect(prayers.get(o.prayerId)?.skillId).toBe("thank-you");
+      expect(o.echo.length).toBeGreaterThan(0);
+    }
+    expect(listAudio(pack!)).toEqual(expect.arrayContaining(beat.options.map((o) => o.echoAudio!)));
+  });
+
+  it("rejects an option that would change what the lesson teaches", () => {
+    const raw = load();
+    choice(raw).options[0].prayerId = "sorry-v1"; // saying sorry is a different lesson, not another way to give thanks
+    const { issues } = validatePack(raw);
+    expect(issues.some((i) => i.message.includes('teaches'))).toBe(true);
+  });
+
+  it("rejects an unknown prayer and a choice with no prayer to change", () => {
+    const raw = load();
+    choice(raw).options[1].prayerId = "nope";
+    const lesson = choiceLesson(raw);
+    lesson.beats = lesson.beats.filter((b: { type: string }) => b.type !== "repeat_after_me");
+    const { issues } = validatePack(raw);
+    expect(issues.map((i) => i.message)).toEqual(
+      expect.arrayContaining([expect.stringContaining('unknown prayer "nope"'), expect.stringContaining("needs a repeat_after_me beat after it")]),
+    );
+  });
+
+  it("rejects two intention questions in one lesson", () => {
+    const raw = load();
+    const lesson = choiceLesson(raw);
+    lesson.beats.splice(lesson.beats.indexOf(choice(raw)), 0, JSON.parse(JSON.stringify(choice(raw))));
+    const { issues } = validatePack(raw);
+    expect(issues.some((i) => i.message.includes("only ask for one intention"))).toBe(true);
+  });
+});
