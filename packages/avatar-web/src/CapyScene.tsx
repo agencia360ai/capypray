@@ -20,12 +20,17 @@ type Props = {
   background?: string;
 };
 
-function CapyModelFromUrl({ glb, ...rest }: Omit<Props, "background" | "gltf"> & { glb: string }) {
+function CapyModelFromUrl({ glb, ...rest }: Omit<Props, "background" | "gltf"> & { glb: string } & Stage) {
   const gltf = useGLTF(glb, false, true); // meshopt decoder (EXT_meshopt_compression)
   return <CapyModel gltf={gltf as unknown as GLTF} {...rest} />;
 }
 
-function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "glb"> & { gltf: GLTF }) {
+/** Where Capy currently stands on the stage. The camera never follows it (see STAND), so only he moves. */
+type Walk = { x: number };
+
+type Stage = { walk: React.MutableRefObject<Walk>; halfWidth: React.MutableRefObject<number> };
+
+function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "background" | "glb"> & { gltf: GLTF } & Stage) {
   const group = useRef<THREE.Group>(null);
 
   const scene = useMemo(() => {
@@ -94,6 +99,14 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
           case "look":
             sm.lookAt(m.x, m.y);
             break;
+          case "walk": {
+            // lobby only: a stroll across the stage. The walk clip is in-place, so the world position is animated
+            // here and Capy turns to face the way he is going; the camera and the lesson framing are untouched.
+            const to = THREE.MathUtils.clamp(m.to, -1, 1);
+            leg.current = { from: walk.current.x, to, t0: performance.now(), ms: Math.max(200, m.durationMs ?? Math.abs(to - walk.current.x) * 2600), then: m.then };
+            sm.play("walk", { loop: true, fade: 0.25 });
+            break;
+          }
           case "load":
             break; // handled by parent (re-mount with new glb)
         }
@@ -112,6 +125,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
     return () => sm.dispose();
   }, [sm, skins, scene, onMessage, register]);
 
+  const leg = useRef<{ from: number; to: number; t0: number; ms: number; then?: string } | null>(null);
   const frame = useRef(0);
   const insets = useRef<{ top: number; bottom: number; align: "center" | "bottom" }>({ top: 0.1, bottom: 0.45, align: "center" });
   const bounds = useRef(new THREE.Box3());
@@ -126,6 +140,23 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
 
   useFrame(({ camera }, dt) => {
     sm.update(Math.min(dt, 1 / 20));
+    const step = leg.current;
+    if (step) {
+      const p = Math.min(1, (performance.now() - step.t0) / step.ms);
+      const eased = p * p * (3 - 2 * p); // ease in and out, so he leans into the walk and settles out of it
+      walk.current.x = step.from + (step.to - step.from) * eased;
+      const dir = step.to - step.from;
+      // three-quarter, never a full profile and never his back: the child keeps seeing his face while he walks
+      if (Math.abs(dir) > 0.01) scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, Math.sign(dir) * THREE.MathUtils.degToRad(52), Math.min(1, dt * 6));
+      if (p >= 1) {
+        leg.current = null;
+        sm.play(step.then ?? "idle_breathe", { loop: true, fade: 0.35 });
+        onMessage({ type: "clipEnd", clip: "walk" });
+      }
+    } else if (scene.rotation.y !== 0) {
+      scene.rotation.y = Math.abs(scene.rotation.y) < 0.01 ? 0 : THREE.MathUtils.lerp(scene.rotation.y, 0, Math.min(1, dt * 5));
+    }
+    scene.position.x = walk.current.x * halfWidth.current;
     const lying = LYING.includes(sm.currentClip ?? "");
     if (lying && frame.current++ % 6 === 0) {
       const box = bounds.current.makeEmpty();
@@ -156,6 +187,7 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
     target.current.lerp(tmp.set(center.x, center.y - shift, center.z), k);
     // camera sits ~16° above the look target: a level camera sees the ground edge-on and the contact shadow vanishes
     camPos.current.lerp(tmp.set(target.current.x, target.current.y + dist * 0.29, target.current.z + dist * 0.96), k);
+    halfWidth.current = dist * tanHalf * persp.aspect * 0.72; // 0.72: keep a margin so he never clips the edge
     camera.position.copy(camPos.current);
     camera.lookAt(target.current);
   });
@@ -168,7 +200,11 @@ function CapyModel({ gltf, onMessage, register }: Omit<Props, "background" | "gl
  * frame — no extra render passes like drei's ContactShadows, which also never showed up on the WebView's low-power GL —
  * and it is what glues Capy to the 2D biome behind the transparent canvas.
  */
-function BlobShadow() {
+function BlobShadow({ walk, halfWidth }: { walk: React.MutableRefObject<Walk>; halfWidth: React.MutableRefObject<number> }) {
+  const mesh = useRef<THREE.Mesh>(null);
+  useFrame(() => {
+    if (mesh.current) mesh.current.position.x = walk.current.x * halfWidth.current;
+  });
   const texture = useMemo(() => {
     const c = document.createElement("canvas");
     c.width = c.height = 256;
@@ -184,7 +220,7 @@ function BlobShadow() {
     return t;
   }, []);
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.004, 0.05]} renderOrder={-1}>
+    <mesh ref={mesh} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.004, 0.05]} renderOrder={-1}>
       <planeGeometry args={[1.7, 0.9]} />
       <meshBasicMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
     </mesh>
@@ -192,6 +228,10 @@ function BlobShadow() {
 }
 
 export function CapyScene(props: Props) {
+  // Capy's spot on the stage (-1…1) and what that is worth in world units. Shared so the painted shadow travels
+  // with him; the camera deliberately does not (see STAND).
+  const walk = useRef<Walk>({ x: 0 });
+  const halfWidth = useRef(1.2);
   return (
     <Canvas
       shadows
@@ -210,8 +250,8 @@ export function CapyScene(props: Props) {
       <directionalLight position={[2.5, 4, 3]} intensity={2.2} castShadow shadow-mapSize={[1024, 1024]} />
       <directionalLight position={[-3, 2, -2]} intensity={0.6} color="#ffd9a8" />
       <Suspense fallback={null}>
-        {props.gltf ? <CapyModel gltf={props.gltf} onMessage={props.onMessage} register={props.register} /> : props.glb ? <CapyModelFromUrl glb={props.glb} onMessage={props.onMessage} register={props.register} /> : null}
-        <BlobShadow />
+        {props.gltf ? <CapyModel gltf={props.gltf} onMessage={props.onMessage} register={props.register} walk={walk} halfWidth={halfWidth} /> : props.glb ? <CapyModelFromUrl glb={props.glb} onMessage={props.onMessage} register={props.register} walk={walk} halfWidth={halfWidth} /> : null}
+        <BlobShadow walk={walk} halfWidth={halfWidth} />
       </Suspense>
     </Canvas>
   );

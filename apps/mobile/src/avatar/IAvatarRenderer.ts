@@ -10,6 +10,8 @@ export type AvatarCommand =
   | { type: "look"; x: number; y: number }
   | { type: "mood"; value: Mood }
   | { type: "idle" }
+  /** Lobby only: walk to a spot on the stage, -1 (left edge) … 1 (right edge) of the framed band. */
+  | { type: "walk"; to: number; durationMs?: number; then?: string }
   | { type: "lights_out" }
   /** Equip a reward skin (procedural accessory on the head/neck bone); id undefined = none. */
   | { type: "skin"; id?: string };
