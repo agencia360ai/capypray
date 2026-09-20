@@ -19,7 +19,8 @@ import { isNight, sceneById } from "@/store/scenes";
 import { completionKey } from "@/store/completion";
 
 export default function LessonScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, from } = useLocalSearchParams<{ id: string; from?: string }>();
+  const home = from === "trail" ? "/trail" : "/";
   const pack = getPack();
   const lesson = pack.lessons.find((l) => l.id === id);
   const kid = useKid();
@@ -66,10 +67,10 @@ export default function LessonScreen() {
     const unlocks = newlyUnlocked(pack, before, after);
     if (after.beacons > before.beacons || unlocks.length) {
       void track("beacon", { beacons: after.beacons, unlocks });
-      router.replace({ pathname: "/beacon", params: { n: String(after.beacons), unlocks: unlocks.join(",") } });
+      router.replace({ pathname: "/beacon", params: { n: String(after.beacons), unlocks: unlocks.join(","), from: from ?? "" } });
       return;
     }
-    router.replace("/");
+    router.replace(home);
   };
 
   const next = () => {
@@ -90,7 +91,7 @@ export default function LessonScreen() {
         style={styles.close}
         onPress={() => {
           stopSpeaking();
-          router.replace("/");
+          router.replace(home);
         }}
         hitSlop={8}
       >

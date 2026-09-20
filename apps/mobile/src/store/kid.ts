@@ -35,6 +35,8 @@ type KidState = {
   freePlay: boolean;
   people: PrayerPerson[];
   completed: Record<string, { at: number; lanterns: number }>;
+  /** Completion keys whose arrival was already shown on the trail. Cosmetic only: it can never gate a reward. */
+  celebrated: Record<string, true>;
   lanterns: number;
   beacons: number;
   streak: { current: number; best: number; lastActive?: string; graceUsedWeek: number; weekStart?: string };
@@ -52,6 +54,7 @@ type KidState = {
   setPersonNote: (id: string, note: string) => void;
   prayedFor: (ids: string[]) => void;
   completeLesson: (lessonId: string, lanterns: number, today?: string) => void;
+  markCelebrated: (key: string) => void;
   reset: () => void;
 };
 
@@ -65,6 +68,7 @@ const initial = {
   freePlay: false,
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
+  celebrated: {} as KidState["celebrated"],
   lanterns: 0,
   beacons: 0,
   streak: { current: 0, best: 0, graceUsedWeek: 0 },
@@ -99,14 +103,19 @@ export const useKid = create<KidState>()(
           streak: bumpStreak(s.streak, today),
         });
       },
+      /** The arrival walk has played for this completion. Marked after the fact, so an interruption replays it at
+       *  most once more and never touches lanterns, beacons or the completion itself. */
+      markCelebrated: (key) => set((s) => (s.celebrated[key] ? s : { celebrated: { ...s.celebrated, [key]: true } })),
       /** Parent Corner "delete my child's data": everything about the kid, in one tap (GDD §11). */
       reset: () => set({ ...initial, onboarded: false }),
     }),
     {
       name: "kid",
       storage,
-      version: 3,
+      version: 4,
       // v3: person ids were Date.now() and could collide; regenerate duplicates once.
+      // v4: the trail arrival walk. Everything already completed counts as celebrated, so upgrading in the middle
+      //     of the curriculum never replays a walk for a lesson prayed weeks ago.
       migrate: (persisted) => {
         const s = persisted as Partial<KidState>;
         const seen = new Set<string>();
@@ -115,7 +124,8 @@ export const useKid = create<KidState>()(
           seen.add(p.id);
           return dup ? { ...p, id: uid() } : p;
         });
-        return { ...s, people } as KidState;
+        const celebrated = s.celebrated ?? Object.fromEntries(Object.keys(s.completed ?? {}).map((k) => [k, true as const]));
+        return { ...s, people, celebrated } as KidState;
       },
     },
   ),

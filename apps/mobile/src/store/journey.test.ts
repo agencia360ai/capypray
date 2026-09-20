@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { validatePack } from "@capy/content";
 import rawPack from "@capy/content/packs/christian-us-en-v1/pack.json";
-import { journeyNodes, journeyView } from "./journey";
+import { journeyNodes, journeyView, pendingArrival } from "./journey";
 
 const { pack } = validatePack(rawPack);
 const p = pack!;
@@ -73,5 +73,30 @@ describe("journeyView", () => {
     const after = journeyView(p, done("w1d1", p.routines.bedtime.lessonId!, p.companion.moments[0]!.lessonId));
     expect(after.next?.id).toBe(before.next?.id);
     expect(after.doneCount).toBe(before.doneCount);
+  });
+});
+
+describe("pendingArrival", () => {
+  it("nothing to celebrate on a fresh save or when every completion was already shown", () => {
+    expect(pendingArrival(p, {}, {})).toBeUndefined();
+    expect(pendingArrival(p, done("w1d1"), { w1d1: true })).toBeUndefined();
+  });
+  it("owes the arrival for a completion that has not been shown", () => {
+    expect(pendingArrival(p, done("w1d1"), {})?.id).toBe("w1d1");
+  });
+  it("picks the most recent completion when several are owed", () => {
+    const completed = { w1d1: { at: 10, lanterns: 1 }, w1d2: { at: 90, lanterns: 1 }, w1d3: { at: 50, lanterns: 1 } };
+    expect(pendingArrival(p, completed, {})?.id).toBe("w1d2");
+  });
+  it("ignores bedtime and moments, which are not stops on the trail", () => {
+    const completed = { [p.routines.bedtime.lessonId!]: { at: 99, lanterns: 1 }, w1d1: { at: 10, lanterns: 1 } };
+    expect(pendingArrival(p, completed, {})?.id).toBe("w1d1");
+  });
+  it("an interruption replays the same arrival rather than granting anything twice", () => {
+    const completed = done("w1d1");
+    const first = pendingArrival(p, completed, {});
+    expect(first?.id).toBe("w1d1"); // app killed mid-walk: the marker was never written
+    expect(pendingArrival(p, completed, {})?.id).toBe("w1d1");
+    expect(pendingArrival(p, completed, { w1d1: true })).toBeUndefined();
   });
 });

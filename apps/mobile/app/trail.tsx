@@ -5,13 +5,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
-import { journeyView } from "@/store/journey";
+import { journeyView, pendingArrival } from "@/store/journey";
 import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
 import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { JourneyTrail } from "@/ui/JourneyTrail";
-import { Reveal } from "@/ui/motion";
+import { Reveal, useReducedMotion } from "@/ui/motion";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
 
@@ -41,6 +41,8 @@ function TrailLobby() {
   const curriculum = pack.lessons.filter((l) => l.routine === "any");
   const doneToday = !kid.freePlay && lessonDoneToday(kid.completed, new Set(curriculum.map((l) => l.id)));
   const world = pack.worlds.find((w) => w.id === view.next?.worldId) ?? pack.worlds[0];
+  const reduced = useReducedMotion();
+  const arrival = pendingArrival(pack, kid.completed, kid.celebrated, { limit: PHASE_1_STOPS });
 
   useEffect(() => {
     setStage({ biome: "trail", dark: false, night: false });
@@ -51,11 +53,33 @@ function TrailLobby() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
+  // The arrival walk. The lantern, the beacon and the completion were persisted the moment the lesson ended, so this
+  // only decides what the child watches: it is marked when the walk actually reports back, an interruption replays it
+  // at most once more, and with reduced motion Capy acknowledges from where he stands. The fallback timer matters —
+  // if the stage never reports (WebGL refused, a slow cold start), the arrival must not stay owed forever.
+  useEffect(() => {
+    if (!arrival) return;
+    const key = arrival.id;
+    const mark = () => kid.markCelebrated(key);
+    if (reduced) {
+      avatar.send({ type: "play", clip: "heart", loop: false });
+      mark();
+      return;
+    }
+    const off = avatar.onEvent((e) => {
+      if (e.type === "clipEnd" && e.clip === "walk") mark();
+    });
+    avatar.send({ type: "walk", to: 0.28, durationMs: 2400, then: "heart_full" });
+    const fallback = setTimeout(mark, 9000);
+    return () => { off(); clearTimeout(fallback); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arrival?.id, reduced]);
+
   const next = view.next;
   const nextLesson = next ? pack.lessons.find((l) => l.id === next.id) : undefined;
   const go = () => {
     if (!nextLesson || doneToday) { router.push("/moments"); return; }
-    router.push(isLessonLocked(nextLesson, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: nextLesson.id } });
+    router.push(isLessonLocked(nextLesson, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: nextLesson.id, from: "trail" } });
   };
 
   return (
@@ -91,7 +115,7 @@ function TrailLobby() {
           <Reveal delay={70}>
             <View style={s.row}>
               <Quick icon="heart" label={copy.moments} onPress={() => router.push("/moments")} />
-              <Quick icon="moon" label={copy.bedtime} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId! } })} />
+              <Quick icon="moon" label={copy.bedtime} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId!, from: "trail" } })} />
             </View>
           </Reveal>
           <Reveal delay={130}>

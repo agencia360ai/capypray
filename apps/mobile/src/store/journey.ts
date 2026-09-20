@@ -70,6 +70,25 @@ export function journeyNodes(pack: Pack, opts: Opts = {}): JourneyNode[] {
   }));
 }
 
+/**
+ * The completion still owed an arrival on the trail: the most recently finished curriculum stop that has not been
+ * celebrated. Purely presentational — the lantern, the beacon and the completion itself were already persisted by
+ * completeLesson, so an app killed mid-walk loses nothing and a replay grants nothing.
+ */
+export function pendingArrival(
+  pack: Pack,
+  completed: Record<string, { at: number } | unknown>,
+  celebrated: Record<string, true>,
+  opts: Opts = {},
+): JourneyNode | undefined {
+  const nodes = journeyNodes(pack, opts);
+  const owed = nodes.filter((n) => n.id in completed && !celebrated[n.id]);
+  if (!owed.length) return undefined;
+  const at = (n: JourneyNode) => (completed[n.id] as { at?: number } | undefined)?.at ?? 0;
+  // most recent first; a save without timestamps falls back to trail order, which is still deterministic
+  return owed.sort((a, b) => at(b) - at(a) || b.index - a.index)[0];
+}
+
 export function journeyView(pack: Pack, completed: Record<string, unknown>, opts: Opts = {}): JourneyView {
   const nodes = journeyNodes(pack, opts);
   const done = nodes.map((n) => n.id in completed);

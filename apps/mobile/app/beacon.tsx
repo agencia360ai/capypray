@@ -18,7 +18,7 @@ const REWARD_ICON: Record<string, string> = { skin: "hat", pond_decoration: "lil
 
 // Beacon moment (GDD §4.1 / §9): 7 lanterns became a beacon. Capy celebrates, the pond shows what opened up.
 export default function Beacon() {
-  const { n, unlocks } = useLocalSearchParams<{ n?: string; unlocks?: string }>();
+  const { n, unlocks, from } = useLocalSearchParams<{ n?: string; unlocks?: string; from?: string }>();
   const pack = getPack();
   const { kidName, beacons, completed, biomeId } = useKid();
   const avatar = useAvatar();
@@ -63,7 +63,7 @@ export default function Beacon() {
               ))}
             </ScrollView>
           )}
-          <BigButton label={pack.ui.yay} onPress={() => router.replace("/")} />
+          <BigButton label={pack.ui.yay} onPress={() => router.replace(from === "trail" ? "/trail" : "/")} />
         </Sheet>
       </View>
     </View>
