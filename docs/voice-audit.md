@@ -4,7 +4,7 @@ Expo Go is served from C:/Users/jofgu/capypray. At inspection it was on 6e487fc,
 
 The screenshot shows the third line of the introduction: **Please be with me today. Amen.** It is already linked to `first_prayer_v08_3.mp3`, which is catalogued and bundled. The following lantern reward says **A little light for today.** It had no recording reference and necessarily used device speech. Its new ID is `ui_saved_light.mp3`; recording is still pending.
 
-## Record these 19 lines
+## The 19 lines, recorded 21 September 2026
 
 | Context | Exact English narration | Audio file |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ The screenshot shows the third line of the introduction: **Please be with me tod
 | Place visit title | School | `scene_school_title.mp3` |
 | Place visit title | The Car | `scene_car_title.mp3` |
 
-Each ID is now wired through the content schema, runtime and narration inventory. No new recording has been generated. Replace or add these recordings using the voice selected for the whole app, add their URLs to the English audio catalogue, run `pnpm audio:prepare`, then reload Expo Go. Remove completed rows from the pending JSON queue so its regression test reflects the new coverage.
+Each ID is wired through the content schema, runtime and narration inventory. All nineteen were rendered in the Juan voice recorded in `audio/voice.json` (preset, speech rate -10, mp3 at 24 kHz) and their URLs are in the English catalogue; the pending JSON queue is empty and its regression test now asserts that nothing is missing. Run `pnpm audio:prepare` and reload Expo Go to hear them.
 
 ## Already linked near the screenshot
 
@@ -40,4 +40,4 @@ A catalogued file can still fall back to device speech if it is absent from a ch
 
 ## Reproduce
 
-`node tools/audio-lines.mjs packages/content/packs/christian-us-en-v1 --audit` inventories each spoken file and all contexts, including UI prompts and titles. `--missing` prints the pending generation batch. Currently: 434 unique pack references, 415 catalogued, 19 pending. The eight parent-zone recordings are separate.
+`node tools/audio-lines.mjs packages/content/packs/christian-us-en-v1 --audit` inventories each spoken file and all contexts, including UI prompts and titles. `--missing` prints the pending generation batch. Currently: 434 unique pack references, all catalogued, none pending. The eight parent-zone recordings are separate.
