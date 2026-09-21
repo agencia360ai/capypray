@@ -1,26 +1,31 @@
-import Svg, { Circle, Defs, Ellipse, G, Path, RadialGradient, Rect, Stop } from "react-native-svg";
+import { useId } from "react";
+import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, RadialGradient, Rect, Stop } from "react-native-svg";
 
 // Small vector art set for the kid chrome (no emoji dependence, crisp at any size, tinted per state).
 
 export function Lantern({ size = 28, lit = true }: { size?: number; lit?: boolean }) {
-  const h = size * 1.35;
-  return (
-    <Svg width={size * 1.6} height={h * 1.2} viewBox="-16 -8 64 74">
-      <Defs>
-        <RadialGradient id="glow" cx="50%" cy="50%" r="50%">
-          <Stop offset="0" stopColor="#FFB84D" stopOpacity={lit ? 0.75 : 0} />
-          <Stop offset="1" stopColor="#FFB84D" stopOpacity="0" />
-        </RadialGradient>
-      </Defs>
-      {lit && <Circle cx="16" cy="30" r="30" fill="url(#glow)" />}
-      <Rect x="8" y="0" width="16" height="6" rx="2" fill={lit ? "#8B5A2B" : "#B8AA98"} />
-      <Rect x="0" y="6" width="32" height="42" rx="12" fill={lit ? "#FF8A5B" : "#D9D2C5"} />
-      <Rect x="6" y="12" width="20" height="30" rx="9" fill={lit ? "#FFD27A" : "#EFEAE0"} />
-      {lit && <Ellipse cx="16" cy="30" rx="5" ry="8" fill="#FFF6D6" />}
-      <Rect x="10" y="48" width="12" height="6" rx="2" fill={lit ? "#8B5A2B" : "#B8AA98"} />
-      <Path d="M16 54 v8" stroke={lit ? "#8B5A2B" : "#B8AA98"} strokeWidth="3" strokeLinecap="round" />
-    </Svg>
-  );
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  return <Svg width={size * 1.6} height={size * 1.62} viewBox="0 0 80 82" aria-hidden>
+    <Defs>
+      <RadialGradient id={uid + "glow"} cx="50%" cy="50%" r="50%">
+        <Stop offset="0" stopColor="#FFD077" stopOpacity="0.65" /><Stop offset="1" stopColor="#FFD077" stopOpacity="0" />
+      </RadialGradient>
+      <LinearGradient id={uid + "paper"} x1="0" y1="0" x2="1" y2="1">
+        <Stop offset="0" stopColor={lit ? "#FFF1AE" : "#F2EDD9"} /><Stop offset="0.55" stopColor={lit ? "#FFD576" : "#E5DECA"} /><Stop offset="1" stopColor={lit ? "#EDAC55" : "#D2CCB9"} />
+      </LinearGradient>
+    </Defs>
+    {lit && <Circle cx="40" cy="40" r="39" fill={"url(#" + uid + "glow)"} />}
+    <Ellipse cx="40" cy="75" rx="16" ry="3" fill="#66785C18" />
+    <Path d="M30 16v-4c0-12 20-12 20 0v4" fill="none" stroke={lit ? "#A97746" : "#A9AA97"} strokeWidth="3" />
+    <Rect x="17" y="19" width="46" height="45" rx="17" fill={"url(#" + uid + "paper)"} stroke={lit ? "#D19A55" : "#B9B9A3"} strokeWidth="2" />
+    <Path d="M33 20c-8 13-8 29 0 43M47 20c8 13 8 29 0 43M18 33h44M18 50h44" fill="none" stroke={lit ? "#D7A65D" : "#C6C3AD"} strokeWidth="1.5" opacity="0.65" />
+    {lit && <><Ellipse cx="40" cy="42" rx="10" ry="14" fill="#FFF2B8" opacity="0.8" /><Path d="M40 31c-2 6-7 7-7 13a7 7 0 0 0 14 0c0-4-4-7-7-13Z" fill="#FFFBE9" /></>}
+    <Path d="M25 26q-4 4-4 11" fill="none" stroke="#FFFFFF" strokeOpacity="0.6" strokeWidth="3" strokeLinecap="round" />
+    <Rect x="25" y="15" width="30" height="7" rx="3.5" fill={lit ? "#BD8750" : "#ADB09B"} />
+    <Path d="M29 17h20" stroke={lit ? "#E8B976" : "#D1D0BA"} strokeWidth="2" strokeLinecap="round" />
+    <Rect x="27" y="62" width="26" height="6" rx="3" fill={lit ? "#BD8750" : "#ADB09B"} />
+    <Path d="M40 68v5m-4 1h8" stroke={lit ? "#BF965C" : "#B1B29C"} strokeWidth="2" strokeLinecap="round" />
+  </Svg>;
 }
 
 export function Star({ size = 24, color = "#FFD84D" }: { size?: number; color?: string }) {

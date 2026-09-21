@@ -3,7 +3,8 @@ import { router } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { unlockedScenes } from "@/store/scenes";
-import { glyph } from "@/ui/icons";
+import { CompanionIcon } from "@/ui/CompanionIcon";
+import { LockBadge } from "@/ui/LockBadge";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { backgroundFor } from "@/ui/backgrounds";
@@ -27,14 +28,14 @@ export default function Places() {
             {pack.scenes.map((sc) => {
               const ok = open.has(sc.id);
               return (
-                <Pressable key={sc.id} accessibilityRole="button" accessibilityState={{ disabled: !ok }} onPress={() => router.push({ pathname: "/place/[id]", params: { id: sc.id } })} disabled={!ok} style={({ pressed }) => [styles.card, !ok && styles.locked, pressed && styles.pressed]}>
+                <Pressable key={sc.id} accessibilityRole="button" accessibilityState={{ disabled: !ok }} onPress={() => router.push({ pathname: "/place/[id]", params: { id: sc.id } })} disabled={!ok} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
                   <ImageBackground source={backgroundFor(sc.background)} style={styles.cardArt} imageStyle={styles.cardArtImage} resizeMode="cover" accessible={false}>
-                    <View style={styles.badge}><Text style={styles.cardGlyph}>{ok ? glyph(sc.icon) : "🔒"}</Text></View>
+                    {ok ? <View style={styles.badge}><CompanionIcon name={sc.icon} size={20} /></View> : <LockBadge />}
                   </ImageBackground>
                   <Text style={styles.cardTitle} numberOfLines={2}>
                     {sc.title}
                   </Text>
-                  {!ok ? <Text style={styles.soon}>{pack.ui.locked}</Text> : null}
+                  {!ok ? <Text style={styles.soon}>{pack.companion.ui.pathLocked ?? pack.ui.locked}</Text> : null}
                 </Pressable>
               );
             })}
@@ -59,9 +60,7 @@ const styles = StyleSheet.create({
   cardArt: { width: "100%", height: 96, overflow: "hidden", alignItems: "flex-end", justifyContent: "flex-end", padding: 8 },
   cardArtImage: { height: "180%" },
   badge: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#FFFBF2E8", alignItems: "center", justifyContent: "center" },
-  locked: { opacity: 0.65 },
   pressed: { borderBottomWidth: 3, transform: [{ translateY: 3 }] },
-  cardGlyph: { fontSize: 19 },
   cardTitle: { fontFamily: T.font.bold, fontSize: 13, color: T.color.ink, textAlign: "center" },
   soon: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown },
 });

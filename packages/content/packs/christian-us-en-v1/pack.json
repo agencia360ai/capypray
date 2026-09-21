@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -5428,7 +5428,8 @@
       "title": "Flower",
       "unlock": {
         "beacons": 1
-      }
+      },
+      "asset": "flower"
     },
     {
       "id": "scarf-cozy",
@@ -5436,7 +5437,8 @@
       "title": "Cozy Scarf",
       "unlock": {
         "beacons": 2
-      }
+      },
+      "asset": "scarf"
     },
     {
       "id": "lily-pad",
@@ -5444,7 +5446,8 @@
       "title": "Lily Pad",
       "unlock": {
         "lessonId": "w1d3"
-      }
+      },
+      "asset": "lily"
     },
     {
       "id": "sticker-grace",
@@ -5452,7 +5455,8 @@
       "title": "Grace Star",
       "unlock": {
         "lessonId": "w1d5"
-      }
+      },
+      "asset": "star"
     },
     {
       "id": "badge-pond-keeper",
@@ -5460,7 +5464,8 @@
       "title": "Pond Keeper",
       "unlock": {
         "beacons": 4
-      }
+      },
+      "asset": "badge"
     },
     {
       "id": "nightcap",
@@ -5468,7 +5473,8 @@
       "title": "Sleepy Cap",
       "unlock": {
         "beacons": 3
-      }
+      },
+      "asset": "nightcap"
     },
     {
       "id": "verse-psalm23",
@@ -5476,7 +5482,8 @@
       "title": "The Lord is my shepherd",
       "unlock": {
         "lessonId": "w3d2"
-      }
+      },
+      "asset": "verse"
     },
     {
       "id": "biome-river",
@@ -6374,7 +6381,7 @@
       "places": "Let’s explore",
       "placesHint": "God is with us everywhere",
       "pond": "Our little pond",
-      "pondHint": "Look how we’re growing",
+      "pondHint": "Little prayers. A pond full of light.",
       "journey": "Your prayer path",
       "journeyHint": "One little step at a time.",
       "back": "Back to Capy",
@@ -6399,7 +6406,16 @@
       "trailCollapse": "See more of the meadow",
       "savedAudio": "ui_saved_light.mp3",
       "journeyHistory": "My prayer memories",
-      "newDoor": "New!"
+      "newDoor": "New!",
+      "treasuresHint": "Lovely things to discover along your prayer path.",
+      "lanternProgress": "{count} of 7 lights toward your next beacon",
+      "beaconCount": "{count} beacons",
+      "rewardBeacons": "{count} beacons",
+      "rewardReady": "Discovered",
+      "equipped": "Wearing it",
+      "pathLocked": "Further along your path",
+      "grownUpUnlock": "Ask a grown-up",
+      "rewardBeacon": "1 beacon"
     },
     "feelings": [
       {

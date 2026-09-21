@@ -289,6 +289,11 @@ export const Companion = z.object({
     storyReady: z.string(), storyLocked: z.string(), allDone: z.string(), allDoneHint: z.string(), breatheIn: z.string(), breatheOut: z.string(),
     /** journey trail prototype (docs/journey-plan.md): one primary action, a stone label, and the milestone preview */
     trailContinue: z.string().optional(), trailStep: z.string().optional(), trailMilestone: z.string().optional(), trailHere: z.string().optional(),
+    treasuresHint: z.string().optional(),
+    lanternProgress: z.string().optional(), beaconCount: z.string().optional(),
+    rewardBeacon: z.string().optional(), rewardBeacons: z.string().optional(),
+    rewardReady: z.string().optional(), equipped: z.string().optional(),
+    pathLocked: z.string().optional(), grownUpUnlock: z.string().optional(),
     journeyHistory: z.string().optional(), trailExpand: z.string().optional(), trailCollapse: z.string().optional(),
     /** chip on a home section the first time it opens */
     newDoor: z.string().max(20).optional(),

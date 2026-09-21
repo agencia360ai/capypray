@@ -5,6 +5,8 @@ import { track } from "@/backend/events";
 // (./revenuecat.md) these flip the same store flag the entitlement mirror will: the rest of the app never knows
 // which one it is talking to. Reached only behind the parental gate (GDD §11).
 
+export const PURCHASES_SANDBOX = true;
+
 export type Plan = "annual" | "monthly";
 
 /** Start the 7-day trial on the chosen plan. */

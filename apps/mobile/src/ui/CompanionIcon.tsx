@@ -1,7 +1,9 @@
+import { Lantern } from "./art";
 import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
 /** Hand-drawn, language-independent companion icons, consistent across platforms. */
 export function CompanionIcon({ name, size = 32, color = "#4D7062" }: { name: string; size?: number; color?: string }) {
+  if (name === "lantern") return <Lantern size={size / 1.6} />;
   const face = ["happy", "sad", "scared", "angry", "sleepy", "calm"].includes(name);
   return <Svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
     <G stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" fill="none">
@@ -14,7 +16,6 @@ export function CompanionIcon({ name, size = 32, color = "#4D7062" }: { name: st
       : name === "moon" ? <><Path d="M33 7C12 3 4 29 19 39c12 7 24-1 24-12C26 35 18 16 33 7Z" fill="#F6D486" /><Path d="m38 6 1.5 4.5L44 12l-4.5 1.5L38 18l-1.5-4.5L32 12l4.5-1.5Z" fill="#F6D486" stroke="none" /></>
       : name === "book" ? <><Path d="M24 13C16 7 7 9 4 12v26c8-4 14-2 20 2 6-4 12-6 20-2V12c-7-4-13-3-20 1Z" fill="#F9DAB7" /><Path d="M24 13v27M10 18l8 2m-8 6 8 2m13-8 7-2m-7 10 7-2" /></>
       : name === "leaf" || name === "garden" ? <><Path d="M23 41V22M23 30C4 32 4 14 7 12c15 0 18 10 16 18ZM24 22C23 4 39 5 42 7c0 14-8 20-18 15Z" fill="#B5D3A0" /></>
-      : name === "lantern" ? <><Rect x="12" y="12" width="24" height="28" rx="9" fill="#FFD280" /><Path d="M18 12V7h12v5M17 40h14M24 18v16" /><Ellipse cx="24" cy="25" rx="5" ry="8" fill="#FFF5D2" stroke="none" /></>
       : name === "parent" ? <><Circle cx="24" cy="16" r="7" /><Path d="M10 40v-5c0-16 28-16 28 0v5" /></>
       : name === "arrow" ? <Path d="M9 24h30M28 13l11 11-11 11" />
       : name === "back" ? <Path d="M38 24H9m11-11L9 24l11 11" />

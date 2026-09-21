@@ -167,7 +167,7 @@ export function LanternMeter({ lanterns }: { lanterns: number }) {
   return (
     <View style={styles.meter}>
       {Array.from({ length: 7 }, (_, i) => (
-        <Lantern key={i} size={16} lit={i < lit} />
+        <Lantern key={i} size={22} lit={i < lit} />
       ))}
     </View>
   );
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   cardIcon: { fontSize: 36 },
   cardIconLg: { fontSize: 48 },
   cardLabel: { fontFamily: T.font.bold, fontSize: 15, color: T.color.ink, textAlign: "center" },
-  meter: { flexDirection: "row", gap: -6, alignItems: "center" },
+  meter: { flexDirection: "row", gap: 0, alignItems: "center" },
   chip: { backgroundColor: "rgba(255,255,255,0.85)", borderRadius: T.radius.pill, paddingVertical: 6, paddingHorizontal: 12 },
   chipText: { fontFamily: T.font.bold, fontSize: 16, color: T.color.ink },
   sheet: { padding: 20, paddingBottom: 34, gap: 14, backgroundColor: "rgba(255,247,230,0.94)", borderTopLeftRadius: 32, borderTopRightRadius: 32, ...T.shadow },
