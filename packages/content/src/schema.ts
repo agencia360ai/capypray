@@ -287,6 +287,7 @@ export const Companion = z.object({
     storyReady: z.string(), storyLocked: z.string(), allDone: z.string(), allDoneHint: z.string(), breatheIn: z.string(), breatheOut: z.string(),
     /** journey trail prototype (docs/journey-plan.md): one primary action, a stone label, and the milestone preview */
     trailContinue: z.string().optional(), trailStep: z.string().optional(), trailMilestone: z.string().optional(), trailHere: z.string().optional(),
+    trailExpand: z.string().optional(), trailCollapse: z.string().optional(),
   }),
   feelings: z.array(z.object({ id: ID, label: z.string(), icon: ID, lessonId: ID })).min(1),
   moments: z.array(z.object({ id: ID, title: z.string(), description: z.string(), icon: ID, lessonId: ID, minutes: z.number().int().min(1).max(5) })).min(1),

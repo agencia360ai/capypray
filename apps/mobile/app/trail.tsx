@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PanResponder, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { Link, Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
@@ -38,16 +38,29 @@ function TrailLobby() {
   const { height } = useWindowDimensions();
   const [sheetHeight, setSheetHeight] = useState(290);
   const [exploring, setExploring] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const sheetPan = useMemo(() => PanResponder.create({
+    onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 8 && Math.abs(g.dy) > Math.abs(g.dx),
+    onPanResponderRelease: (_, g) => {
+      if (g.dy > 30) setCollapsed(true);
+      else if (g.dy < -30) setCollapsed(false);
+    },
+  }), []);
   const sceneHeight = Math.max(220, height - sheetHeight + 22);
   const onBottomLayout = useCallback((e: LayoutChangeEvent) => setSheetHeight(e.nativeEvent.layout.height), []);
   useEffect(() => {
     setStage({ sceneHeight });
-    avatar.send({ type: "viewport", top: sceneHeight * 0.51 / height, bottom: 1 - sceneHeight * 0.90 / height });
+    avatar.send({ type: "viewport", top: sceneHeight * 0.45 / height, bottom: 1 - sceneHeight * 0.92 / height });
   }, [avatar, height, sceneHeight, setStage]);
-  const view = journeyView(pack, kid.completed, { limit: PHASE_1_STOPS, windowSize: 4 });
+  const view = useMemo(() => journeyView(pack, kid.completed, { limit: PHASE_1_STOPS, windowSize: 4 }), [pack, kid.completed]);
   const curriculum = pack.lessons.filter((l) => l.routine === "any");
   const doneToday = !kid.freePlay && lessonDoneToday(kid.completed, new Set(curriculum.map((l) => l.id)));
   const world = pack.worlds.find((w) => w.id === view.next?.worldId) ?? pack.worlds[0];
+  useEffect(() => {
+    setStage({ underlay: <View style={[s.scenery, { height: sceneHeight }]} pointerEvents="none">
+      <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={() => {}} compact={sceneHeight < 400} layer="back" />
+    </View> });
+  }, [setStage, sceneHeight, view, copy, world]);
   const reduced = useReducedMotion();
   const arrival = pendingArrival(pack, kid.completed, kid.celebrated, { limit: PHASE_1_STOPS });
 
@@ -62,7 +75,7 @@ function TrailLobby() {
     avatar.send({ type: "mood", value: "calm" });
     avatar.send({ type: "walk", to: standX, from: standX }); // no distance to cover: he is placed, not walked
     avatar.send({ type: "idle" }); // greeting: facing the child, three-quarter only while he walks
-    return () => { setStage({ biome: "meadow", sceneHeight: undefined }); avatar.send({ type: "viewport", top: 0.1, bottom: 0.45 }); };
+    return () => { setStage({ biome: "meadow", sceneHeight: undefined, underlay: undefined }); avatar.send({ type: "viewport", top: 0.1, bottom: 0.45 }); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
@@ -99,7 +112,7 @@ function TrailLobby() {
   return (
     <View style={s.root}>
       <View style={[s.scenery, { height: sceneHeight }]} pointerEvents="box-none">
-        <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={go} compact={sceneHeight < 400} />
+        <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={go} compact={sceneHeight < 400} layer="front" />
       </View>
       <View style={[s.top, { paddingTop: insets.top + 14 }]}>
         <View>
@@ -114,26 +127,32 @@ function TrailLobby() {
       <View style={s.stage} pointerEvents="none" />
 
       <View style={s.sheetWrap} onLayout={onBottomLayout} testID="trail-sheet">
+        <View {...sheetPan.panHandlers}>
+          <Pressable accessibilityRole="button" accessibilityLabel={collapsed ? (copy.trailExpand ?? copy.explore) : (copy.trailCollapse ?? copy.journey)} accessibilityState={{ expanded: !collapsed }} aria-expanded={!collapsed} onPress={() => setCollapsed(value => !value)} style={s.grab} testID="trail-sheet-handle">
+            <View style={s.handle} />
+          </Pressable>
+        </View>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
-          <View style={s.handle} />
           <Reveal>
+            {!collapsed && <>
             <Text style={s.eyebrow}>{copy.today}</Text>
             <Text style={s.title}>{!nextLesson ? copy.allDone : doneToday ? copy.completed : nextLesson.title}</Text>
+            </>}
             <Pressable onPress={go} accessibilityRole="button" style={({ pressed }) => [s.primary, pressed && s.pressed]}>
               <Icon name="heart" size={23} color="#FFF8E9" />
               <Text style={s.primaryText}>{doneToday || !nextLesson ? copy.moments : (copy.trailContinue ?? copy.start)}</Text>
               <Icon name="arrow" size={22} color="#FFF8E9" />
             </Pressable>
-            {doneToday && nextLesson ? <Text style={s.hint}>{copy.completedHint}</Text> : null}
+            {!collapsed && doneToday && nextLesson ? <Text style={s.hint}>{copy.completedHint}</Text> : null}
           </Reveal>
           {/* a quick prayer and bedtime stay one tap away, including after today's curriculum step */}
-          <Reveal delay={70}>
+          {!collapsed && <Reveal delay={70}>
             <View style={s.row}>
               <Quick icon="heart" label={copy.moments} onPress={() => router.push("/moments")} />
               <Quick icon="moon" label={copy.bedtime} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId!, from: "trail" } })} />
             </View>
-          </Reveal>
-          <Reveal delay={130}>
+          </Reveal>}
+          {!collapsed && <Reveal delay={130}>
             <Pressable accessibilityRole="button" accessibilityLabel={copy.explore} accessibilityState={{ expanded: exploring }} aria-expanded={exploring} onPress={() => setExploring(value => !value)} style={s.exploreToggle}>
               <Icon name="book" size={19} /><Text style={s.exploreLabel}>{copy.explore}</Text>
               <Text style={s.chevron} accessibilityElementsHidden importantForAccessibility="no">{exploring ? "−" : "+"}</Text>
@@ -143,7 +162,7 @@ function TrailLobby() {
               <Quick icon="garden" label={copy.places} onPress={() => router.push("/places")} />
               <Quick icon="lantern" label={copy.pond} onPress={() => router.push("/pond")} />
             </View>}
-          </Reveal>
+          </Reveal>}
         </ScrollView>
       </View>
     </View>
@@ -169,7 +188,8 @@ const s = StyleSheet.create({
   stage: { flex: 1, minHeight: 170 },
   sheetWrap: { maxHeight: "52%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow },
   sheet: { paddingHorizontal: 20, gap: 10 },
-  handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#DFD8C5", alignSelf: "center", marginTop: 10, marginBottom: -4 },
+  grab: { height: 44, alignItems: "center", justifyContent: "center" },
+  handle: { width: 42, height: 5, borderRadius: 3, backgroundColor: "#B9BDA9" },
   eyebrow: { fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1.8, color: "#768474" },
   title: { fontFamily: T.font.black, fontSize: 21, lineHeight: 25, color: T.color.ink, marginTop: 4, marginBottom: 10 },
   primary: { minHeight: 55, borderRadius: 19, backgroundColor: "#476D58", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, padding: 12, borderBottomWidth: 4, borderBottomColor: "#335641" },

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren, type ReactNode } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { AvatarEvents, type AvatarCommand, type AvatarEvent, type IAvatarRenderer } from "./IAvatarRenderer";
 import { backgroundFor, backgroundHeight } from "@/ui/backgrounds";
@@ -20,7 +20,7 @@ export function useAvatarReady() {
   useEffect(() => { setReady(avatar.ready); return avatar.onEvent(event => { if (event.type === "ready") setReady(true); }); }, [avatar]);
   return ready;
 }
-type Stage = { biome: string; dark: boolean; night: boolean; sceneHeight?: number };
+type Stage = { biome: string; dark: boolean; night: boolean; sceneHeight?: number; underlay?: ReactNode };
 const StageContext = createContext<{ stage: Stage; setStage: (stage: Partial<Stage>) => void } | null>(null);
 export function useStage() { const value = useContext(StageContext); if (!value) throw new Error("Missing AvatarProvider"); return value; }
 
@@ -41,6 +41,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
   return <AvatarContext.Provider value={renderer}><StageContext.Provider value={{ stage, setStage }}>
     <View style={StyleSheet.absoluteFill} pointerEvents="none"><ImageBackground source={backgroundFor(stage.biome, stage.night)} style={{ flex: 1, backgroundColor: stage.night ? "#34625F" : "#BDCE7D" }} imageStyle={{ width: "100%", height: stage.sceneHeight ?? backgroundHeight(stage.biome) }} resizeMode="cover">
       {stage.night && stage.biome !== "meadow" && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#14205073" }]} />}
+      {stage.underlay}
       <iframe ref={frame} src="/avatar/index.html" title={getPack().companion.ui.brand} tabIndex={-1} aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }} />
       {stage.dark && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0A081ED9" }]} />}
     </ImageBackground></View>{children}

@@ -40,11 +40,12 @@ const spot = (i: number, n: number) => {
   };
 };
 
-export function JourneyTrail({ view, copy, worldTitle, onContinue, compact = false }: { view: JourneyView; copy: Copy; worldTitle: string; onContinue: () => void; compact?: boolean }) {
+export function JourneyTrail({ view, copy, worldTitle, onContinue, compact = false, layer = "all" }: { view: JourneyView; copy: Copy; worldTitle: string; onContinue: () => void; compact?: boolean; layer?: "all" | "back" | "front" }) {
   const reduced = useReducedMotion();
   const stones = view.window;
   return (
-    <View style={s.root} pointerEvents="box-none" testID="trail-scenery">
+    <View style={s.root} pointerEvents="box-none" testID={layer === "back" ? "trail-underlay" : "trail-scenery"}>
+      {layer !== "front" && <>
       <Image source={JOURNEY_ART["oak-tree"]} style={s.tree} resizeMode="contain" />
       <Image source={JOURNEY_ART["robin-friend"]} style={s.bird} resizeMode="contain" />
       {view.milestone && (
@@ -55,7 +56,9 @@ export function JourneyTrail({ view, copy, worldTitle, onContinue, compact = fal
           </Text>
         </View>
       )}
+      </>}
       {stones.map((node, i) => {
+        if (layer === "back" && node.state === "next" || layer === "front" && node.state !== "next") return null;
         const p = spot(i, stones.length);
         const size = Math.round(56 * p.scale);
         const label = interpolate(copy.trailStep ?? "", { n: String(node.index + 1) });
@@ -85,8 +88,10 @@ export function JourneyTrail({ view, copy, worldTitle, onContinue, compact = fal
           </View>
         );
       })}
-      <Image source={JOURNEY_ART["meadow-bush"]} style={s.bush} resizeMode="contain" />
-      <Image source={JOURNEY_ART["daisy-patch"]} style={s.flowers} resizeMode="contain" />
+      {layer !== "back" && <>
+        <Image source={JOURNEY_ART["meadow-bush"]} style={s.bush} resizeMode="contain" />
+        <Image source={JOURNEY_ART["daisy-patch"]} style={s.flowers} resizeMode="contain" />
+      </>}
     </View>
   );
 }

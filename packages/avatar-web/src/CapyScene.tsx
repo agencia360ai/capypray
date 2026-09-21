@@ -45,6 +45,13 @@ function CapyModel({ gltf, onMessage, register, walk, halfWidth }: Omit<Props, "
         mat.vertexColors = false; // exporter kept COLOR_0; the albedo is the source of truth
         mat.roughness = 0.9;
         mat.metalness = 0;
+        // The body atlas has unpadded UV islands against black. Mip levels bleed that black
+        // into the visible seams; linear base-level sampling keeps its painted edges clean.
+        if (mat.name === "capy_body" && mat.map) {
+          mat.map.generateMipmaps = false;
+          mat.map.minFilter = THREE.LinearFilter;
+          mat.map.needsUpdate = true;
+        }
       }
     });
     // normalise: feet on y=0, 1.6 units tall (bind pose, skinning applied) so camera framing is stable

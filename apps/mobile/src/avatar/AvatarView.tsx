@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren, type ReactNode } from "react";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import { Asset } from "expo-asset";
@@ -54,7 +54,7 @@ export function useAvatarReady() {
   return ready;
 }
 
-type StageState = { biome: string; dark: boolean; night: boolean; sceneHeight?: number };
+type StageState = { biome: string; dark: boolean; night: boolean; sceneHeight?: number; underlay?: ReactNode };
 const StageCtx = createContext<{ stage: StageState; setStage: (s: Partial<StageState>) => void } | null>(null);
 export const useStage = () => {
   const s = useContext(StageCtx);
@@ -110,6 +110,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
           <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: stage.sceneHeight ?? backgroundHeight(stage.biome) }} resizeMode="cover">
             {stage.night && stage.biome !== "meadow" && !stage.dark && <View style={styles.nightTint} />}
             {stage.dark && <View style={styles.dim} />}
+            {stage.underlay}
             {uri && (
               <WebView
                 ref={webview}
