@@ -17,6 +17,15 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
   const prayers = new Set(pack.prayers.map((p) => p.id));
   const minigames = new Map(pack.minigames.map((m) => [m.id, m] as const));
   const lessons = new Map(pack.lessons.map((l) => [l.id, l] as const));
+  const homeIds = new Set<string>();
+  for (const [i, section] of (pack.companion.home ?? []).entries()) {
+    const at = `companion.home.${i}`;
+    if (homeIds.has(section.id)) issues.push({ path: at, message: `duplicate home section "${section.id}"` });
+    homeIds.add(section.id);
+    if (section.unlock.lessonId && !lessons.has(section.unlock.lessonId)) issues.push({ path: `${at}.unlock`, message: `unknown lesson "${section.unlock.lessonId}"` });
+    if (section.reveal && countWords(section.reveal.text) > 20) issues.push({ path: `${at}.reveal`, message: "reveal text > 20 words; Capy says it in one breath" });
+  }
+  if (pack.companion.home && !pack.companion.home.some((sct) => sct.id === "today")) issues.push({ path: "companion.home", message: "the home needs a \"today\" section: it is the only way into the day's prayer" });
   for (const item of [...pack.companion.feelings, ...pack.companion.moments]) {
     const lesson = lessons.get(item.lessonId);
     if (!lesson || lesson.routine !== "moment" || !lesson.free) {
@@ -166,6 +175,7 @@ export function listAudio(pack: PackT): string[] {
   const add = (a?: string) => a && out.add(a);
   add(pack.companion.breathing.prompt.audio);
   add(pack.companion.ui.savedAudio);
+  for (const sct of pack.companion.home ?? []) add(sct.reveal?.audio);
   for (const sc of pack.scenes) add(sc.titleAudio);
   for (const l of pack.lessons)
     for (const b of l.beats) {

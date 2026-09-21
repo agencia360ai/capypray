@@ -10,10 +10,12 @@ import { speakCapMs } from "@/engine/lessonRunner";
 import * as haptics from "@/ui/haptics";
 import { T } from "@/ui/theme";
 import { P } from "@/parent/strings";
+import { restorePurchases, startTrial } from "@/entitlements/purchase";
 
-// Paywall placeholder — purchases arrive with the RevenueCat Paywall template (src/entitlements/revenuecat.md); this
-// screen is the header/footer that template will wrap. Reached only after onboarding or the parental gate; the kid
-// never sees a purchase nudge (GDD §9 anti-patterns).
+// The offer. Shown once, right after the first prayer and the grown-up handoff — behind the parental gate, never
+// before the first prayer (docs/companion-design.md) — and again from the gate whenever day two is opened without
+// a trial. The kid never sees a purchase nudge (GDD §9 anti-patterns). Purchases go through src/entitlements/purchase;
+// the RevenueCat Paywall template (src/entitlements/revenuecat.md) wraps this same layout on dev builds.
 //
 // Shape (see docs/playtest-feedback-2026-09-10.md §2): the "aha" first — Capy, by name, with the plan the parent just
 // built — then a trial timeline that says exactly when we remind and when we charge, then the price. Billing trust is
@@ -24,7 +26,6 @@ export default function Paywall() {
   const kid = useKid();
   const avatar = useAvatar();
   const { setStage } = useStage();
-  const setPremium = useKid((s) => s.setPremium);
   const [plan, setPlan] = useState<"annual" | "monthly">("annual");
   const onBottomLayout = useStageInsets(0.04);
   const name = kid.kidName || P.onboarding.yourChild;
@@ -71,8 +72,7 @@ export default function Paywall() {
             style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
             onPress={() => {
               void haptics.success();
-              setPremium(true);
-              done();
+              void startTrial(plan).then(done);
             }}
           >
             <Text style={styles.ctaText}>{P.paywall.cta}</Text>
@@ -85,7 +85,7 @@ export default function Paywall() {
             <Pressable onPress={done} style={styles.later} hitSlop={6}>
               <Text style={styles.laterText}>{P.paywall.later}</Text>
             </Pressable>
-            <Pressable style={styles.restore} hitSlop={6}>
+            <Pressable style={styles.restore} hitSlop={6} onPress={() => void restorePurchases().then((ok) => ok && done())}>
               <Text style={styles.restoreText}>{P.paywall.restore}</Text>
             </Pressable>
           </View>

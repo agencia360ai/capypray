@@ -1,9 +1,9 @@
 {
   "onboarding": {
     "eyebrow": "A LITTLE MOMENT. A LIFELONG FRIEND.",
-    "welcomeTitle": "Meet your prayer buddy.",
-    "welcomeBody": "A gentle friend to help your little one talk to God, one small moment at a time.",
-    "start": "Meet Capy",
+    "welcomeTitle": "Now, a moment for grown-ups.",
+    "welcomeBody": "Capy just prayed with your child for the first time. Two quick settings, and you can start a free week together.",
+    "start": "I’m a grown-up",
     "parentNote": "For grown-ups · Christian prayers for ages 4–8",
     "trust": "No ads. No recording. Just a little time together.",
     "nameTitle": "What should Capy call them?",
@@ -18,7 +18,7 @@
     "readyDetail": "Start with a short hello to God. Explore at your own pace.",
     "next": "Continue",
     "back": "Back",
-    "finish": "Let's pray together",
+    "finish": "See Capy’s plan",
     "step": "Step {current} of {total}",
     "benefitCalm": "Little moments of calm",
     "benefitPrayer": "Simple words to pray",

@@ -4,9 +4,10 @@ Based on `48ae203`. English remains the only shipping language. This pass makes 
 
 ## Experience
 
-- Four onboarding screens: meet Capy, optional nickname, bedtime, first prayer. No unsupported age/tradition selectors or paywall before the first prayer. Reminders remain off unless enabled in Parent Corner.
-- The first prayer has three short lines after two welcoming lines. Families can listen or follow along. Other profile settings stay in the adult area.
-- Home puts today's prayer first, followed by five feelings, bedtime, stories, places, the pond, and a visible curriculum path. Completed days and completed worlds have explicit states.
+- The app opens on Capy alone (21 September 2026): seven tapped-through lines — a small story about a worry, why talking to God helped, an invitation — then the first prayer and the first light. No brand, no beads, no close button, nothing auto-advances. The child sets the pace.
+- Only then does the phone go to a grown-up: three screens (handoff, optional nickname, bedtime), the parental gate, and the trial offer with "start with free bedtime prayers" as the way past it. Never a purchase screen before the first prayer, never one without the gate. Day two asks again, through the gate, if no trial was started; bedtime and the eight moments stay free forever (GDD §10.1, escape A).
+- The first prayer has three short lines. Families can listen or follow along. Other profile settings stay in the adult area.
+- Home opens up one door at a time, from `pack.companion.home`: today's prayer and bedtime on day 0; the path and the stories after day 1; feelings and the moments after day 2; places after day 3; the pond with the first beacon; the memories after the first week. Each new door wears a "New!" chip on the visit it appears, and Capy announces one of them out loud. What opens comes from progress, never from money. Completed days and completed worlds have explicit states.
 - Eight free replayable moments: happy, sad, worried, thankful, sleepy, reconciliation, family, and morning. This brings the pack to 52 lessons and 37 prayers; it still contains 25 minigames and 10 stories.
 - Two stories are available immediately. Other stories become available after their lesson. The missing `story` rendering branch is restored; the shelf and direct routes use the same access rule.
 - A moment earns one lantern per local calendar day. Curriculum and introduction rewards are permanent. Replaying content remains possible, but the reward beat is omitted after it has been earned.

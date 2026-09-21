@@ -40,4 +40,4 @@ A catalogued file can still fall back to device speech if it is absent from a ch
 
 ## Reproduce
 
-`node tools/audio-lines.mjs packages/content/packs/christian-us-en-v1 --audit` inventories each spoken file and all contexts, including UI prompts and titles. `--missing` prints the pending generation batch. Currently: 434 unique pack references, all catalogued, none pending. The eight parent-zone recordings are separate.
+`node tools/audio-lines.mjs packages/content/packs/christian-us-en-v1 --audit` inventories each spoken file and all contexts, including UI prompts and titles. `--missing` prints the pending generation batch. Currently: 447 unique pack references, all catalogued, none pending. The eight parent-zone recordings are separate.

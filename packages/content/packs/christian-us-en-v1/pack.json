@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -100,24 +100,53 @@
         {
           "type": "avatar_say",
           "clip": "wave_hello",
-          "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
-          "mood": "happy",
-          "audio": "meet_capy_v08_1.mp3"
+          "text": "Hi, {kidName}! I’m Capy. Come sit with me by the pond.",
+          "audio": "meet_capy_v09_1.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "think",
+          "text": "Can I tell you something? One day, I had a big worry stuck in my tummy.",
+          "audio": "meet_capy_v09_2.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "sad",
+          "text": "I didn’t know what to do. So I just sat here, very quiet.",
+          "audio": "meet_capy_v09_3.mp3",
+          "mood": "sad"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "listen_nod",
+          "text": "Then I remembered: God is always listening. So I talked to Him, like a friend.",
+          "audio": "meet_capy_v09_4.mp3",
+          "mood": "calm"
         },
         {
           "type": "avatar_say",
           "clip": "heart",
-          "text": "We can talk to God together. I’ll go first.",
-          "audio": "meet_capy_v08_2.mp3"
+          "text": "And guess what? My heart felt lighter. Light as a balloon!",
+          "audio": "meet_capy_v09_5.mp3",
+          "mood": "happy"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "talk_a",
+          "text": "That’s what praying is. Talking to God. Any place, any time, about anything.",
+          "audio": "meet_capy_v09_6.mp3"
+        },
+        {
+          "type": "avatar_say",
+          "clip": "pray_hands",
+          "text": "Want to try it with me? I’ll go first. You say it after me.",
+          "audio": "meet_capy_v09_7.mp3"
         },
         {
           "type": "repeat_after_me",
           "prayerId": "first-prayer",
-          "clip": "pray_hands",
-          "prayerVariants": [
-            "hello-loved-v1",
-            "hello-close-v1"
-          ]
+          "clip": "pray_hands"
         },
         {
           "type": "reward",
@@ -6369,7 +6398,8 @@
       "trailExpand": "Show prayer options",
       "trailCollapse": "See more of the meadow",
       "savedAudio": "ui_saved_light.mp3",
-      "journeyHistory": "My prayer memories"
+      "journeyHistory": "My prayer memories",
+      "newDoor": "New!"
     },
     "feelings": [
       {
@@ -6498,6 +6528,80 @@
       "resume": "Keep breathing",
       "finish": "I'm ready",
       "continue": "Continue"
-    }
+    },
+    "home": [
+      {
+        "id": "today"
+      },
+      {
+        "id": "bedtime"
+      },
+      {
+        "id": "journey",
+        "unlock": {
+          "lessonId": "w1d1"
+        },
+        "reveal": {
+          "text": "Look! A little path opened up. Every prayer takes us one step further.",
+          "audio": "home_reveal_journey.mp3"
+        }
+      },
+      {
+        "id": "stories",
+        "unlock": {
+          "lessonId": "w1d1"
+        },
+        "reveal": {
+          "text": "Story time is open! I have some favorites to tell you.",
+          "audio": "home_reveal_stories.mp3"
+        }
+      },
+      {
+        "id": "feelings",
+        "unlock": {
+          "lessonId": "w1d2"
+        },
+        "reveal": {
+          "text": "Now you can tell me how your heart feels. Every feeling is welcome here.",
+          "audio": "home_reveal_feelings.mp3"
+        }
+      },
+      {
+        "id": "moments",
+        "unlock": {
+          "lessonId": "w1d2"
+        }
+      },
+      {
+        "id": "places",
+        "unlock": {
+          "lessonId": "w1d3"
+        },
+        "reveal": {
+          "text": "We can explore new places together. God is with us everywhere!",
+          "audio": "home_reveal_places.mp3"
+        }
+      },
+      {
+        "id": "pond",
+        "unlock": {
+          "beacons": 1
+        },
+        "reveal": {
+          "text": "Come see our pond! Every little light you made is glowing there.",
+          "audio": "home_reveal_pond.mp3"
+        }
+      },
+      {
+        "id": "memories",
+        "unlock": {
+          "lessonId": "w1d7"
+        },
+        "reveal": {
+          "text": "Your prayer memories are here now. Look how far we’ve come!",
+          "audio": "home_reveal_memories.mp3"
+        }
+      }
+    ]
   }
 }

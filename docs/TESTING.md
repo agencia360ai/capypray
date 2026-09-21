@@ -51,7 +51,14 @@ pnpm --filter @capy/avatar-web screenshot   # PLAYWRIGHT_CHROMIUM=/path/to/chrom
 #   carries Capy (stride/ground ≈ 1) instead of gliding. Add --shots for before/after frames of the arrival walk.
 ```
 
-## 4. The prayer choice
+## 4. The first launch
+
+Delete the app (or clear site data on web) and open it: Capy speaks first, seven taps, the first prayer, the light,
+then "Now, a moment for grown-ups", the gate and the offer. "Start with free bedtime prayers" lands on a home with
+only today's prayer and bedtime. To see a door open, finish W1D1 with Free play on and come back: the path and the
+stories appear with a "New!" chip and Capy announces the path. `node tools/ui-smoke.cjs` walks this whole flow.
+
+## 5. The prayer choice
 
 Parent Corner → "Let them choose the prayer". Off by default and off for everything except W1D4, where Capy asks
 whether to thank God for someone the child loves or for something outside; each answer plays an authored prayer of

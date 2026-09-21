@@ -89,13 +89,18 @@ describe("week 1 curriculum (GDD §7.1)", () => {
   });
 });
 
-describe("Meet Capy intro (get-to-know-you)", () => {
-  it("reaches a short first prayer without a questionnaire", () => {
+describe("the opening (Meet Capy)", () => {
+  it("is Capy alone telling a short story, then a short first prayer, with no questionnaire", () => {
     const { pack } = validatePack(load());
     const intro = pack!.lessons.find((l) => l.id === pack!.routines.intro!.lessonId)!;
-    const asks = intro.beats.filter((b) => b.type === "ask");
-    expect(asks).toHaveLength(0);
-    expect(intro.beats.findIndex(b => b.type === "repeat_after_me")).toBe(2);
+    expect(intro.beats.filter((b) => b.type === "ask")).toHaveLength(0);
+    const prayerAt = intro.beats.findIndex((b) => b.type === "repeat_after_me");
+    expect(prayerAt).toBe(7);
+    // every line before the prayer is Capy talking, voiced, and short enough to read on one screen
+    for (const b of intro.beats.slice(0, prayerAt)) {
+      expect(b.type).toBe("avatar_say");
+      if (b.type === "avatar_say") { expect(b.audio).toMatch(/\.mp3$/); expect(b.text.split(/\s+/).length).toBeLessThanOrEqual(20); }
+    }
     const prayer = pack!.prayers.find((p) => p.id === "first-prayer")!;
     expect(prayer.variables).toEqual(["kidName"]);
     expect(prayer.lines).toHaveLength(3);

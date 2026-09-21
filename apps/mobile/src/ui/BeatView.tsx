@@ -27,11 +27,12 @@ const NUDGE_MS = 9000;
 const AUTO_SAY_MS = 1800;
 const AUTO_REWARD_MS = REWARD_BURST_MS + 500; // the lantern lights up and floats to the pond first (RewardBurst on the stage)
 
-export function BeatView({ step, pack, onNext, onAnswer, onChoose, quiet = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; onChoose?: (optionId: string) => void; quiet?: boolean }) {
+/** `manual`: Capy's lines wait for a tap instead of moving on by themselves — the opening is paced by the child. */
+export function BeatView({ step, pack, onNext, onAnswer, onChoose, quiet = false, manual = false }: { step: Step; pack: Pack; onNext: () => void; onAnswer?: (key: string, value: string) => void; onChoose?: (optionId: string) => void; quiet?: boolean; manual?: boolean }) {
   const avatar = useAvatar();
   switch (step.kind) {
     case "say":
-      return <LineBeat key={step.text} text={step.text} audio={step.audio} badge="chat" label={pack.ui.next} icon={<Arrow />} autoMs={AUTO_SAY_MS} nudge={nudgeTap(pack.ui)} onNext={onNext} />;
+      return <LineBeat key={step.text} text={step.text} audio={step.audio} badge="chat" label={pack.ui.next} icon={<Arrow />} autoMs={manual ? undefined : AUTO_SAY_MS} nudge={nudgeTap(pack.ui)} onNext={onNext} />;
     case "repeat":
       return (
         <LineBeat

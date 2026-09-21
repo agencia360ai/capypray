@@ -41,6 +41,8 @@ type KidState = {
   completed: Record<string, { at: number; lanterns: number }>;
   /** Completion keys whose arrival was already shown on the trail. Cosmetic only: it can never gate a reward. */
   celebrated: Record<string, true>;
+  /** Home sections the child has already been shown (pack.companion.home). Cosmetic: what opens is derived from progress. */
+  revealed: Record<string, true>;
   lanterns: number;
   beacons: number;
   streak: { current: number; best: number; lastActive?: string; graceUsedWeek: number; weekStart?: string };
@@ -61,6 +63,7 @@ type KidState = {
   prayedFor: (ids: string[]) => void;
   completeLesson: (lessonId: string, lanterns: number, today?: string) => void;
   markCelebrated: (key: string) => void;
+  markRevealed: (ids: string[]) => void;
   reset: () => void;
 };
 
@@ -77,6 +80,7 @@ const initial = {
   people: [] as PrayerPerson[],
   completed: {} as KidState["completed"],
   celebrated: {} as KidState["celebrated"],
+  revealed: {} as KidState["revealed"],
   lanterns: 0,
   beacons: 0,
   streak: { current: 0, best: 0, graceUsedWeek: 0 },
@@ -115,6 +119,7 @@ export const useKid = create<KidState>()(
       },
       /** The arrival walk has played for this completion. Marked after the fact, so an interruption replays it at
        *  most once more and never touches lanterns, beacons or the completion itself. */
+      markRevealed: (ids) => set((s) => (ids.every((id) => s.revealed[id]) ? s : { revealed: { ...s.revealed, ...Object.fromEntries(ids.map((id) => [id, true as const])) } })),
       markCelebrated: (key) => set((s) => (s.celebrated[key] ? s : { celebrated: { ...s.celebrated, [key]: true } })),
       /** Parent Corner "delete my child's data": everything about the kid, in one tap (GDD §11). */
       reset: () => set({ ...initial, onboarded: false }),

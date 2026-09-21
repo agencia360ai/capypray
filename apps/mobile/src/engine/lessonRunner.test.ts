@@ -56,11 +56,11 @@ describe("lessonRunner", () => {
     expect(r.summary().done).toBe(true);
   });
 
-  it("Meet Capy reaches a personalized prayer after two welcoming lines", () => {
+  it("Meet Capy tells his story in seven lines, then reaches a personalized prayer", () => {
     const intro = pack!.lessons.find(l => l.id === "meet-capy")!;
     const runner = createRunner(pack!, intro, { kidName: "Leo" });
-    expect(runner.start().state.step).toMatchObject({ kind: "say" });
-    expect(runner.next().state.step.kind).toBe("say");
+    expect(runner.start().state.step).toMatchObject({ kind: "say", text: "Hi, Leo! I’m Capy. Come sit with me by the pond." });
+    for (let i = 0; i < 6; i++) expect(runner.next().state.step.kind).toBe("say");
     expect(runner.next().state.step).toMatchObject({ kind: "repeat", text: "Hi God, it’s me, Leo." });
     runner.next(); runner.next();
     expect(runner.next().state.step.kind).toBe("reward");

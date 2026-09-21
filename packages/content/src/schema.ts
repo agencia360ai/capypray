@@ -290,7 +290,24 @@ export const Companion = z.object({
     /** journey trail prototype (docs/journey-plan.md): one primary action, a stone label, and the milestone preview */
     trailContinue: z.string().optional(), trailStep: z.string().optional(), trailMilestone: z.string().optional(), trailHere: z.string().optional(),
     journeyHistory: z.string().optional(), trailExpand: z.string().optional(), trailCollapse: z.string().optional(),
+    /** chip on a home section the first time it opens */
+    newDoor: z.string().max(20).optional(),
   }),
+  /**
+   * The home opens up one door at a time. Sections appear in this order once their unlock is met (the same
+   * progress-only rule as rewards: never money) and Capy says the reveal line the first time the child sees one.
+   * Omitted, the home shows everything, as it did before.
+   */
+  home: z
+    .array(
+      z.object({
+        id: z.enum(["today", "bedtime", "journey", "stories", "feelings", "moments", "places", "pond", "memories"]),
+        unlock: z.object({ lessonId: ID.optional(), beacons: z.number().int().min(0).optional() }).default({}),
+        reveal: z.object({ text: z.string().max(140), audio: Audio.optional() }).optional(),
+      }),
+    )
+    .min(1)
+    .optional(),
   feelings: z.array(z.object({ id: ID, label: z.string(), icon: ID, lessonId: ID })).min(1),
   moments: z.array(z.object({ id: ID, title: z.string(), description: z.string(), icon: ID, lessonId: ID, minutes: z.number().int().min(1).max(5) })).min(1),
 });

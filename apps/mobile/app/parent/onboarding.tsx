@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
+import { stopSpeaking } from "@/audio/voice";
 import { gate } from "@/parent/gate";
 import { getCopy, formatCopy, formatHour } from "@/i18n";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
@@ -26,27 +27,31 @@ function Welcome() {
     setStage({ biome: "meadow", night: false, dark: false });
     avatar.send({ type: "idle" }); avatar.send({ type: "mood", value: "happy" });
     avatar.send({ type: "play", clip: step === 2 ? "yawn" : step === 0 ? "wave_hello" : "heart" });
+    return () => stopSpeaking();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar, step]);
+  // The handoff. Capy already prayed with the child (app/index.tsx sends the opening first), so this is the grown-up's
+  // turn: nickname, bedtime, then the parental gate and the trial offer — never a purchase screen without the gate
+  // (GDD §11), and never before the first prayer (docs/companion-design.md).
+  const LAST = 2;
   const next = () => {
-    if (step < 3) { setStep(step + 1); return; }
+    if (step < LAST) { setStep(step + 1); return; }
     kid.setKidName(name); kid.setProfile({ ageBand: pack.ageBand, tradition: pack.tradition, bedtimeHour: hour }); kid.finishOnboarding(); gate.close();
-    router.replace({ pathname: "/lesson/[id]", params: { id: pack.routines.intro!.lessonId } });
+    router.replace({ pathname: "/parent/gate", params: { next: "paywall" } });
   };
-  const titles = [copy.welcomeTitle, copy.nameTitle, copy.rhythmTitle, copy.readyTitle], bodies = [copy.welcomeBody, copy.nameBody, copy.rhythmBody, copy.readyBody];
+  const titles = [copy.welcomeTitle, copy.nameTitle, copy.rhythmTitle], bodies = [copy.welcomeBody, copy.nameBody, copy.rhythmBody];
   return <KeyboardAvoidingView style={s.root} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-    <View style={[s.top, { paddingTop: insets.top + 16 }]}><Text style={s.brand}>{pack.companion.ui.brand}</Text><View style={s.dots} accessibilityLabel={formatCopy(copy.step, { current: step + 1, total: 4 })}>{[0, 1, 2, 3].map(i => <View key={i} style={[s.dot, i <= step && s.dotOn]} />)}</View></View>
+    <View style={[s.top, { paddingTop: insets.top + 16 }]}><Text style={s.brand}>{pack.companion.ui.brand}</Text><View style={s.dots} accessibilityLabel={formatCopy(copy.step, { current: step + 1, total: 3 })}>{[0, 1, 2].map(i => <View key={i} style={[s.dot, i <= step && s.dotOn]} />)}</View></View>
     <View style={s.stage} />
     {/* No ScrollView: the sheet grows to its content (min 62 %), spacing is sized so every step fits a 740 dp phone.
         Controls pop in one after another; options bounce when picked (ui/motion). */}
     <View onLayout={onLayout} style={s.sheet}><Reveal key={step} style={s.content}>
-      <Text style={s.eyebrow}>{step === 3 ? copy.familyPlan : copy.eyebrow}</Text><Text accessibilityRole="header" style={s.title}>{titles[step]}</Text><Text style={s.body}>{bodies[step]}</Text>
+      <Text style={s.eyebrow}>{copy.eyebrow}</Text><Text accessibilityRole="header" style={s.title}>{titles[step]}</Text><Text style={s.body}>{bodies[step]}</Text>
       {step === 0 && <View style={s.benefits}>{[["moon", copy.benefitCalm], ["heart", copy.benefitPrayer], ["leaf", copy.benefitGrow]].map(([icon, text], i) => <Pop key={icon} delay={120 + i * 90} style={s.benefit}><Icon name={icon!} size={30} /><Text style={s.benefitText}>{text}</Text></Pop>)}</View>}
       {step === 1 && <><Text style={s.label}>{copy.nameLabel}</Text><Pop delay={120}><TextInput autoComplete="off" accessibilityLabel={copy.nameLabel} value={name} onChangeText={setName} placeholder={copy.namePlaceholder} placeholderTextColor="#8F9588" maxLength={20} style={s.input} returnKeyType="next" onSubmitEditing={next} /></Pop><Text style={s.note}>{copy.editLater}</Text></>}
       {step === 2 && <><View style={s.hours}>{[18, 19, 20, 21].map((h, i) => <Pop key={h} delay={120 + i * 80} style={s.hourWrap}><Bouncy accessibilityRole="radio" accessibilityState={{ checked: h === hour }} selected={h === hour} onPress={() => setHour(h)} inner={[s.hour, h === hour && s.hourOn]}><Icon name="moon" size={24} /><Text style={s.hourText}>{formatHour(h, pack.locale)}</Text></Bouncy></Pop>)}</View><Text style={s.note}>{copy.rhythmNote}</Text></>}
-      {step === 3 && <Pop delay={140} style={s.plan}><Icon name="leaf" size={34} /><View style={{ flex: 1 }}><Text style={s.planTitle}>{copy.readyDetail}</Text><Text style={s.note}>{formatCopy(copy.timeLabel, { time: formatHour(hour, pack.locale) })}</Text></View></Pop>}
     </Reveal>
-      <View style={[s.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><Bouncy accessibilityRole="button" onPress={next} inner={s.cta}><Text style={s.ctaText}>{step === 0 ? copy.start : step === 3 ? copy.finish : copy.next}</Text><Icon name="arrow" size={22} color="#FFF8EA" /></Bouncy>
+      <View style={[s.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><Bouncy accessibilityRole="button" onPress={next} inner={s.cta}><Text style={s.ctaText}>{step === 0 ? copy.start : step === LAST ? copy.finish : copy.next}</Text><Icon name="arrow" size={22} color="#FFF8EA" /></Bouncy>
         {step > 0 ? <Pressable accessibilityRole="button" onPress={() => setStep(step - 1)} style={s.back}><Text style={s.backText}>{copy.back}</Text></Pressable> : <Text style={s.note}>{copy.parentNote}</Text>}{step === 0 && <Text style={s.trust}>{copy.trust}</Text>}
       </View>
     </View>

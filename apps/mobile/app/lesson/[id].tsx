@@ -28,6 +28,9 @@ function LessonSession({ id, from }: { id: string; from?: string }) {
   const pack = getPack();
   const lesson = pack.lessons.find((l) => l.id === id);
   const kid = useKid();
+  // the opening: only Capy, paced by the child's taps; when it ends the phone goes to a grown-up for the first time
+  const solo = lesson?.routine === "intro";
+  const afterLesson = () => (solo && !useKid.getState().onboarded ? "/parent/onboarding" : home);
   const [visit] = useState(() => kid.lessonVisits[id] ?? 0);
   const counted = useRef(false);
   const { premium } = useEntitlement();
@@ -85,7 +88,7 @@ function LessonSession({ id, from }: { id: string; from?: string }) {
       router.replace({ pathname: "/beacon", params: { n: String(after.beacons), unlocks: unlocks.join(","), from: from ?? "" } });
       return;
     }
-    router.replace(home);
+    router.replace(afterLesson());
   };
 
   const next = () => {
@@ -107,28 +110,29 @@ function LessonSession({ id, from }: { id: string; from?: string }) {
 
   return (
     <View style={styles.root}>
-      <Pressable
-        style={styles.close}
-        accessibilityRole="button"
-        accessibilityLabel={pack.companion.ui.close}
-        onPress={() => {
-          stopSpeaking();
-          if (lesson.routine === "intro") kid.finishIntro();
-          router.replace(home);
-        }}
-        hitSlop={8}
-      >
-        <Text style={styles.closeText}>×</Text>
-      </Pressable>
+      {!solo && (
+        <Pressable
+          style={styles.close}
+          accessibilityRole="button"
+          accessibilityLabel={pack.companion.ui.close}
+          onPress={() => {
+            stopSpeaking();
+            router.replace(home);
+          }}
+          hitSlop={8}
+        >
+          <Text style={styles.closeText}>×</Text>
+        </Pressable>
+      )}
       <View style={styles.trail} pointerEvents="none">
-        <LessonTrail lesson={lesson} index={Math.min(state.beatIndex, lesson.beats.length - 1)} />
+        {!solo && <LessonTrail lesson={lesson} index={Math.min(state.beatIndex, lesson.beats.length - 1)} />}
       </View>
       <View style={styles.spacer}>
         <StageDecor night={state.step.kind === "lights_out" || isNight(sceneById(pack, lesson.scene), kid.profile.bedtimeHour)} extraLit={state.lanternsEarned} />
         {state.step.kind === "reward" && <RewardBurst key={state.beatIndex} slot={nextLanternSlot(kid.lanterns + state.lanternsEarned)} />}
       </View>
       <View onLayout={onBottomLayout}>
-        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} onChoose={choose} quiet={lesson.routine === "bedtime" || lesson.routine === "moment"} />
+        <BeatView step={state.step} pack={pack} onNext={next} onAnswer={answer} onChoose={choose} quiet={lesson.routine === "bedtime" || lesson.routine === "moment"} manual={solo} />
       </View>
     </View>
   );
