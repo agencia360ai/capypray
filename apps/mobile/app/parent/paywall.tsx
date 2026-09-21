@@ -49,7 +49,7 @@ export default function Paywall() {
     <View style={styles.root}>
       <View style={styles.stage} pointerEvents="none" />
       <View onLayout={onBottomLayout} style={styles.bottom}>
-        <SpeechBubble text={P.paywall.capyLine} audio="pw_hello.mp3" badge="heart" />
+        <View style={styles.bubble}><SpeechBubble text={P.paywall.capyLine} audio="pw_hello.mp3" badge="heart" /></View>
         <ScrollView style={styles.card} contentContainerStyle={styles.cardContent} bounces={false}>
           <Text style={styles.title}>{P.paywall.title(name)}</Text>
 
@@ -153,8 +153,9 @@ function PlanOption({ selected, onPress, title, price, note, badge }: { selected
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  stage: { height: 190 },
+  stage: { height: 236 },
   bottom: { flex: 1 },
+  bubble: { paddingTop: 12 },
   card: { flex: 1, marginTop: 10, backgroundColor: "rgba(255,247,230,0.97)", borderTopLeftRadius: 32, borderTopRightRadius: 32, ...T.shadow },
   cardContent: { padding: 20, paddingBottom: 40, gap: 14 },
   title: { fontFamily: T.font.black, fontSize: 24, color: T.color.ink, lineHeight: 30 },
