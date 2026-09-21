@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { Link, Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
@@ -13,7 +13,6 @@ import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { JourneyTrail, stoneStageX } from "@/ui/JourneyTrail";
 import { Reveal, useReducedMotion } from "@/ui/motion";
 import { T } from "@/ui/theme";
-import { useStageInsets } from "@/ui/useStageInsets";
 
 /** Phase 1 of docs/journey-plan.md: the first seven stops of one biome. */
 const PHASE_1_STOPS = 7;
@@ -36,7 +35,15 @@ function TrailLobby() {
   const pack = getPack(), copy = pack.companion.ui, kid = useKid();
   const { premium } = useEntitlement();
   const avatar = useAvatar(), { setStage } = useStage(), insets = useSafeAreaInsets();
-  const onBottomLayout = useStageInsets(0.1);
+  const { height } = useWindowDimensions();
+  const [sheetHeight, setSheetHeight] = useState(290);
+  const [exploring, setExploring] = useState(false);
+  const sceneHeight = Math.max(220, height - sheetHeight + 22);
+  const onBottomLayout = useCallback((e: LayoutChangeEvent) => setSheetHeight(e.nativeEvent.layout.height), []);
+  useEffect(() => {
+    setStage({ sceneHeight });
+    avatar.send({ type: "viewport", top: sceneHeight * 0.51 / height, bottom: 1 - sceneHeight * 0.90 / height });
+  }, [avatar, height, sceneHeight, setStage]);
   const view = journeyView(pack, kid.completed, { limit: PHASE_1_STOPS, windowSize: 4 });
   const curriculum = pack.lessons.filter((l) => l.routine === "any");
   const doneToday = !kid.freePlay && lessonDoneToday(kid.completed, new Set(curriculum.map((l) => l.id)));
@@ -55,7 +62,7 @@ function TrailLobby() {
     avatar.send({ type: "mood", value: "calm" });
     avatar.send({ type: "walk", to: standX, from: standX }); // no distance to cover: he is placed, not walked
     avatar.send({ type: "idle" }); // greeting: facing the child, three-quarter only while he walks
-    return () => setStage({ biome: "meadow" });
+    return () => { setStage({ biome: "meadow", sceneHeight: undefined }); avatar.send({ type: "viewport", top: 0.1, bottom: 0.45 }); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
 
@@ -91,6 +98,9 @@ function TrailLobby() {
 
   return (
     <View style={s.root}>
+      <View style={[s.scenery, { height: sceneHeight }]} pointerEvents="box-none">
+        <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={go} compact={sceneHeight < 400} />
+      </View>
       <View style={[s.top, { paddingTop: insets.top + 14 }]}>
         <View>
           <Text style={s.brand}>{copy.journey}</Text>
@@ -101,11 +111,9 @@ function TrailLobby() {
         </Link>
       </View>
 
-      <View style={s.stage} pointerEvents="box-none">
-        <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={go} />
-      </View>
+      <View style={s.stage} pointerEvents="none" />
 
-      <View style={s.sheetWrap} onLayout={onBottomLayout}>
+      <View style={s.sheetWrap} onLayout={onBottomLayout} testID="trail-sheet">
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
           <View style={s.handle} />
           <Reveal>
@@ -126,12 +134,15 @@ function TrailLobby() {
             </View>
           </Reveal>
           <Reveal delay={130}>
-            <Text style={s.eyebrow}>{copy.explore}</Text>
-            <View style={s.row}>
+            <Pressable accessibilityRole="button" accessibilityLabel={copy.explore} accessibilityState={{ expanded: exploring }} aria-expanded={exploring} onPress={() => setExploring(value => !value)} style={s.exploreToggle}>
+              <Icon name="book" size={19} /><Text style={s.exploreLabel}>{copy.explore}</Text>
+              <Text style={s.chevron} accessibilityElementsHidden importantForAccessibility="no">{exploring ? "−" : "+"}</Text>
+            </Pressable>
+            {exploring && <View style={s.row}>
               <Quick icon="book" label={copy.stories} onPress={() => router.push("/stories")} />
               <Quick icon="garden" label={copy.places} onPress={() => router.push("/places")} />
               <Quick icon="lantern" label={copy.pond} onPress={() => router.push("/pond")} />
-            </View>
+            </View>}
           </Reveal>
         </ScrollView>
       </View>
@@ -143,7 +154,7 @@ function Quick({ icon, label, onPress }: { icon: string; label: string; onPress:
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [s.quick, pressed && s.pressed]}>
       <Icon name={icon} size={27} />
-      <Text style={s.quickLabel} numberOfLines={1}>{label}</Text>
+      <Text style={s.quickLabel}>{label}</Text>
     </Pressable>
   );
 }
@@ -154,17 +165,21 @@ const s = StyleSheet.create({
   brand: { fontFamily: T.font.black, fontSize: 21, color: T.color.ink },
   tagline: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown },
   parent: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF9EAEF", alignItems: "center", justifyContent: "center" },
-  stage: { flex: 1, minHeight: 190 },
-  sheetWrap: { maxHeight: "48%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow },
-  sheet: { paddingHorizontal: 24, gap: 17 },
+  scenery: { position: "absolute", top: 0, left: 0, right: 0 },
+  stage: { flex: 1, minHeight: 170 },
+  sheetWrap: { maxHeight: "52%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow },
+  sheet: { paddingHorizontal: 20, gap: 10 },
   handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#DFD8C5", alignSelf: "center", marginTop: 10, marginBottom: -4 },
   eyebrow: { fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1.8, color: "#768474" },
-  title: { fontFamily: T.font.black, fontSize: 23, lineHeight: 28, color: T.color.ink, marginTop: 8, marginBottom: 12 },
+  title: { fontFamily: T.font.black, fontSize: 21, lineHeight: 25, color: T.color.ink, marginTop: 4, marginBottom: 10 },
   primary: { minHeight: 55, borderRadius: 19, backgroundColor: "#476D58", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, padding: 12, borderBottomWidth: 4, borderBottomColor: "#335641" },
   primaryText: { flexShrink: 1, textAlign: "center", fontFamily: T.font.bold, fontSize: 17, color: "#FFF8E9" },
   hint: { fontFamily: T.font.regular, fontSize: 12, lineHeight: 18, color: "#727666", marginTop: 8 },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
   row: { flexDirection: "row", gap: 10 },
-  quick: { flex: 1, minWidth: 92, minHeight: 74, borderRadius: 18, backgroundColor: "#F5EEDE", alignItems: "center", justifyContent: "center", gap: 6, padding: 10 },
-  quickLabel: { fontFamily: T.font.bold, fontSize: 12, color: T.color.brown, textAlign: "center" },
+  quick: { flex: 1, minWidth: 0, minHeight: 64, borderRadius: 18, backgroundColor: "#F5EEDE", alignItems: "center", justifyContent: "center", gap: 6, padding: 10 },
+  exploreToggle: { minHeight: 44, flexDirection: "row", alignItems: "center", gap: 9 },
+  exploreLabel: { flex: 1, fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1, color: T.color.brown },
+  chevron: { fontSize: 22, color: T.color.brown },
+  quickLabel: { fontFamily: T.font.bold, fontSize: 12, lineHeight: 16, color: T.color.brown, textAlign: "center" },
 });

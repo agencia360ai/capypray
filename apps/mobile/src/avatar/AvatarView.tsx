@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import { Asset } from "expo-asset";
@@ -54,7 +54,7 @@ export function useAvatarReady() {
   return ready;
 }
 
-type StageState = { biome: string; dark: boolean; night: boolean };
+type StageState = { biome: string; dark: boolean; night: boolean; sceneHeight?: number };
 const StageCtx = createContext<{ stage: StageState; setStage: (s: Partial<StageState>) => void } | null>(null);
 export const useStage = () => {
   const s = useContext(StageCtx);
@@ -68,7 +68,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
   const [uri, setUri] = useState<string | null>(null);
   const [status, setStatus] = useState("asset…");
   const [stage, setStageState] = useState<StageState>({ biome: "meadow", dark: false, night: false });
-  const setStage = (s: Partial<StageState>) => setStageState((p) => ({ ...p, ...s }));
+  const setStage = useCallback((s: Partial<StageState>) => setStageState((p) => ({ ...p, ...s })), []);
   const renderer = useMemo(() => new WebViewAvatarRenderer((js) => webview.current?.injectJavaScript(js)), []);
   const fail = (message: string) => {
     setStatus(`error: ${message}`);
@@ -107,7 +107,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
     <Ctx.Provider value={renderer}>
       <StageCtx.Provider value={{ stage, setStage }}>
         <View style={styles.stage} pointerEvents="none">
-          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: backgroundHeight(stage.biome) }} resizeMode="cover">
+          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: stage.sceneHeight ?? backgroundHeight(stage.biome) }} resizeMode="cover">
             {stage.night && stage.biome !== "meadow" && !stage.dark && <View style={styles.nightTint} />}
             {stage.dark && <View style={styles.dim} />}
             {uri && (

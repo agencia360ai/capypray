@@ -28,30 +28,31 @@ const side = (i: number) => (i % 2 === 0 ? -1 : 1);
  * He leans towards the stone without standing on it: that stone is the one tappable thing on the screen, and a
  * capybara parked over it is a capybara in the way.
  */
-export const stoneStageX = (i: number) => side(i) * 0.24;
+export const stoneStageX = (i: number) => side(i) * 0.14;
 
 const spot = (i: number, n: number) => {
   const t = n <= 1 ? 0 : i / (n - 1); // 0 = here, 1 = furthest drawn
   return {
-    bottom: `${11 + t * 27}%` as const,
-    left: `${50 + side(i) * (25 - t * 9)}%` as const,
+    bottom: `${[8, 17, 45, 52][i] ?? 52}%` as const,
+    left: `${[34, 68, 57, 51][i] ?? 51}%` as const,
     scale: 1 - t * 0.4,
-    dim: 0.4 + (1 - t) * 0.6,
+    dim: 1,
   };
 };
 
-export function JourneyTrail({ view, copy, worldTitle, onContinue }: { view: JourneyView; copy: Copy; worldTitle: string; onContinue: () => void }) {
+export function JourneyTrail({ view, copy, worldTitle, onContinue, compact = false }: { view: JourneyView; copy: Copy; worldTitle: string; onContinue: () => void; compact?: boolean }) {
   const reduced = useReducedMotion();
   const stones = view.window;
   return (
-    <View style={s.root} pointerEvents="box-none">
+    <View style={s.root} pointerEvents="box-none" testID="trail-scenery">
+      <Image source={JOURNEY_ART["oak-tree"]} style={s.tree} resizeMode="contain" />
+      <Image source={JOURNEY_ART["robin-friend"]} style={s.bird} resizeMode="contain" />
       {view.milestone && (
         <View style={s.milestone} pointerEvents="none">
-          {/* the label rides above the arch: below it, it landed on Capy's ears */}
-          <Text style={s.milestoneLabel} numberOfLines={2}>
+          <Image source={JOURNEY_ART["meadow-gateway"]} style={s.gateway} resizeMode="contain" />
+          <Text style={[s.milestoneLabel, compact && s.compactMilestoneLabel]} numberOfLines={2}>
             {interpolate(copy.trailMilestone ?? "", { count: String(view.milestone.stepsAway), title: worldTitle })}
           </Text>
-          <Image source={JOURNEY_ART["meadow-gateway"]} style={s.gateway} resizeMode="contain" />
         </View>
       )}
       {stones.map((node, i) => {
@@ -66,7 +67,7 @@ export function JourneyTrail({ view, copy, worldTitle, onContinue }: { view: Jou
               onPress={onContinue}
               style={({ pressed }) => [s.next, pressed && s.pressed]}
             >
-              <Icon name="pray" size={30} />
+              <View style={[s.stone, s.currentStone]}><Icon name="pray" size={22} /></View>
             </Pressable>
           );
           return (
@@ -78,26 +79,34 @@ export function JourneyTrail({ view, copy, worldTitle, onContinue }: { view: Jou
         }
         return (
           <View key={node.id} style={[s.slot, { bottom: p.bottom, left: p.left, opacity: p.dim }]} pointerEvents="none">
-            <View style={[s.stone, { width: size, height: size, borderRadius: size / 2 }, node.state === "done" && s.done]}>
-              {node.state === "done" ? <Image source={JOURNEY_ART["lantern-lit"]} style={{ width: size * 0.8, height: size * 0.8 }} resizeMode="contain" /> : null}
+            <View style={[s.stone, { width: size, height: size * 0.42, borderRadius: size / 2 }, node.state === "done" && s.done]}>
+              {node.state === "done" ? <Image source={JOURNEY_ART["lantern-lit"]} style={{ width: size * 0.8, height: size * 0.8, position: "absolute", bottom: 2 }} resizeMode="contain" /> : null}
             </View>
           </View>
         );
       })}
+      <Image source={JOURNEY_ART["meadow-bush"]} style={s.bush} resizeMode="contain" />
+      <Image source={JOURNEY_ART["daisy-patch"]} style={s.flowers} resizeMode="contain" />
     </View>
   );
 }
 
 const s = StyleSheet.create({
+  tree: { position: "absolute", width: "31%", height: "28%", left: "-11%", top: "30%" },
+  bird: { position: "absolute", width: "10%", height: "10%", left: "18%", top: "61%" },
+  bush: { position: "absolute", width: "33%", height: "24%", right: "-12%", bottom: "-2%" },
+  flowers: { position: "absolute", width: "19%", height: "18%", left: "-5%", bottom: "-2%" },
   root: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
   slot: { position: "absolute", alignItems: "center", gap: 4, marginLeft: -28 },
-  stone: { backgroundColor: "#D9CBAE", borderWidth: 2, borderColor: "#00000022", alignItems: "center", justifyContent: "center" },
+  stone: { backgroundColor: "#E9D0A1", borderTopWidth: 1, borderTopColor: "#FFF1D1", borderBottomWidth: 4, borderBottomColor: "#B99B67", transform: [{ rotate: "-7deg" }], alignItems: "center", justifyContent: "center" },
   done: { backgroundColor: "#F6E2B8", borderColor: "#C9A25C" },
-  next: { width: 56, height: 56, borderRadius: 28, backgroundColor: "#FFF6E2", borderWidth: 3, borderColor: "#476D58", alignItems: "center", justifyContent: "center", ...T.shadow },
+  next: { width: 68, height: 56, alignItems: "center", justifyContent: "flex-end" },
+  currentStone: { width: 68, height: 28, borderRadius: 25, backgroundColor: "#FFF0C9" },
   pressed: { opacity: 0.85, transform: [{ scale: 0.96 }] },
   here: { fontFamily: T.font.bold, fontSize: 11, color: T.color.ink, backgroundColor: "#FFF9EAD9", paddingHorizontal: 7, paddingVertical: 2, borderRadius: 9, overflow: "hidden" },
-  // high on the horizon: the gateway is meant to read as far up the path, and low it sat on Capy's head
-  milestone: { position: "absolute", bottom: "78%", left: 0, right: 0, alignItems: "center", gap: 4 },
-  gateway: { width: 66, height: 66, opacity: 0.8 },
-  milestoneLabel: { fontFamily: T.font.bold, fontSize: 11, color: T.color.brown, backgroundColor: "#FFF9EAD9", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, overflow: "hidden", textAlign: "center", maxWidth: "70%" },
+  // The base meets the far end of the painted path.
+  milestone: { position: "absolute", top: "45%", marginTop: -84, left: "38%", width: "27%", alignItems: "center" },
+  gateway: { width: 84, height: 84 },
+  compactMilestoneLabel: { bottom: "auto", top: 12, left: "100%", width: 80, marginBottom: 0 },
+  milestoneLabel: { position: "absolute", bottom: "100%", marginBottom: 4, width: 150, fontFamily: T.font.bold, fontSize: 10, lineHeight: 13, color: T.color.brown, backgroundColor: "#FFF9EAD9", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, overflow: "hidden", textAlign: "center" },
 });

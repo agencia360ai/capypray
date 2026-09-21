@@ -3,7 +3,7 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 /** Hand-drawn, language-independent companion icons, consistent across platforms. */
 export function CompanionIcon({ name, size = 32, color = "#4D7062" }: { name: string; size?: number; color?: string }) {
   const face = ["happy", "sad", "scared", "angry", "sleepy", "calm"].includes(name);
-  return <Svg width={size} height={size} viewBox="0 0 48 48" accessible={false}>
+  return <Svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
     <G stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" fill="none">
       {face ? <>
         <Circle cx="24" cy="24" r="18" fill={name === "sad" ? "#D8EAF5" : name === "angry" ? "#FFE0D3" : "#FFE6AA"} />

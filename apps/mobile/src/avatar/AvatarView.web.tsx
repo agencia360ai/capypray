@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { AvatarEvents, type AvatarCommand, type AvatarEvent, type IAvatarRenderer } from "./IAvatarRenderer";
 import { backgroundFor, backgroundHeight } from "@/ui/backgrounds";
@@ -20,7 +20,7 @@ export function useAvatarReady() {
   useEffect(() => { setReady(avatar.ready); return avatar.onEvent(event => { if (event.type === "ready") setReady(true); }); }, [avatar]);
   return ready;
 }
-type Stage = { biome: string; dark: boolean; night: boolean };
+type Stage = { biome: string; dark: boolean; night: boolean; sceneHeight?: number };
 const StageContext = createContext<{ stage: Stage; setStage: (stage: Partial<Stage>) => void } | null>(null);
 export function useStage() { const value = useContext(StageContext); if (!value) throw new Error("Missing AvatarProvider"); return value; }
 
@@ -28,6 +28,7 @@ export function useStage() { const value = useContext(StageContext); if (!value)
 export function AvatarProvider({ children }: PropsWithChildren) {
   const frame = useRef<HTMLIFrameElement>(null);
   const [stage, set] = useState<Stage>({ biome: "meadow", night: false, dark: false });
+  const setStage = useCallback((patch: Partial<Stage>) => set(previous => ({ ...previous, ...patch })), []);
   const renderer = useMemo(() => new BrowserAvatarRenderer(command => frame.current?.contentWindow?.postMessage(JSON.stringify(command), window.location.origin)), []);
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -37,8 +38,8 @@ export function AvatarProvider({ children }: PropsWithChildren) {
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
   }, [renderer]);
-  return <AvatarContext.Provider value={renderer}><StageContext.Provider value={{ stage, setStage: patch => set(previous => ({ ...previous, ...patch })) }}>
-    <View style={StyleSheet.absoluteFill} pointerEvents="none"><ImageBackground source={backgroundFor(stage.biome, stage.night)} style={{ flex: 1, backgroundColor: stage.night ? "#34625F" : "#BDCE7D" }} imageStyle={{ width: "100%", height: backgroundHeight(stage.biome) }} resizeMode="cover">
+  return <AvatarContext.Provider value={renderer}><StageContext.Provider value={{ stage, setStage }}>
+    <View style={StyleSheet.absoluteFill} pointerEvents="none"><ImageBackground source={backgroundFor(stage.biome, stage.night)} style={{ flex: 1, backgroundColor: stage.night ? "#34625F" : "#BDCE7D" }} imageStyle={{ width: "100%", height: stage.sceneHeight ?? backgroundHeight(stage.biome) }} resizeMode="cover">
       {stage.night && stage.biome !== "meadow" && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#14205073" }]} />}
       <iframe ref={frame} src="/avatar/index.html" title={getPack().companion.ui.brand} tabIndex={-1} aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }} />
       {stage.dark && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0A081ED9" }]} />}
