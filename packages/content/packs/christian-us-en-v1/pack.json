@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -113,7 +113,11 @@
         {
           "type": "repeat_after_me",
           "prayerId": "first-prayer",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "hello-loved-v1",
+            "hello-close-v1"
+          ]
         },
         {
           "type": "reward",
@@ -141,7 +145,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! I'm Capy. Guess what? God is always listening. Always!",
           "audio": "w1d1_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -155,7 +169,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "hello-god-v1"
+          "prayerId": "hello-god-v1",
+          "prayerVariants": [
+            "hello-close-v1",
+            "hello-loved-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -194,7 +212,17 @@
           "clip": "wave_hello",
           "text": "Hi again, {kidName}! I prayed in the pond today. Splash!",
           "audio": "w1d2_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -214,7 +242,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "hello-god-v1"
+          "prayerId": "hello-close-v1",
+          "prayerVariants": [
+            "hello-loved-v1",
+            "hello-god-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -253,7 +285,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! Today we pick people to pray for.",
           "audio": "w1d3_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -274,7 +316,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "for-others-v1"
+          "prayerId": "for-others-v1",
+          "prayerVariants": [
+            "others-kindness-v1",
+            "moment-family-prayer"
+          ]
         },
         {
           "type": "minigame",
@@ -317,7 +363,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! I found a yummy orange today. Thank you, God!",
           "audio": "w1d4_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -361,7 +417,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "thank-you-v1"
+          "prayerId": "thank-you-v1",
+          "prayerVariants": [
+            "thank-you-people-v1",
+            "thank-you-world-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -457,7 +517,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! People are the best gift of all.",
           "audio": "w1d6_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -475,7 +545,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "thank-you-v1"
+          "prayerId": "thank-you-people-v1",
+          "prayerVariants": [
+            "thank-you-v1",
+            "thank-you-world-v1"
+          ]
         },
         {
           "type": "listen_timer",
@@ -681,7 +755,17 @@
           "type": "avatar_say",
           "clip": "wave_hello",
           "text": "Hi {kidName}. Can I tell you a secret? I make mistakes too.",
-          "audio": "w2d3_01.mp3"
+          "audio": "w2d3_01.mp3",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -704,7 +788,10 @@
         {
           "type": "repeat_after_me",
           "prayerId": "sorry-v1",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "sorry-kindness-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -743,7 +830,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! Remember my splashing mistake? Guess what happened.",
           "audio": "w2d4_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -764,8 +861,11 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "sorry-v1",
-          "clip": "pray_hands"
+          "prayerId": "sorry-kindness-v1",
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "sorry-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -803,7 +903,17 @@
           "type": "avatar_say",
           "clip": "wave_hello",
           "text": "Hi {kidName}. I said sorry to God. Then I said sorry to my friend.",
-          "audio": "w2d5_01.mp3"
+          "audio": "w2d5_01.mp3",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -819,7 +929,10 @@
         {
           "type": "repeat_after_me",
           "prayerId": "sorry-v1",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "sorry-kindness-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -1227,7 +1340,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! Who lives in your home? Let's pray for them.",
           "audio": "w3d5_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -1246,7 +1369,11 @@
         {
           "type": "repeat_after_me",
           "prayerId": "for-others-v1",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "others-kindness-v1",
+            "moment-family-prayer"
+          ]
         },
         {
           "type": "listen_timer",
@@ -1281,7 +1408,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! My bird friend and I pray for each other.",
           "audio": "w3d6_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -1299,8 +1436,12 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "for-others-v1",
-          "clip": "pray_hands"
+          "prayerId": "others-kindness-v1",
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "moment-family-prayer",
+            "for-others-v1"
+          ]
         },
         {
           "type": "listen_timer",
@@ -2182,7 +2323,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}! I have two oranges. Who should I share with?",
           "audio": "w6d1_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -2197,7 +2348,11 @@
         {
           "type": "repeat_after_me",
           "prayerId": "for-others-v1",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "others-kindness-v1",
+            "moment-family-prayer"
+          ]
         },
         {
           "type": "minigame",
@@ -2292,7 +2447,17 @@
           "clip": "wave_hello",
           "text": "At the park, {kidName}, I saw a kid fall down. What should I do?",
           "audio": "w6d3_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -2306,8 +2471,12 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "for-others-v1",
-          "clip": "pray_hands"
+          "prayerId": "others-kindness-v1",
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "for-others-v1",
+            "moment-family-prayer"
+          ]
         },
         {
           "type": "minigame",
@@ -2402,7 +2571,17 @@
           "clip": "wave_hello",
           "text": "School again, {kidName}! Someone is sitting all alone at lunch.",
           "audio": "w6d5_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -2416,8 +2595,12 @@
         },
         {
           "type": "repeat_after_me",
-          "prayerId": "for-others-v1",
-          "clip": "pray_hands"
+          "prayerId": "moment-family-prayer",
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "others-kindness-v1",
+            "for-others-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -2457,7 +2640,17 @@
           "clip": "wave_hello",
           "text": "Hi {kidName}. I broke a flower pot today and hid in the garden.",
           "audio": "w6d6_01.mp3",
-          "mood": "happy"
+          "mood": "happy",
+          "variations": [
+            {
+              "text": "Hi, {kidName}! I’m Capy. I’m glad you’re here.",
+              "audio": "meet_capy_v08_1.mp3"
+            },
+            {
+              "text": "We can talk to God together. I’ll go first.",
+              "audio": "meet_capy_v08_2.mp3"
+            }
+          ]
         },
         {
           "type": "avatar_say",
@@ -2472,7 +2665,10 @@
         {
           "type": "repeat_after_me",
           "prayerId": "sorry-v1",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "sorry-kindness-v1"
+          ]
         },
         {
           "type": "minigame",
@@ -2618,7 +2814,10 @@
         {
           "type": "repeat_after_me",
           "prayerId": "moment-sad-prayer",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "sad-v1"
+          ]
         },
         {
           "type": "reward",
@@ -2698,7 +2897,11 @@
         {
           "type": "repeat_after_me",
           "prayerId": "moment-thankful-prayer",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "thank-you-world-v1",
+            "thank-you-people-v1"
+          ]
         },
         {
           "type": "reward",
@@ -2818,7 +3021,11 @@
         {
           "type": "repeat_after_me",
           "prayerId": "moment-family-prayer",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "others-kindness-v1",
+            "for-others-v1"
+          ]
         },
         {
           "type": "reward",
@@ -2858,7 +3065,10 @@
         {
           "type": "repeat_after_me",
           "prayerId": "moment-morning-prayer",
-          "clip": "pray_hands"
+          "clip": "pray_hands",
+          "prayerVariants": [
+            "place-bedroom"
+          ]
         },
         {
           "type": "reward",
@@ -4231,6 +4441,146 @@
           }
         }
       ]
+    },
+    {
+      "id": "hello-close-v1",
+      "title": "God Is Here",
+      "skillId": "hello",
+      "source": "original",
+      "variables": [
+        "kidName"
+      ],
+      "lines": [
+        {
+          "text": "Hi God, it’s me, {kidName}.",
+          "audio": "first_prayer_v08_1.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for listening.",
+          "audio": "p_hello_02.mp3",
+          "visual": {
+            "symbol": "ear",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Please be with me today. Amen.",
+          "audio": "first_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "sun",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hello-loved-v1",
+      "title": "Loved and Heard",
+      "skillId": "hello",
+      "source": "original",
+      "variables": [
+        "kidName"
+      ],
+      "lines": [
+        {
+          "text": "Hi God, it's me, {kidName}.",
+          "audio": "p_hello_01.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Thank you for listening and loving me.",
+          "audio": "first_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "I love you. Amen.",
+          "audio": "p_hello_03.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "others-kindness-v1",
+      "title": "A Little Kindness",
+      "skillId": "others",
+      "source": "original",
+      "variables": [
+        "person"
+      ],
+      "lines": [
+        {
+          "text": "God, please be with {person}.",
+          "audio": "p_others_01.mp3",
+          "visual": {
+            "symbol": "people",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Give them comfort and people who care.",
+          "audio": "moment_family_prayer_v08_2.mp3",
+          "visual": {
+            "symbol": "help",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Help me show them love today. Amen.",
+          "audio": "moment_family_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "heart",
+            "motion": "glow"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sorry-kindness-v1",
+      "title": "Try a Little Kindness",
+      "skillId": "sorry",
+      "source": "original",
+      "variables": [
+        "mistake"
+      ],
+      "lines": [
+        {
+          "text": "God, I'm sorry for {mistake}.",
+          "audio": "p_sorry_01.mp3",
+          "visual": {
+            "symbol": "sad",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Please forgive me and help me try again.",
+          "audio": "p_sorry_02.mp3",
+          "visual": {
+            "symbol": "forgive",
+            "motion": "glow"
+          }
+        },
+        {
+          "text": "Show me one kind thing I can do. Amen.",
+          "audio": "moment_sorry_prayer_v08_3.mp3",
+          "visual": {
+            "symbol": "hands",
+            "motion": "glow"
+          }
+        }
+      ]
     }
   ],
   "minigames": [
@@ -5274,7 +5624,8 @@
         "art": "lost-sheep-found",
         "symbol": "home",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_lost_sheep_title.mp3"
     },
     {
       "id": "good-samaritan",
@@ -5340,7 +5691,8 @@
         "art": "good-samaritan",
         "symbol": "heart",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_good_samaritan_title.mp3"
     },
     {
       "id": "mustard-seed",
@@ -5406,7 +5758,8 @@
         "art": "mustard-seed-birds",
         "symbol": "heart",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_mustard_seed_title.mp3"
     },
     {
       "id": "calm-storm",
@@ -5472,7 +5825,8 @@
         "art": "calm-storm",
         "symbol": "shield",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_calm_storm_title.mp3"
     },
     {
       "id": "loaves-fish",
@@ -5538,7 +5892,8 @@
         "art": "loaves-fish",
         "symbol": "hands",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_loaves_fish_title.mp3"
     },
     {
       "id": "zacchaeus",
@@ -5604,7 +5959,8 @@
         "art": "zacchaeus",
         "symbol": "heart",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_zacchaeus_title.mp3"
     },
     {
       "id": "jesus-children",
@@ -5670,7 +6026,8 @@
         "art": "jesus-children",
         "symbol": "ear",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_jesus_children_title.mp3"
     },
     {
       "id": "prodigal-son",
@@ -5736,7 +6093,8 @@
         "art": "prodigal-son",
         "symbol": "forgive",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_prodigal_son_title.mp3"
     },
     {
       "id": "two-houses",
@@ -5802,7 +6160,8 @@
         "art": "two-houses",
         "symbol": "rock",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_two_houses_title.mp3"
     },
     {
       "id": "sower",
@@ -5868,7 +6227,8 @@
         "art": "sower",
         "symbol": "heart",
         "motion": "glow"
-      }
+      },
+      "titleAudio": "story_sower_title.mp3"
     }
   ],
   "scenes": [
@@ -5878,7 +6238,8 @@
       "icon": "lantern",
       "background": "meadow",
       "time": "auto",
-      "unlock": {}
+      "unlock": {},
+      "titleAudio": "scene_pond_title.mp3"
     },
     {
       "id": "bedroom",
@@ -5887,7 +6248,8 @@
       "background": "bedroom",
       "time": "auto",
       "unlock": {},
-      "prayerId": "place-bedroom"
+      "prayerId": "place-bedroom",
+      "titleAudio": "scene_bedroom_title.mp3"
     },
     {
       "id": "kitchen",
@@ -5896,7 +6258,8 @@
       "background": "kitchen",
       "time": "day",
       "unlock": {},
-      "prayerId": "grace-god-is-great"
+      "prayerId": "grace-god-is-great",
+      "titleAudio": "scene_kitchen_title.mp3"
     },
     {
       "id": "garden",
@@ -5907,7 +6270,8 @@
       "unlock": {
         "lessonId": "w1d4"
       },
-      "prayerId": "place-garden"
+      "prayerId": "place-garden",
+      "titleAudio": "scene_garden_title.mp3"
     },
     {
       "id": "park",
@@ -5918,7 +6282,8 @@
       "unlock": {
         "lessonId": "w1d3"
       },
-      "prayerId": "place-park"
+      "prayerId": "place-park",
+      "titleAudio": "scene_park_title.mp3"
     },
     {
       "id": "city",
@@ -5929,7 +6294,8 @@
       "unlock": {
         "lessonId": "w1d6"
       },
-      "prayerId": "place-city"
+      "prayerId": "place-city",
+      "titleAudio": "scene_city_title.mp3"
     },
     {
       "id": "school",
@@ -5940,7 +6306,8 @@
       "unlock": {
         "lessonId": "w2d3"
       },
-      "prayerId": "place-school"
+      "prayerId": "place-school",
+      "titleAudio": "scene_school_title.mp3"
     },
     {
       "id": "car",
@@ -5951,7 +6318,8 @@
       "unlock": {
         "lessonId": "w3d4"
       },
-      "prayerId": "place-car"
+      "prayerId": "place-car",
+      "titleAudio": "scene_car_title.mp3"
     }
   ],
   "companion": {
@@ -5999,7 +6367,9 @@
       "trailMilestone": "{count} steps to {title}",
       "trailHere": "You are here",
       "trailExpand": "Show prayer options",
-      "trailCollapse": "See more of the meadow"
+      "trailCollapse": "See more of the meadow",
+      "savedAudio": "ui_saved_light.mp3",
+      "journeyHistory": "My prayer memories"
     },
     "feelings": [
       {

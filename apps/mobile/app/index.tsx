@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link, Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,6 +15,7 @@ import { Reveal } from "@/ui/motion";
 import { FeelingArt } from "@/ui/FeelingArt";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
+import { SheetHandle } from "@/ui/SheetHandle";
 import { startSync } from "@/backend/sync";
 
 export default function Home() {
@@ -33,6 +34,7 @@ function KidHome() {
   const next = curriculum.find((l) => !kid.completed[l.id]);
   const doneToday = !kid.freePlay && lessonDoneToday(kid.completed, new Set(curriculum.map((l) => l.id)));
   const doneCount = curriculum.filter((l) => kid.completed[l.id]).length;
+  const [collapsed, setCollapsed] = useState(false);
   const onBottomLayout = useStageInsets(0.17);
   useEffect(() => {
     setStage({ dark: false, night: false, biome: biomeFor(pack, kid) });
@@ -50,18 +52,22 @@ function KidHome() {
       <Link href="/parent/gate?next=corner" asChild><Pressable accessibilityRole="button" accessibilityLabel={copy.parents} style={s.parent}><Icon name="parent" size={23} /></Pressable></Link>
     </View>
     <View style={s.stage}><View style={s.greeting}><Text style={s.greetingText}>{interpolate(copy.greeting, { kidName: kid.kidName || pack.ui.friend })}</Text><Text style={s.greetingSub}>{copy.welcome}</Text></View><CapyTapZone /></View>
-    <View style={s.sheetWrap} onLayout={onBottomLayout}><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
-      <View style={s.handle} />
-      <Reveal><View style={s.titleRow}><Text style={s.eyebrow}>{copy.today}</Text><Text style={s.time}>{copy.duration}</Text></View>
+    <View style={s.sheetWrap} onLayout={onBottomLayout} testID="home-sheet">
+      <SheetHandle collapsed={collapsed} onChange={setCollapsed} expandLabel={copy.trailExpand ?? copy.explore} collapseLabel={copy.trailCollapse ?? copy.journey} testID="home-sheet-handle" />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
+      <Reveal>{!collapsed && <><View style={s.titleRow}><Text style={s.eyebrow}>{copy.today}</Text><Text style={s.time}>{copy.duration}</Text></View>
         <Text style={s.title}>{!next ? copy.allDone : doneToday ? copy.completed : next.title}</Text>
-        {doneToday || !next ? <Text style={s.description}>{!next ? copy.allDoneHint : copy.completedHint}</Text> : null}
+        {doneToday || !next ? <Text style={s.description}>{!next ? copy.allDoneHint : copy.completedHint}</Text> : null}</>}
         <Pressable onPress={pray} accessibilityRole="button" style={({ pressed }) => [s.primary, pressed && s.pressed]}><Icon name="heart" size={23} color="#FFF8E9" /><Text style={s.primaryText}>{doneToday || !next ? copy.moments : copy.start}</Text><Icon name="arrow" size={22} color="#FFF8E9" /></Pressable>
       </Reveal>
+      {!collapsed && <>
+      <Pressable onPress={() => router.push("/trail")} accessibilityRole="button" style={s.pathEntry} testID="home-trail-link"><Icon name="garden" size={29} /><View style={{ flex: 1 }}><Text style={s.sectionTitle}>{copy.journey}</Text><Text style={s.description}>{copy.journeyHint}</Text></View><Icon name="arrow" size={22} /></Pressable>
       <Reveal delay={70} style={{ gap: 10 }}><Text style={s.sectionTitle}>{copy.feelings}</Text><View style={s.feelings}>{pack.companion.feelings.map(f => <Pressable key={f.id} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: f.lessonId } })} accessibilityRole="button" accessibilityLabel={f.label} style={({ pressed }) => [s.feeling, pressed && s.pressed]}><FeelingArt id={f.id} icon={f.icon} size={48} /><Text style={s.feelingLabel}>{f.label}</Text></Pressable>)}</View></Reveal>
       <Reveal delay={130}><Pressable onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId! } })} accessibilityRole="button" style={({ pressed }) => [s.bedtime, pressed && s.pressed]}><ImageBackground source={require("../assets/backgrounds/meadow-storybook-night.png")} style={s.bedArt}><View style={s.bedShade}><Icon name="moon" size={37} color="#F6D486" /><View style={{ flex: 1 }}><Text style={s.bedTitle}>{copy.bedtime}</Text><Text style={s.bedHint}>{copy.bedtimeHint}</Text></View><Icon name="arrow" size={22} color="#FFF8E9" /></View></ImageBackground></Pressable></Reveal>
       <Text style={s.eyebrow}>{copy.explore}</Text>
       <View style={s.doors}><Door href="/stories" icon="book" title={copy.stories} subtitle={copy.storiesHint} color="#FAEAD8" /><Door href="/places" icon="garden" title={copy.places} subtitle={copy.placesHint} color="#E8EFDE" /><Door href="/pond" icon="lantern" title={copy.pond} subtitle={copy.pondHint} color="#F9EFCF" /><Door href="/moments" icon="heart" title={copy.moments} subtitle={copy.momentsHint} color="#F7E6DF" /></View>
-      <Link href="/journey" asChild><Pressable accessibilityRole="button" style={s.journey}><View style={s.titleRow}><Text style={s.sectionTitle}>{copy.journey}</Text><Icon name="arrow" size={20} /></View><View style={s.track}><View style={[s.fill, { width: `${curriculum.length ? doneCount / curriculum.length * 100 : 0}%` }]} /></View><Text style={s.description}>{interpolate(copy.progress, { count: String(doneCount), total: String(curriculum.length) })}</Text></Pressable></Link>
+      <Link href="/journey" asChild><Pressable accessibilityRole="button" style={s.journey}><View style={s.titleRow}><Text style={s.sectionTitle}>{copy.journeyHistory ?? copy.journey}</Text><Icon name="arrow" size={20} /></View><View style={s.track}><View style={[s.fill, { width: `${curriculum.length ? doneCount / curriculum.length * 100 : 0}%` }]} /></View><Text style={s.description}>{interpolate(copy.progress, { count: String(doneCount), total: String(curriculum.length) })}</Text></Pressable></Link>
+      </>}
     </ScrollView></View>
   </View>;
 }
@@ -71,7 +77,8 @@ function Door({ href, icon, title, subtitle, color }: { href: React.ComponentPro
 const s = StyleSheet.create({
   root: { flex: 1 }, top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24 }, brand: { fontFamily: T.font.black, fontSize: 21, color: T.color.ink }, tagline: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown }, parent: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF9EAEF", alignItems: "center", justifyContent: "center" },
   stage: { flex: 1, minHeight: 150 }, greeting: { alignSelf: "center", marginTop: 10, paddingHorizontal: 18, paddingVertical: 7, backgroundColor: "#FFF9EAEF", borderRadius: 18 }, greetingText: { fontFamily: T.font.black, fontSize: 17, textAlign: "center", color: T.color.ink }, greetingSub: { fontFamily: T.font.regular, fontSize: 12, textAlign: "center", color: T.color.brown },
-  sheetWrap: { maxHeight: "59%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow }, sheet: { paddingHorizontal: 24, gap: 19 }, handle: { width: 36, height: 4, borderRadius: 2, backgroundColor: "#DFD8C5", alignSelf: "center", marginTop: 10, marginBottom: -4 },
+  sheetWrap: { maxHeight: "59%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow }, sheet: { paddingHorizontal: 24, gap: 19 },
+  pathEntry: { flexDirection: "row", alignItems: "center", gap: 12, borderRadius: 18, backgroundColor: "#EDF2E5", padding: 14, minHeight: 64 },
   titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }, eyebrow: { fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1.8, color: "#768474" }, time: { backgroundColor: "#EEF0E3", borderRadius: 10, paddingHorizontal: 9, paddingVertical: 4, fontFamily: T.font.regular, fontSize: 10, color: "#65785C" }, title: { fontFamily: T.font.black, fontSize: 25, lineHeight: 30, color: T.color.ink, marginTop: 9, marginBottom: 13 },
   primary: { minHeight: 55, borderRadius: 19, backgroundColor: "#476D58", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, padding: 12, borderBottomWidth: 4, borderBottomColor: "#335641" }, primaryText: { flexShrink: 1, textAlign: "center", fontFamily: T.font.bold, fontSize: 17, color: "#FFF8E9" }, pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] }, sectionTitle: { fontFamily: T.font.bold, fontSize: 17, color: T.color.ink },
   feelings: { flexDirection: "row", flexWrap: "wrap", gap: 4, justifyContent: "space-between" }, feeling: { alignItems: "center", gap: 5, minWidth: 44, minHeight: 74, paddingVertical: 4, flex: 1 }, feelingLabel: { fontFamily: T.font.bold, fontSize: 11, color: T.color.brown },

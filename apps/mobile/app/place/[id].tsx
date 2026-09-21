@@ -36,7 +36,7 @@ export default function PlaceScreen() {
       routine: "any",
       scene: scene.id,
       beats: [
-        { type: "avatar_say", clip: "wave_hello", text: scene.title, mood: "happy" },
+        { type: "avatar_say", clip: "wave_hello", text: scene.title, audio: scene.titleAudio, mood: "happy" },
         ...(prayer ? [{ type: "repeat_after_me" as const, prayerId: prayer.id, clip: "pray_hands" as const }] : []),
         { type: "listen_timer", seconds: 15, ...pack.companion.breathing.prompt, clip: "listen_nod" },
         { type: "reward", lantern: 1 },

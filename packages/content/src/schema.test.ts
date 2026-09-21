@@ -157,3 +157,21 @@ describe("the prayer choice", () => {
     expect(issues.some((i) => i.message.includes("only ask for one intention"))).toBe(true);
   });
 });
+
+describe("authored variation validation", () => {
+  it("rejects missing, duplicate and different-skill prayer alternatives", () => {
+    for (const id of ["missing-prayer", "hello-god-v1", "sorry-v1"]) {
+      const raw = load();
+      raw.lessons.find((l: { id: string }) => l.id === "w1d1").beats.find((b: { type: string }) => b.type === "repeat_after_me").prayerVariants = [id];
+      expect(validatePack(raw).issues.some(i => i.path.startsWith("lessons.w1d1"))).toBe(true);
+    }
+  });
+  it("inventories spoken UI and title recordings, not only lesson audio", () => {
+    const { pack } = validatePack(load());
+    const audio = listAudio(pack!);
+    expect(audio).toContain(pack!.companion.ui.savedAudio);
+    for (const item of [...pack!.stories, ...pack!.scenes]) expect(audio).toContain(item.titleAudio);
+    for (const lesson of pack!.lessons) for (const beat of lesson.beats)
+      if (beat.type === "avatar_say") for (const line of beat.variations ?? []) expect(audio).toContain(line.audio);
+  });
+});

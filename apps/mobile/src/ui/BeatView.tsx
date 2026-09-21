@@ -206,6 +206,7 @@ function ChoiceBeat({ text, audio, badge, nudge, children }: { text: string; aud
 function RewardBeat({ lanterns, label, onNext, quiet }: { lanterns: number; label: string; onNext: () => void; quiet: boolean }) {
   // confetti bursts when the lantern lights up (RewardBurst timing: scale-in spring + 250 ms), not on mount
   const [burst, setBurst] = useState(0);
+  const [spoken, setSpoken] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setBurst(1), 900);
     return () => clearTimeout(t);
@@ -213,9 +214,9 @@ function RewardBeat({ lanterns, label, onNext, quiet }: { lanterns: number; labe
   return (
     <>
       {!quiet && <Confetti trigger={burst} />}
-      <SpeechBubble text={getPack().companion.ui.saved} badge="lantern" />
+      <SpeechBubble text={getPack().companion.ui.saved} audio={getPack().companion.ui.savedAudio} badge="lantern" onSpoken={() => setSpoken(true)} />
       <Sheet>
-        <BigButton label={label} icon={<Check />} onPress={onNext} autoAdvanceMs={AUTO_REWARD_MS} />
+        <BigButton label={label} icon={<Check />} onPress={onNext} autoAdvanceMs={spoken ? AUTO_REWARD_MS : undefined} />
       </Sheet>
     </>
   );

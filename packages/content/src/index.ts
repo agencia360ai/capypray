@@ -66,9 +66,17 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
     for (const [i, b] of l.beats.entries()) {
       const bat = `${at}.beats.${i}`;
       if (b.type === "avatar_say" && countWords(b.text) > 20) issues.push({ path: bat, message: "avatar_say text > 20 words; split the beat" });
+      if (b.type === "avatar_say") for (const line of b.variations ?? []) if (countWords(line.text) > 20) issues.push({ path: bat, message: "avatar variation > 20 words" });
       if (b.type === "repeat_after_me") {
         if (!prayers.has(b.prayerId)) issues.push({ path: bat, message: `unknown prayer "${b.prayerId}"` });
         usedPrayers.add(b.prayerId);
+        dup([b.prayerId, ...(b.prayerVariants ?? [])], bat);
+        for (const id of b.prayerVariants ?? []) {
+          const variant = prayerList.get(id), base = prayerList.get(b.prayerId);
+          if (!variant) issues.push({ path: bat, message: `unknown prayer "${id}"` });
+          else if (base && variant.skillId !== base.skillId) issues.push({ path: bat, message: "prayer variant must teach the same skill" });
+          usedPrayers.add(id);
+        }
       }
       if (b.type === "minigame") {
         if (!minigames.has(b.minigameId)) issues.push({ path: bat, message: `unknown minigame "${b.minigameId}"` });
@@ -157,15 +165,19 @@ export function listAudio(pack: PackT): string[] {
   const out = new Set<string>();
   const add = (a?: string) => a && out.add(a);
   add(pack.companion.breathing.prompt.audio);
+  add(pack.companion.ui.savedAudio);
+  for (const sc of pack.scenes) add(sc.titleAudio);
   for (const l of pack.lessons)
     for (const b of l.beats) {
       if ("audio" in b) add(b.audio);
+      if (b.type === "avatar_say") for (const line of b.variations ?? []) add(line.audio);
       if (b.type === "choose_intention") for (const o of b.options) add(o.echoAudio);
     }
   for (const p of pack.prayers) for (const line of p.lines) add(line.audio);
   for (const t of pack.ui.tapLines) add(t.audio);
   for (const a of [pack.ui.beaconLineAudio, pack.ui.nudgeTapAudio, pack.ui.nudgeRepeatAudio, pack.ui.nudgeChooseAudio]) add(a);
   for (const st of pack.stories) {
+    add(st.titleAudio);
     for (const pg of st.pages) add(pg.audio);
     add(st.moralAudio);
   }

@@ -7,7 +7,7 @@ const { pack } = validatePack(rawPack);
 
 describe("lessonRunner", () => {
   it("never exposes unresolved prayer variables after the shorter onboarding", () => {
-    for (const lesson of pack!.lessons) for (const opts of [{}, { intentions: true }]) {
+    for (const lesson of pack!.lessons) for (const opts of [0, 1, 2].flatMap(variationIndex => [false, true].map(intentions => ({ variationIndex, intentions })))) {
       const runner = createRunner(pack!, lesson, { kidName: "Mia" }, opts);
       let result = runner.start();
       for (let guard = 0; result.state.step.kind !== "done" && guard < 200; guard++) {
@@ -131,5 +131,55 @@ describe("the prayer choice", () => {
     r.choose("nope");
     const next = r.next();
     expect((next.state.step as { prayer: { id: string } }).prayer.id).toBe("thank-you-v1");
+  });
+});
+
+describe("authored session variations", () => {
+  it("cycles without immediate repeats and keeps every line stable within a session", () => {
+    const lesson = pack!.lessons.find(l => l.id === "w1d1")!;
+    const ids: string[] = [];
+    for (let visit = 0; visit < 4; visit++) {
+      const r = createRunner(pack!, lesson, { kidName: "Mia" }, { variationIndex: visit });
+      let result = r.start();
+      const seen: string[] = [];
+      for (let guard = 0; result.state.step.kind !== "done" && guard < 100; guard++) {
+        const step = result.state.step;
+        if (step.kind === "repeat") {
+          seen.push(step.prayer.id);
+          expect(step.audio).toBe(step.prayer.lines[step.lineIndex]!.audio);
+          expect(step.text).not.toMatch(/\{\w+\}/);
+        }
+        result = r.next();
+      }
+      expect(seen).toHaveLength(3);
+      expect(new Set(seen).size).toBe(1);
+      ids.push(seen[0]!);
+      expect(r.summary()).toMatchObject({ lessonId: "w1d1", lanterns: 1, done: true });
+    }
+    expect(new Set(ids.slice(0, 3)).size).toBe(3);
+    expect(ids[3]).toBe(ids[0]);
+  });
+
+  it("the child's intention takes priority over the automatic variation", () => {
+    const lesson = pack!.lessons.find(l => l.id === "w1d4")!;
+    const r = createRunner(pack!, lesson, { kidName: "Mia" }, { variationIndex: 2, intentions: true });
+    let result = r.start();
+    while (result.state.step.kind !== "choose_intention" && result.state.step.kind !== "done") result = r.next();
+    r.choose("people");
+    r.next();
+    expect(r.next().state.step).toMatchObject({ kind: "repeat", prayer: { id: "thank-you-people-v1" } });
+  });
+
+  it("can replay a variant with no reward and preserves the pack", () => {
+    const lesson = pack!.lessons.find(l => l.id === "w1d1")!;
+    const before = JSON.stringify(lesson);
+    const r = createRunner(pack!, { ...lesson, beats: lesson.beats.filter(b => b.type !== "reward") }, { kidName: "Mia" }, { variationIndex: 1 });
+    let result = r.start();
+    while (result.state.step.kind !== "done") {
+      expect(result.state.step.kind).not.toBe("reward");
+      result = r.next();
+    }
+    expect(r.summary().lanterns).toBe(0);
+    expect(JSON.stringify(lesson)).toBe(before);
   });
 });

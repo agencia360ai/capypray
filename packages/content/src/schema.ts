@@ -118,8 +118,8 @@ export const Minigame = z.discriminatedUnion("type", [
 export type Minigame = z.infer<typeof Minigame>;
 
 export const Beat = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("avatar_say"), clip: AvatarClip.default("talk_a"), text: z.string().max(140), audio: Audio.optional(), mood: Mood.optional() }),
-  z.object({ type: z.literal("repeat_after_me"), prayerId: ID, clip: AvatarClip.default("pray_hands") }),
+  z.object({ type: z.literal("avatar_say"), clip: AvatarClip.default("talk_a"), text: z.string().max(140), audio: Audio.optional(), mood: Mood.optional(), variations: z.array(Line).min(1).max(3).optional() }),
+  z.object({ type: z.literal("repeat_after_me"), prayerId: ID, prayerVariants: z.array(ID).min(1).max(3).optional(), clip: AvatarClip.default("pray_hands") }),
   z.object({ type: z.literal("minigame"), minigameId: ID }),
   z.object({ type: z.literal("listen_timer"), seconds: z.number().int().min(15).max(90), text: z.string().max(140), audio: Audio.optional(), clip: AvatarClip.default("listen_nod") }),
   z.object({ type: z.literal("choose_people"), min: z.number().int().min(1).max(4), max: z.number().int().min(1).max(4), text: z.string().max(140), audio: Audio.optional() }),
@@ -186,6 +186,7 @@ export const Story = z.object({
   id: ID,
   free: z.boolean().default(false),
   title: z.string().max(40),
+  titleAudio: Audio.optional(),
   /** scripture reference shown to grown-ups (e.g. "Luke 15:3-7") */
   ref: z.string().max(40),
   icon: z.string(),
@@ -201,6 +202,7 @@ export type Story = z.infer<typeof Story>;
 export const Scene = z.object({
   id: ID,
   title: z.string().max(30),
+  titleAudio: Audio.optional(),
   icon: z.string(),
   /** background id (apps/mobile/src/ui/backgrounds.ts); "-night" variant is used when night */
   background: ID,
@@ -283,11 +285,11 @@ export const Companion = z.object({
     stories: z.string(), storiesHint: z.string(), places: z.string(), placesHint: z.string(),
     pond: z.string(), pondHint: z.string(), journey: z.string(), journeyHint: z.string(),
     back: z.string(), close: z.string(), parents: z.string(), tapCapy: z.string(),
-    progress: z.string(), saved: z.string(), savedHint: z.string(), loading: z.string(),
+    progress: z.string(), saved: z.string(), savedAudio: Audio.optional(), savedHint: z.string(), loading: z.string(),
     storyReady: z.string(), storyLocked: z.string(), allDone: z.string(), allDoneHint: z.string(), breatheIn: z.string(), breatheOut: z.string(),
     /** journey trail prototype (docs/journey-plan.md): one primary action, a stone label, and the milestone preview */
     trailContinue: z.string().optional(), trailStep: z.string().optional(), trailMilestone: z.string().optional(), trailHere: z.string().optional(),
-    trailExpand: z.string().optional(), trailCollapse: z.string().optional(),
+    journeyHistory: z.string().optional(), trailExpand: z.string().optional(), trailCollapse: z.string().optional(),
   }),
   feelings: z.array(z.object({ id: ID, label: z.string(), icon: ID, lessonId: ID })).min(1),
   moments: z.array(z.object({ id: ID, title: z.string(), description: z.string(), icon: ID, lessonId: ID, minutes: z.number().int().min(1).max(5) })).min(1),

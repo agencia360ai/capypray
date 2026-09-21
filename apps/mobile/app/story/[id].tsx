@@ -31,7 +31,7 @@ export default function StoryScreen() {
             title: story.title,
             free: true,
             routine: "any",
-            beats: [{ type: "avatar_say", clip: "wave_hello", text: story.title, mood: "happy" }, { type: "story", storyId: story.id }, { type: "reward", lantern: 1 }],
+            beats: [{ type: "avatar_say", clip: "wave_hello", text: story.title, audio: story.titleAudio, mood: "happy" }, { type: "story", storyId: story.id }, { type: "reward", lantern: 1 }],
           }
         : null,
     [story, pack],

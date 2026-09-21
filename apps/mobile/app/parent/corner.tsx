@@ -133,7 +133,7 @@ function Corner() {
 
       <Text style={styles.hint}>{P.corner.privacy}</Text>
       <Text style={styles.hint}>
-        {P.corner.voice}: {VOICE} · {Object.keys(AUDIO).length} / {listAudio(getPack()).length + Object.keys(CAPY_LINES).length}
+        {P.corner.voice}: {VOICE} · {Object.keys(AUDIO).length} / {listAudio(getPack()).length + Object.keys(CAPY_LINES).length} · v{getPack().version}
       </Text>
       <Pressable style={styles.danger} onPress={deleteData}>
         <Text style={styles.dangerText}>{P.corner.deleteData}</Text>

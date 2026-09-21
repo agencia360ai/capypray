@@ -27,6 +27,8 @@ type KidState = {
   /** Things Capy learned about the kid (get-to-know-you answers): thankfulFor, favorite, feeling… */
   facts: Record<string, string>;
   introDone: boolean;
+  /** Local visit counters select authored variations; they never award progress. */
+  lessonVisits: Record<string, number>;
   /** Equipped reward skin id (pack.rewards type "skin"); undefined = default Capy. */
   skinId?: string;
   /** Chosen pond biome reward id (pack.rewards type "biome"); undefined = best unlocked. */
@@ -48,6 +50,7 @@ type KidState = {
   setPremium: (v: boolean) => void;
   setFact: (key: string, value: string) => void;
   finishIntro: () => void;
+  beginLesson: (id: string) => void;
   setSkin: (id?: string) => void;
   setBiome: (id?: string) => void;
   setFreePlay: (v: boolean) => void;
@@ -68,6 +71,7 @@ const initial = {
   premium: false,
   facts: {} as Record<string, string>,
   introDone: false,
+  lessonVisits: {} as Record<string, number>,
   freePlay: false,
   intentions: false,
   people: [] as PrayerPerson[],
@@ -88,6 +92,7 @@ export const useKid = create<KidState>()(
       setPremium: (premium) => set({ premium }),
       setFact: (key, value) => set((s) => ({ facts: { ...s.facts, [key]: value.trim().slice(0, 30) } })),
       finishIntro: () => set({ introDone: true }),
+      beginLesson: (id) => set(s => ({ lessonVisits: { ...s.lessonVisits, [id]: (s.lessonVisits[id] ?? 0) + 1 } })),
       setSkin: (skinId) => set({ skinId }),
       setBiome: (biomeId) => set({ biomeId }),
       setFreePlay: (freePlay) => set({ freePlay }),

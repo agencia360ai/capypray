@@ -23,3 +23,23 @@ describe("replayable companion moments", () => {
     expect(useKid.getState().lanterns).toBe(1);
   });
 });
+
+describe("session visits", () => {
+  beforeEach(() => useKid.getState().reset());
+  it("counts starts independently of completion or rewards, and clears them on reset", () => {
+    useKid.getState().beginLesson("w1d1");
+    useKid.getState().beginLesson("w1d1");
+    useKid.getState().beginLesson("w1d2");
+    expect(useKid.getState().lessonVisits).toEqual({ w1d1: 2, w1d2: 1 });
+    expect(useKid.getState().completed).toEqual({});
+    expect(useKid.getState().lanterns).toBe(0);
+    useKid.getState().reset();
+    expect(useKid.getState().lessonVisits).toEqual({});
+  });
+  it("dismissing the introduction does not earn a light or complete a lesson", () => {
+    useKid.getState().finishIntro();
+    expect(useKid.getState().introDone).toBe(true);
+    expect(useKid.getState().completed).toEqual({});
+    expect(useKid.getState().lanterns).toBe(0);
+  });
+});

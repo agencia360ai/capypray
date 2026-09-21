@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PanResponder, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { Link, Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
@@ -12,6 +12,7 @@ import { isLessonLocked, useEntitlement } from "@/entitlements";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { JourneyTrail, stoneStageX } from "@/ui/JourneyTrail";
 import { Reveal, useReducedMotion } from "@/ui/motion";
+import { SheetHandle } from "@/ui/SheetHandle";
 import { T } from "@/ui/theme";
 
 /** Phase 1 of docs/journey-plan.md: the first seven stops of one biome. */
@@ -19,8 +20,8 @@ const PHASE_1_STOPS = 7;
 
 /**
  * The journey lobby prototype. A separate route on purpose: phase 1 compares the same lesson reached through the
- * current home and through this screen with parent-child pairs, so the shipping home must stay exactly as it is.
- * Reachable from Parent Corner, behind the existing gate.
+ * current home and through this screen with parent-child pairs.
+ * Reachable from the home path card and Parent Corner.
  *
  * Everything authoritative stays where it was: entitlements, the daily gate, free play and the lesson runner are the
  * same calls the home screen makes. This screen only composes them differently.
@@ -39,13 +40,6 @@ function TrailLobby() {
   const [sheetHeight, setSheetHeight] = useState(290);
   const [exploring, setExploring] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const sheetPan = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 8 && Math.abs(g.dy) > Math.abs(g.dx),
-    onPanResponderRelease: (_, g) => {
-      if (g.dy > 30) setCollapsed(true);
-      else if (g.dy < -30) setCollapsed(false);
-    },
-  }), []);
   const sceneHeight = Math.max(220, height - sheetHeight + 22);
   const onBottomLayout = useCallback((e: LayoutChangeEvent) => setSheetHeight(e.nativeEvent.layout.height), []);
   useEffect(() => {
@@ -127,11 +121,7 @@ function TrailLobby() {
       <View style={s.stage} pointerEvents="none" />
 
       <View style={s.sheetWrap} onLayout={onBottomLayout} testID="trail-sheet">
-        <View {...sheetPan.panHandlers}>
-          <Pressable accessibilityRole="button" accessibilityLabel={collapsed ? (copy.trailExpand ?? copy.explore) : (copy.trailCollapse ?? copy.journey)} accessibilityState={{ expanded: !collapsed }} aria-expanded={!collapsed} onPress={() => setCollapsed(value => !value)} style={s.grab} testID="trail-sheet-handle">
-            <View style={s.handle} />
-          </Pressable>
-        </View>
+        <SheetHandle collapsed={collapsed} onChange={setCollapsed} expandLabel={copy.trailExpand ?? copy.explore} collapseLabel={copy.trailCollapse ?? copy.journey} testID="trail-sheet-handle" />
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]}>
           <Reveal>
             {!collapsed && <>
@@ -188,8 +178,6 @@ const s = StyleSheet.create({
   stage: { flex: 1, minHeight: 170 },
   sheetWrap: { maxHeight: "52%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: "hidden", ...T.shadow },
   sheet: { paddingHorizontal: 20, gap: 10 },
-  grab: { height: 44, alignItems: "center", justifyContent: "center" },
-  handle: { width: 42, height: 5, borderRadius: 3, backgroundColor: "#B9BDA9" },
   eyebrow: { fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1.8, color: "#768474" },
   title: { fontFamily: T.font.black, fontSize: 21, lineHeight: 25, color: T.color.ink, marginTop: 4, marginBottom: 10 },
   primary: { minHeight: 55, borderRadius: 19, backgroundColor: "#476D58", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, padding: 12, borderBottomWidth: 4, borderBottomColor: "#335641" },

@@ -1,0 +1,154 @@
+[
+  {
+    "file": "ui_saved_light.mp3",
+    "text": "A little light for today.",
+    "contexts": [
+      "companion.ui.saved (lantern reward)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_lost_sheep_title.mp3",
+    "text": "The Lost Sheep",
+    "contexts": [
+      "stories.lost-sheep.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_good_samaritan_title.mp3",
+    "text": "The Kind Stranger",
+    "contexts": [
+      "stories.good-samaritan.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_mustard_seed_title.mp3",
+    "text": "The Tiny Seed",
+    "contexts": [
+      "stories.mustard-seed.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_calm_storm_title.mp3",
+    "text": "Jesus Calms the Storm",
+    "contexts": [
+      "stories.calm-storm.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_loaves_fish_title.mp3",
+    "text": "Five Loaves, Two Fish",
+    "contexts": [
+      "stories.loaves-fish.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_zacchaeus_title.mp3",
+    "text": "Zacchaeus in the Tree",
+    "contexts": [
+      "stories.zacchaeus.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_jesus_children_title.mp3",
+    "text": "Jesus and the Children",
+    "contexts": [
+      "stories.jesus-children.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_prodigal_son_title.mp3",
+    "text": "The Son Who Came Home",
+    "contexts": [
+      "stories.prodigal-son.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_two_houses_title.mp3",
+    "text": "Two Houses",
+    "contexts": [
+      "stories.two-houses.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "story_sower_title.mp3",
+    "text": "The Farmer and the Seeds",
+    "contexts": [
+      "stories.sower.title (story shelf)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_pond_title.mp3",
+    "text": "The Pond",
+    "contexts": [
+      "scenes.pond.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_bedroom_title.mp3",
+    "text": "My Room",
+    "contexts": [
+      "scenes.bedroom.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_kitchen_title.mp3",
+    "text": "The Kitchen",
+    "contexts": [
+      "scenes.kitchen.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_garden_title.mp3",
+    "text": "The Garden",
+    "contexts": [
+      "scenes.garden.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_park_title.mp3",
+    "text": "The Park",
+    "contexts": [
+      "scenes.park.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_city_title.mp3",
+    "text": "The City",
+    "contexts": [
+      "scenes.city.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_school_title.mp3",
+    "text": "School",
+    "contexts": [
+      "scenes.school.title (place visit)"
+    ],
+    "status": "needs-recording"
+  },
+  {
+    "file": "scene_car_title.mp3",
+    "text": "The Car",
+    "contexts": [
+      "scenes.car.title (place visit)"
+    ],
+    "status": "needs-recording"
+  }
+]

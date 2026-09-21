@@ -30,7 +30,7 @@ export type AvatarEffect =
   | { type: "lights_out" };
 
 /** `intentions`: show choose_intention beats. Off, the lesson plays with its own prayer, exactly as it did before. */
-export type RunnerOpts = { intentions?: boolean };
+export type RunnerOpts = { intentions?: boolean; variationIndex?: number };
 
 export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, opts: RunnerOpts = {}, now = () => Date.now()) {
   const vars: Vars = { ...pack.companion.prayerDefaults, ...initialVars };
@@ -39,13 +39,21 @@ export function createRunner(pack: Pack, lesson: Lesson, initialVars: Vars, opts
   /** beat index → the prayer the child chose for it. Empty until a choose_intention beat is answered. */
   const chosen = new Map<number, string>();
   let echo: { text: string; audio?: string } | undefined;
-  const prayerFor = (beatIndex: number, prayerId: string) => prayers.get(chosen.get(beatIndex) ?? prayerId)!;
+  const take = Math.max(0, Math.floor(opts.variationIndex ?? 0));
+  const prayerFor = (beatIndex: number, prayerId: string) => {
+    const beat = lesson.beats[beatIndex];
+    const ids = [prayerId, ...(beat?.type === "repeat_after_me" ? beat.prayerVariants ?? [] : [])];
+    return prayers.get(chosen.get(beatIndex) ?? ids[take % ids.length]!)!;
+  };
   let state: RunnerState = { beatIndex: -1, lineIndex: 0, step: { kind: "done" }, lanternsEarned: 0, startedAt: now() };
 
   const buildStep = (beat: Beat, lineIndex: number, beatIndex: number): Step => {
     switch (beat.type) {
-      case "avatar_say":
-        return { kind: "say", text: interpolate(beat.text, vars), audio: beat.audio, clip: beat.clip, mood: beat.mood };
+      case "avatar_say": {
+        const lines = [beat, ...(beat.variations ?? [])];
+        const line = lines[take % lines.length]!;
+        return { kind: "say", text: interpolate(line.text, vars), audio: line.audio, clip: beat.clip, mood: beat.mood };
+      }
       case "repeat_after_me": {
         const prayer = prayerFor(beatIndex, beat.prayerId);
         const line = prayer.lines[lineIndex]!;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { getPack } from "@/content/pack";
@@ -20,10 +20,16 @@ import { completionKey } from "@/store/completion";
 
 export default function LessonScreen() {
   const { id, from } = useLocalSearchParams<{ id: string; from?: string }>();
+  return <LessonSession key={id} id={id} from={from} />;
+}
+
+function LessonSession({ id, from }: { id: string; from?: string }) {
   const home = from === "trail" ? "/trail" : "/";
   const pack = getPack();
   const lesson = pack.lessons.find((l) => l.id === id);
   const kid = useKid();
+  const [visit] = useState(() => kid.lessonVisits[id] ?? 0);
+  const counted = useRef(false);
   const { premium } = useEntitlement();
   const avatar = useAvatar();
   const { setStage } = useStage();
@@ -34,11 +40,11 @@ export default function LessonScreen() {
             pack,
             kid.completed[completionKey(lesson)] ? { ...lesson, beats: lesson.beats.filter((b) => b.type !== "reward") } : lesson,
             { kidName: kid.kidName || pack.ui.friend, ...kid.facts },
-            { intentions: kid.intentions },
+            { intentions: kid.intentions, variationIndex: visit },
           )
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pack, lesson, kid.kidName, kid.intentions],
+    [pack, lesson, kid.kidName, kid.intentions, visit],
   );
   const [state, setState] = useState<RunnerState | null>(null);
   const onBottomLayout = useStageInsets();
@@ -50,7 +56,8 @@ export default function LessonScreen() {
   };
 
   useEffect(() => {
-    if (runner && lesson) {
+    if (runner && lesson && !isLessonLocked(lesson, premium)) {
+      if (!counted.current) { kid.beginLesson(id); counted.current = true; }
       const scene = sceneById(pack, lesson.scene);
       const night = isNight(scene, kid.profile.bedtimeHour);
       setStage({ biome: scene && scene.id !== "pond" ? scene.background : biomeFor(pack, { beacons: kid.beacons, completed: kid.completed, biomeId: kid.biomeId }), night });
@@ -102,8 +109,11 @@ export default function LessonScreen() {
     <View style={styles.root}>
       <Pressable
         style={styles.close}
+        accessibilityRole="button"
+        accessibilityLabel={pack.companion.ui.close}
         onPress={() => {
           stopSpeaking();
+          if (lesson.routine === "intro") kid.finishIntro();
           router.replace(home);
         }}
         hitSlop={8}
