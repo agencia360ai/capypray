@@ -1,12 +1,13 @@
 {
-  "name": "Juan",
+  "name": "Capy Pirate",
   "provider": "higgsfield",
   "model": "seed_audio",
-  "voiceId": "6b528d43-c056-4a2f-9d82-1591a7ba13b0",
-  "voiceType": "preset",
+  "voiceId": "edf4c1f2-fb6c-47af-8900-11e2cca4e3b2",
+  "voiceType": "element",
   "speechRate": -10,
+  "pitchRate": -3,
   "format": "mp3",
   "sampleRate": 24000,
-  "renderedAt": "2026-09-11",
-  "note": "Every url in urls.json comes from this voice. Change the name when you re-render, so audio-fetch can tell a stale folder from a current one."
+  "renderedAt": "2026-09-24",
+  "note": "Every url in urls.json comes from this voice (a clone of the user's MiniMax Angry Pirate sample, pitched down for a funny cartoon-pirate feel). Two Lord's-Prayer lines that seed_audio refused ('forgive'-flagged) were rendered with text2speech_v2/minimax on the same cloned voice instead. Change the name when you re-render, so audio-fetch can tell a stale folder from a current one."
 }
