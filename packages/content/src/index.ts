@@ -25,6 +25,10 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
     if (section.unlock.lessonId && !lessons.has(section.unlock.lessonId)) issues.push({ path: `${at}.unlock`, message: `unknown lesson "${section.unlock.lessonId}"` });
     if (section.reveal && countWords(section.reveal.text) > 20) issues.push({ path: `${at}.reveal`, message: "reveal text > 20 words; Capy says it in one breath" });
   }
+  const games = pack.companion.games;
+  if (games && new Set(games.items.map((i) => i.id)).size !== 4) issues.push({ path: "companion.games.items", message: "each of the four games appears once" });
+  if (games && new Set(games.pieces).size !== games.pieces.length) issues.push({ path: "companion.games.pieces", message: "duplicate piece: two tiles would look alike" });
+  if (pack.companion.home?.some((sct) => sct.id === "games") && !games) issues.push({ path: "companion.home", message: "a \"games\" door needs companion.games" });
   if (pack.companion.home && !pack.companion.home.some((sct) => sct.id === "today")) issues.push({ path: "companion.home", message: "the home needs a \"today\" section: it is the only way into the day's prayer" });
   for (const item of [...pack.companion.feelings, ...pack.companion.moments]) {
     const lesson = lessons.get(item.lessonId);
@@ -176,6 +180,8 @@ export function listAudio(pack: PackT): string[] {
   add(pack.companion.breathing.prompt.audio);
   add(pack.companion.ui.savedAudio);
   for (const sct of pack.companion.home ?? []) add(sct.reveal?.audio);
+  const games = pack.companion.games;
+  if (games) for (const line of [games.hello, games.again_, ...games.win, ...games.items.map((i) => i.howTo)]) add(line.audio);
   for (const sc of pack.scenes) add(sc.titleAudio);
   for (const l of pack.lessons)
     for (const b of l.beats) {

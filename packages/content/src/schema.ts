@@ -306,12 +306,31 @@ export const Companion = z.object({
   home: z
     .array(
       z.object({
-        id: z.enum(["today", "bedtime", "journey", "stories", "feelings", "moments", "places", "pond", "memories"]),
+        id: z.enum(["today", "bedtime", "journey", "stories", "feelings", "moments", "places", "pond", "memories", "games"]),
         unlock: z.object({ lessonId: ID.optional(), beacons: z.number().int().min(0).optional() }).default({}),
         reveal: z.object({ text: z.string().max(140), audio: Audio.optional() }).optional(),
       }),
     )
     .min(1)
+    .optional(),
+  /**
+   * "Play with me": four little puzzles with endless, generated levels (apps/mobile/src/games). A break next to
+   * prayer, not a second economy: they earn no lanterns and never gate anything.
+   */
+  games: z
+    .object({
+      title: z.string().max(40), subtitle: z.string().max(80),
+      level: z.string().max(20), next: z.string().max(24), again: z.string().max(24), score: z.string().max(24),
+      /** what Capy says when the child opens the corner, wins a level, or has to try again */
+      hello: z.object({ text: z.string().max(140), audio: Audio.optional() }),
+      win: z.array(z.object({ text: z.string().max(140), audio: Audio.optional() })).min(1).max(6),
+      again_: z.object({ text: z.string().max(140), audio: Audio.optional() }),
+      /** icon ids for tiles and memory cards (apps/mobile/src/ui/icons.ts) */
+      pieces: z.array(ID).min(10).max(16),
+      items: z
+        .array(z.object({ id: z.enum(["sort", "blocks", "tiles", "memory"]), title: z.string().max(24), hint: z.string().max(40), icon: ID, howTo: z.object({ text: z.string().max(140), audio: Audio.optional() }) }))
+        .length(4),
+    })
     .optional(),
   feelings: z.array(z.object({ id: ID, label: z.string(), icon: ID, lessonId: ID })).min(1),
   moments: z.array(z.object({ id: ID, title: z.string(), description: z.string(), icon: ID, lessonId: ID, minutes: z.number().int().min(1).max(5) })).min(1),

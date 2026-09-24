@@ -58,7 +58,15 @@ then "Now, a moment for grown-ups", the gate and the offer. "Start with free bed
 only today's prayer and bedtime. To see a door open, finish W1D1 with Free play on and come back: the path and the
 stories appear with a "New!" chip and Capy announces the path. `node tools/ui-smoke.cjs` walks this whole flow.
 
-## 5. The prayer choice
+## 5. Play with me
+
+The fifth door on the home, open after W1D1 (Free play on and finishing W1D1 gets you there). Four puzzles with
+endless generated levels — Color Pour (water sort), Block Garden (block blast), Triple Tiles (tile match) and Memory
+Pond — each keeps its own level. Every Color Pour board is checked by a solver before it is dealt and every Triple
+Tiles board is built backwards so it can be finished; `apps/mobile/src/games/games.test.ts` holds both. The games
+earn no lanterns and gate nothing.
+
+## 6. The prayer choice
 
 Parent Corner → "Let them choose the prayer". Off by default and off for everything except W1D4, where Capy asks
 whether to thank God for someone the child loves or for something outside; each answer plays an authored prayer of

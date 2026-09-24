@@ -16,6 +16,13 @@ const add = (file, text, context) => {
 };
 add(pack.companion.breathing.prompt.audio, pack.companion.breathing.prompt.text, "companion.breathing.prompt");
 add(pack.companion.ui.savedAudio, pack.companion.ui.saved, "companion.ui.saved (lantern reward)");
+const games = pack.companion.games;
+if (games) {
+  add(games.hello.audio, games.hello.text, "companion.games.hello");
+  add(games.again_.audio, games.again_.text, "companion.games.again_");
+  games.win.forEach((l, i) => add(l.audio, l.text, "companion.games.win." + i));
+  for (const it of games.items) add(it.howTo.audio, it.howTo.text, "companion.games." + it.id + ".howTo");
+}
 for (const [i, s] of (pack.companion.home ?? []).entries()) if (s.reveal) add(s.reveal.audio, s.reveal.text, "companion.home." + i + " (" + s.id + " opens)");
 for (const key of ["beaconLine", "nudgeTap", "nudgeRepeat", "nudgeChoose"])
   add(pack.ui[key + "Audio"], pack.ui[key], "ui." + key);

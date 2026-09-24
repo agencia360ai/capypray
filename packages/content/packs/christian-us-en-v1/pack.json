@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -6417,6 +6417,92 @@
       "grownUpUnlock": "Ask a grown-up",
       "rewardBeacon": "1 beacon"
     },
+    "games": {
+      "title": "Play with me",
+      "subtitle": "Little puzzles for a happy brain.",
+      "level": "Level {n}",
+      "next": "Next level",
+      "again": "Try again",
+      "score": "{score} of {target}",
+      "hello": {
+        "text": "Want to play with me? Pick a game!",
+        "audio": "games_hello.mp3"
+      },
+      "win": [
+        {
+          "text": "You did it! Great thinking!",
+          "audio": "games_win_1.mp3"
+        },
+        {
+          "text": "Wow! On to the next one?",
+          "audio": "games_win_2.mp3"
+        },
+        {
+          "text": "Yay! Your brain is so strong!",
+          "audio": "games_win_3.mp3"
+        }
+      ],
+      "again_": {
+        "text": "Oops! That's okay. Let's try again together.",
+        "audio": "games_again.mp3"
+      },
+      "pieces": [
+        "sheep",
+        "duck",
+        "frog",
+        "turtle",
+        "bunny",
+        "fish",
+        "bird",
+        "cat",
+        "dog",
+        "apple",
+        "orange",
+        "star"
+      ],
+      "items": [
+        {
+          "id": "sort",
+          "title": "Color Pour",
+          "hint": "Put each color in its jar",
+          "icon": "water",
+          "howTo": {
+            "text": "Tap a jar, then tap where to pour. Make every jar one color!",
+            "audio": "games_howto_sort.mp3"
+          }
+        },
+        {
+          "id": "blocks",
+          "title": "Block Garden",
+          "hint": "Fill a row to make it bloom",
+          "icon": "blocks",
+          "howTo": {
+            "text": "Drag the blocks into the garden. Fill a whole row and it disappears!",
+            "audio": "games_howto_blocks.mp3"
+          }
+        },
+        {
+          "id": "tiles",
+          "title": "Triple Tiles",
+          "hint": "Find three that match",
+          "icon": "star",
+          "howTo": {
+            "text": "Tap a tile to put it in the tray. Three the same go pop!",
+            "audio": "games_howto_tiles.mp3"
+          }
+        },
+        {
+          "id": "memory",
+          "title": "Memory Pond",
+          "hint": "Find the pairs",
+          "icon": "frog",
+          "howTo": {
+            "text": "Flip two cards. Can you find the ones that match?",
+            "audio": "games_howto_memory.mp3"
+          }
+        }
+      ]
+    },
     "feelings": [
       {
         "id": "happy",
@@ -6570,6 +6656,16 @@
         "reveal": {
           "text": "Story time is open! I have some favorites to tell you.",
           "audio": "home_reveal_stories.mp3"
+        }
+      },
+      {
+        "id": "games",
+        "unlock": {
+          "lessonId": "w1d1"
+        },
+        "reveal": {
+          "text": "I made some games for us! Tap Play with me when you want a break.",
+          "audio": "home_reveal_games.mp3"
         }
       },
       {

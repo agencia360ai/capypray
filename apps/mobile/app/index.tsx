@@ -71,7 +71,7 @@ function KidHome() {
     router.push(isLessonLocked(next, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: next.id } });
   };
   const chip = (id: HomeSectionId) => (fresh.has(id) && copy.newDoor ? <Text style={s.newChip}>{copy.newDoor}</Text> : null);
-  const doors = (["stories", "places", "pond", "moments"] as const).filter((id) => open.has(id));
+  const doors = (["games", "stories", "places", "pond", "moments"] as const).filter((id) => open.has(id));
   return <View style={s.root}>
     <View style={[s.top, { paddingTop: insets.top + 14 }]}>
       <View><Text style={s.brand}>{copy.brand}</Text><Text style={s.tagline}>{copy.tagline}</Text></View>
@@ -93,6 +93,7 @@ function KidHome() {
       {doors.length > 0 && <>
       <Text style={s.eyebrow}>{copy.explore}</Text>
       <View style={s.doors}>
+        {doors.includes("games") && pack.companion.games && <Door href="/games" icon="play" title={pack.companion.games.title} subtitle={pack.companion.games.subtitle} color="#E3F1EE" chip={chip("games")} />}
         {doors.includes("stories") && <Door href="/stories" icon="book" title={copy.stories} subtitle={copy.storiesHint} color="#FAEAD8" chip={chip("stories")} />}
         {doors.includes("places") && <Door href="/places" icon="garden" title={copy.places} subtitle={copy.placesHint} color="#E8EFDE" chip={chip("places")} />}
         {doors.includes("pond") && <Door href="/pond" icon="lantern" title={copy.pond} subtitle={copy.pondHint} color="#F9EFCF" chip={chip("pond")} />}

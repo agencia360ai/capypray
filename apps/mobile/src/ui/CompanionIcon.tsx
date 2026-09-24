@@ -22,6 +22,7 @@ export function CompanionIcon({ name, size = 32, color = "#4D7062" }: { name: st
       : name === "close" ? <Path d="m14 14 20 20m0-20L14 34" />
       : name === "check" ? <Path d="m11 25 9 9 18-21" />
       : name === "lock" ? <><Rect x="12" y="21" width="24" height="21" rx="6" /><Path d="M17 21V13a7 7 0 0 1 14 0v8M24 29v5" /></>
+      : name === "play" ? <><Path d="M9 15h9a5 5 0 1 1 10 0h9v9a5 5 0 1 1 0 10v8H9v-8a5 5 0 1 0 0-10Z" fill="#FFD3A8" /><Circle cx="19" cy="31" r="2" fill="#4D7062" /><Circle cx="28" cy="31" r="2" fill="#4D7062" /></>
       : name === "sun" ? <><Circle cx="24" cy="24" r="10" fill="#FFD280" /><Path d="M24 3v5m0 32v5M3 24h5m32 0h5M9 9l4 4m22 22 4 4M9 39l4-4m22-22 4-4" /></>
       : <><Path d="M5 40h38L29 13l-9 16-5-8Z" fill="#BCD7BB" /><Path d="m24 22 5 3 4-3" /></>}
     </G>

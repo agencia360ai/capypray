@@ -7,7 +7,7 @@ type Progress = { beacons: number; completed: Record<string, unknown> };
 export type HomeSection = NonNullable<Pack["companion"]["home"]>[number];
 export type HomeSectionId = HomeSection["id"];
 
-const EVERYTHING: HomeSectionId[] = ["today", "bedtime", "journey", "stories", "feelings", "moments", "places", "pond", "memories"];
+const EVERYTHING: HomeSectionId[] = ["today", "bedtime", "journey", "stories", "games", "feelings", "moments", "places", "pond", "memories"];
 
 /** Same rule as rewards (GDD §9): no condition, or any condition met. Progress only — money never opens a door. */
 const isOpen = (unlock: HomeSection["unlock"], s: Progress) =>
