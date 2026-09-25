@@ -1,97 +1,82 @@
 import { Platform } from "react-native";
-import Purchases, { LOG_LEVEL, PURCHASES_ERROR_CODE, type CustomerInfo, type PurchasesPackage } from "react-native-purchases";
+import Constants from "expo-constants";
+import AsyncStorage from "@/store/persistence";
+import type { CustomerInfo, PurchasesPackage } from "react-native-purchases";
 import { useKid } from "@/store/kid";
-import { track } from "@/backend/events";
-import { setUserProps } from "@/analytics/ga4";
+import { gate } from "@/parent/gate";
 
-// The purchase seam (GDD §10.3), reached only behind the parental gate. RevenueCat in dev/production builds; in Expo Go,
-// on web, or without keys it falls back to the sandbox that flips the same store flag. Kids Category (GDD §11): RevenueCat's
-// own anonymous app user id, no collectDeviceIdentifiers(), no attributes, no ad-network integrations.
-
-const ENTITLEMENT = "premium";
-const API_KEY = Platform.select({ ios: process.env.EXPO_PUBLIC_RC_IOS_KEY, android: process.env.EXPO_PUBLIC_RC_ANDROID_KEY });
-const expoGo = !!(globalThis as { expo?: { modules?: { ExpoGo?: unknown } } }).expo?.modules?.ExpoGo;
-
-export const PURCHASES_SANDBOX = !API_KEY || expoGo || Platform.OS === "web";
-
+export const PURCHASES_SANDBOX = __DEV__ && (Platform.OS === "web" || Constants.appOwnership === "expo");
 export type Plan = "annual" | "monthly";
-export type PlanPrice = { price: string; perMonth?: string };
+export type StorePlans = Partial<Record<Plan, PurchasesPackage>>;
+const ACTIVATED = "parent-purchases-activated";
+let initializing: Promise<typeof import("react-native-purchases").default> | undefined;
 
-export class PurchaseCancelled extends Error {}
-
-let configured = false;
-let packages: Partial<Record<Plan, PurchasesPackage>> = {};
-
-const apply = (info: CustomerInfo) => {
-  const premium = !!info.entitlements.active[ENTITLEMENT];
-  useKid.getState().setPremium(premium);
-  setUserProps({ premium });
-  return premium;
-};
-
-export async function initPurchases() {
-  if (PURCHASES_SANDBOX || configured) return;
-  configured = true;
-  try {
-    if (__DEV__) Purchases.setLogLevel(LOG_LEVEL.WARN);
-    Purchases.configure({ apiKey: API_KEY! });
+function apply(info: CustomerInfo) {
+  const active = !!info.entitlements.active.premium;
+  useKid.getState().setPremium(active);
+  return active;
+}
+function sdk() {
+  if (!initializing) initializing = (async () => {
+    const apiKey = Platform.OS === "ios" ? process.env.EXPO_PUBLIC_RC_IOS_KEY : process.env.EXPO_PUBLIC_RC_ANDROID_KEY;
+    if (Platform.OS === "web" || Constants.appOwnership === "expo" || !apiKey || apiKey.startsWith("test_")) throw new Error("Store purchases unavailable");
+    const Purchases = (await import("react-native-purchases")).default;
+    Purchases.configure({ apiKey, automaticDeviceIdentifierCollectionEnabled: false });
     Purchases.addCustomerInfoUpdateListener(apply);
-    apply(await Purchases.getCustomerInfo());
-  } catch {
-    configured = false;
-  }
+    await AsyncStorage.setItem(ACTIVATED, "1");
+    return Purchases;
+  })().catch(error => { initializing = undefined; throw error; });
+  return initializing;
 }
-
-/** Store prices, localized by Apple/Google. Null in the sandbox or when offerings can't load (paywall keeps its copy). */
-export async function loadPrices(): Promise<Partial<Record<Plan, PlanPrice>> | null> {
-  if (PURCHASES_SANDBOX) return null;
-  await initPurchases();
+function requireParent() {
+  if (!gate.isOpen()) throw new Error("Parent gate required");
+}
+export async function loadPlans(): Promise<StorePlans> {
+  requireParent();
+  if (PURCHASES_SANDBOX) return {};
+  const offering = (await (await sdk()).getOfferings()).all.default;
+  if (!offering) throw new Error("Default offering is not configured");
+  return { annual: offering.annual ?? undefined, monthly: offering.monthly ?? undefined };
+}
+/** Store sheets determine eligibility and show applicable introductory offers. */
+export async function startTrial(plan: Plan): Promise<boolean> {
+  requireParent();
+  if (PURCHASES_SANDBOX) { useKid.getState().setPremium(true); return true; }
+  const selected = (await loadPlans())[plan];
+  if (!selected) throw new Error("Plan unavailable");
   try {
-    const current = (await Purchases.getOfferings()).current;
-    if (!current) return null;
-    packages = { annual: current.annual ?? undefined, monthly: current.monthly ?? undefined };
-    const out: Partial<Record<Plan, PlanPrice>> = {};
-    if (packages.annual) out.annual = { price: packages.annual.product.priceString, perMonth: packages.annual.product.pricePerMonthString ?? undefined };
-    if (packages.monthly) out.monthly = { price: packages.monthly.product.priceString };
-    return out;
-  } catch {
-    return null;
+    const result = await (await sdk()).purchasePackage(selected);
+    if (!apply(result.customerInfo)) throw new Error("Purchase has no premium entitlement");
+    return true;
+  } catch (error) {
+    if ((error as { userCancelled?: boolean }).userCancelled) return false;
+    throw error;
   }
 }
-
-/** Start the 7-day trial on the chosen plan (the intro offer lives in App Store Connect / Play Console). */
-export async function startTrial(plan: Plan): Promise<void> {
-  if (PURCHASES_SANDBOX) {
-    void track("trial_start", { plan, sandbox: true });
-    useKid.getState().setPremium(true);
-    return;
-  }
-  if (!packages[plan]) await loadPrices();
-  const pkg = packages[plan];
-  if (!pkg) throw new Error("offering not available");
-  try {
-    const { customerInfo } = await Purchases.purchasePackage(pkg);
-    const premium = apply(customerInfo);
-    void track("trial_start", { plan, premium, currency: pkg.product.currencyCode, price: pkg.product.price });
-  } catch (e) {
-    const err = e as { userCancelled?: boolean; code?: string };
-    if (err.userCancelled || err.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
-      void track("purchase_cancel", { plan });
-      throw new PurchaseCancelled();
-    }
-    void track("purchase_error", { plan, code: String(err.code ?? "unknown") });
-    throw e;
-  }
-}
-
-/** Restore an earlier purchase (same Apple ID / Google account). */
 export async function restorePurchases(): Promise<boolean> {
-  if (PURCHASES_SANDBOX) {
-    void track("restore_purchases", { sandbox: true });
-    return useKid.getState().premium;
+  requireParent();
+  if (PURCHASES_SANDBOX) return useKid.getState().premium;
+  return apply(await (await sdk()).restorePurchases());
+}
+/** Only reconnect after a parent has previously opened purchases. */
+export async function refreshPurchases() {
+  if (PURCHASES_SANDBOX) return;
+  try {
+    if (await AsyncStorage.getItem(ACTIVATED) !== "1") { useKid.getState().setPremium(false); return; }
+    apply(await (await sdk()).getCustomerInfo());
   }
-  await initPurchases();
-  const premium = apply(await Purchases.restorePurchases());
-  void track("restore_purchases", { premium });
-  return premium;
+  catch { useKid.getState().setPremium(false); }
+}
+export async function subscriptionManagementURL(): Promise<string | null> {
+  requireParent();
+  if (PURCHASES_SANDBOX) return null;
+  return (await (await sdk()).getCustomerInfo()).managementURL;
+}
+
+/** Read verified store access without treating a network failure as a free plan. */
+export async function subscriptionStatus(): Promise<"premium" | "free" | "preview"> {
+  requireParent();
+  if (PURCHASES_SANDBOX) return "preview";
+  if (await AsyncStorage.getItem(ACTIVATED) !== "1") return "free";
+  return apply(await (await sdk()).getCustomerInfo()) ? "premium" : "free";
 }

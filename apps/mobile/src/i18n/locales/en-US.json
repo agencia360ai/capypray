@@ -2,7 +2,7 @@
   "onboarding": {
     "eyebrow": "A LITTLE MOMENT. A LIFELONG FRIEND.",
     "welcomeTitle": "Now, a moment for grown-ups.",
-    "welcomeBody": "Capy just prayed with your child for the first time. Two quick settings, and you can start a free week together.",
+    "welcomeBody": "Capy just prayed with your child for the first time. Choose two quick settings, then explore the family plans or continue with free prayers.",
     "start": "I’m a grown-up",
     "parentNote": "For grown-ups · Christian prayers for ages 4–8",
     "trust": "No ads. No recording. Just a little time together.",
@@ -26,5 +26,23 @@
     "familyPlan": "YOUR FIRST LITTLE STEP",
     "timeLabel": "Bedtime: {time}",
     "editLater": "More family settings are always in Parent Corner."
+  },
+  "gameAccessibility": {
+    "colors": [
+      "orange",
+      "teal",
+      "yellow",
+      "purple",
+      "green",
+      "pink",
+      "blue"
+    ],
+    "empty": "empty",
+    "jar": "Jar {number}: {contents}. Listed from top to bottom.",
+    "jarHint": "Select a jar, then select another jar to pour.",
+    "cell": "Row {row}, column {column}: {contents}.",
+    "cellHint": "Select a piece first, then choose its top-left cell.",
+    "piece": "{color} piece with {count} squares. Positions: {positions}.",
+    "pieceHint": "Activate to select this piece, then choose a garden cell."
   }
 }

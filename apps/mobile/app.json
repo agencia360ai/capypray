@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Capy Prayer",
+    "name": "CapyPray",
     "slug": "capy-prayer",
     "scheme": "capyprayer",
     "version": "1.0.0",
@@ -8,38 +8,31 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/brand/splash-icon.png",
-      "resizeMode": "contain",
       "backgroundColor": "#FFF3DC"
     },
     "ios": {
-      "bundleIdentifier": "com.looplab.capyprayer",
+      "bundleIdentifier": "com.looplab.capypray",
       "supportsTablet": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.looplab.capyprayer",
+      "package": "com.looplab.capypray",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/brand/adaptive-icon.png",
-        "backgroundColor": "#FFF3DC"
+        "foregroundImage": "./assets/brand/icon.png",
+        "backgroundColor": "#79BDA7"
       },
       "blockedPermissions": [
-        "com.google.android.gms.permission.AD_ID",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA",
-        "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
-      ]
+      ],
+      "allowBackup": false
     },
     "plugins": [
       "expo-router",
@@ -49,21 +42,14 @@
         {
           "microphonePermission": false,
           "recordAudioAndroid": false,
+          "enableBackgroundRecording": false,
           "enableBackgroundPlayback": false
         }
       ],
       "expo-notifications",
       "expo-status-bar",
       "expo-font",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/brand/splash-icon.png",
-          "imageWidth": 220,
-          "resizeMode": "contain",
-          "backgroundColor": "#FFF3DC"
-        }
-      ]
+      "expo-splash-screen"
     ],
     "experiments": {
       "typedRoutes": true

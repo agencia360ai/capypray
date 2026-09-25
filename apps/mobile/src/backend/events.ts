@@ -1,9 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { currentParentId, supabase } from "./supabase";
-import { logEvent } from "@/analytics/ga4";
 
-// Usage events. Every event goes to GA4 over the Measurement Protocol (src/analytics/ga4.ts, anonymous, no SDK) and,
-// when a Supabase backend is configured and the parent is signed in, to the `events` table too. Never kid PII.
+// First-party analytics (GDD §11: no third-party SDKs). Events queue locally and flush to the
+// `events` table when the parent is signed in. Never includes kid PII: kid_id is our own uuid.
 
 const KEY = "events-queue";
 type Ev = { name: string; props: Record<string, unknown>; ts: string; kid_id?: string };
@@ -25,11 +24,11 @@ async function save() {
 }
 
 export async function track(name: string, props: Record<string, unknown> = {}, kidId?: string) {
-  void logEvent(name, props as Record<string, string | number | boolean>);
-  if (!supabase) return;
+  if (!__DEV__) return;
   const q = await load();
   q.push({ name, props, ts: new Date().toISOString(), kid_id: kidId });
   await save();
+  if (__DEV__) console.log("[event]", name, props);
   void flush();
 }
 

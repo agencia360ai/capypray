@@ -1,3 +1,4 @@
+import { getCopy, formatCopy } from "@/i18n";
 import { useMemo, useRef, useState } from "react";
 import { Animated, PanResponder, Pressable, StyleSheet, Text, View, useWindowDimensions, type GestureResponderEvent } from "react-native";
 import { interpolate } from "@capy/content";
@@ -10,6 +11,7 @@ import { GameShell, PALETTE, useCheer } from "./GameShell";
 const extent = (p: Piece) => ({ rows: Math.max(...p.cells.map(([r]) => r)) + 1, cols: Math.max(...p.cells.map(([, c]) => c)) + 1 });
 
 export function BlocksGame({ level, onWin }: { level: number; onWin: () => void }) {
+  const a11y = getCopy().gameAccessibility;
   const copy = getPack().companion.games!;
   const [board, setBoard] = useState<Board>(emptyBoard);
   const [deals, setDeals] = useState(0);
@@ -57,7 +59,7 @@ export function BlocksGame({ level, onWin }: { level: number; onWin: () => void 
           const ghost = hover && hover.piece.cells.some(([pr, pc]) => hover.row + pr === r && hover.col + pc === c);
           const ok = ghost && fits(board, hover!.piece, hover!.row, hover!.col);
           return (
-            <Pressable key={`${r}-${c}`} testID={`cell-${r}-${c}`} onPress={() => picked !== null && drop(picked, r, c)}
+            <Pressable key={`${r}-${c}`} testID={`cell-${r}-${c}`} accessibilityRole="button" accessibilityLabel={formatCopy(a11y.cell, { row: r + 1, column: c + 1, contents: v === null ? a11y.empty : a11y.colors[v]! })} accessibilityHint={a11y.cellHint} disabled={won || lost} onPress={() => picked !== null && drop(picked, r, c)}
               style={[s.cell, { width: cell - 2, height: cell - 2, left: 3 + c * cell, top: 3 + r * cell, backgroundColor: v !== null ? PALETTE[v] : ok ? PALETTE[hover!.piece.color] + "88" : "#EDE5D2" }]} />
           );
         }))}
@@ -76,6 +78,7 @@ export function BlocksGame({ level, onWin }: { level: number; onWin: () => void 
 
 /** A piece in the tray: tap to pick it (then tap a cell), or drag it straight onto the garden. */
 function TrayPiece({ piece, small, selected, onTap, onMove, onDrop }: { piece: Piece | null; small: number; selected: boolean; onTap: () => void; onMove: (x: number, y: number) => void; onDrop: (x: number, y: number) => void }) {
+  const a11y = getCopy().gameAccessibility;
   const pan = useRef(new Animated.ValueXY()).current;
   const handlers = useRef({ onTap, onMove, onDrop });
   handlers.current = { onTap, onMove, onDrop };
@@ -93,7 +96,7 @@ function TrayPiece({ piece, small, selected, onTap, onMove, onDrop }: { piece: P
   const { rows, cols } = extent(piece);
   return (
     <View style={[s.slot, selected && s.slotOn]}>
-      <Animated.View {...responder.panHandlers} testID={`piece-${piece.id}`} style={{ width: cols * small, height: rows * small, transform: pan.getTranslateTransform() }}>
+      <Animated.View {...responder.panHandlers} accessible accessibilityRole="button" accessibilityState={{ selected }} accessibilityLabel={formatCopy(a11y.piece, { color: a11y.colors[piece.color]!, count: piece.cells.length, positions: piece.cells.map(([r, c]) => `${r + 1}, ${c + 1}`).join("; ") })} accessibilityHint={a11y.pieceHint} onAccessibilityTap={onTap} accessibilityActions={[{ name: "activate" }]} onAccessibilityAction={e => { if (e.nativeEvent.actionName === "activate") onTap(); }} testID={`piece-${piece.id}`} style={{ width: cols * small, height: rows * small, transform: pan.getTranslateTransform() }}>
         {piece.cells.map(([r, c]) => <View key={`${r}-${c}`} style={[s.block, { width: small - 2, height: small - 2, left: c * small, top: r * small, backgroundColor: PALETTE[piece.color] }]} />)}
       </Animated.View>
     </View>

@@ -1,13 +1,13 @@
-# RevenueCat
+# RevenueCat adapter
 
-Wired in `purchase.ts` with `react-native-purchases`. In Expo Go, on web, or without `EXPO_PUBLIC_RC_IOS_KEY` /
-`EXPO_PUBLIC_RC_ANDROID_KEY` the app uses the sandbox (Parent Corner switch, "Preview mode" note on the paywall).
+See `release/setup-and-submission.md` for platform products, entitlement, offering and environment setup.
 
-Kids Category rules (GDD §11):
+Native builds now use react-native-purchases. Expo Go/web development retains an explicitly labeled preview; release builds cannot grant Premium through that preview. Live keys and store validation are still required.
 
-- `Purchases.configure({ apiKey })` with RevenueCat's own anonymous app user id. Never call `collectDeviceIdentifiers()`,
-  never set subscriber attributes, no ad-network or attribution integrations in the RevenueCat dashboard.
-- Products: `capy_monthly` $7.99, `capy_annual` $49.99, each with a 7-day free-trial introductory offer.
-- Entitlement `premium`; offering `default` (current) with the `$rc_monthly` and `$rc_annual` packages.
-- `customerInfo` updates flip `useKid().premium`; the paywall reads live localized prices from the current offering.
-- The paywall is only reachable behind the parental gate and links Terms of Use + Privacy Policy (`src/parent/legal.ts`).
+- `default` offering, annual/monthly packages, `premium` entitlement.
+- Store-localized prices in native paywall; system sheet shows eligible trial terms.
+- Purchases/restore require an active parent gate; cancellation does not grant access.
+- Anonymous RevenueCat identity, no child subscriber attributes, automatic device identifier collection disabled.
+- Existing customers refresh on app foreground; the SDK is not initialized for a new child until an adult opens the offer.
+- Production ignores previously persisted debug Premium/free-play flags.
+- Legacy Supabase webhook is not enabled or compatible with this anonymous adapter. Do not deploy it for this release.

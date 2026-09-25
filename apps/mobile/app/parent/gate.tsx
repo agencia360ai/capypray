@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { gate, HOLD_MS, isCorrect, makeChallenge } from "@/parent/gate";
 import { P } from "@/parent/strings";
-import { track } from "@/backend/events";
 
 // Parental gate screen. next = "corner" | "paywall" | "onboarding".
 export default function GateScreen() {
@@ -23,8 +22,7 @@ export default function GateScreen() {
     setHolding(true);
     timer.current = setTimeout(() => {
       gate.open();
-      void track("gate_pass", { next: String(next) });
-      router.replace(`/parent/${next}` as never);
+      router.replace(`/parent/${["corner", "paywall", "onboarding"].includes(next) ? next : "corner"}` as never);
     }, HOLD_MS);
   };
   const stopHold = () => {
