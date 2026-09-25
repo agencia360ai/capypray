@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Capy Prayer",
+    "name": "CapyPray",
     "slug": "capy-prayer",
     "scheme": "capyprayer",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -11,22 +11,41 @@
       "backgroundColor": "#FFF3DC"
     },
     "ios": {
-      "bundleIdentifier": "com.looplab.capyprayer",
+      "bundleIdentifier": "com.looplab.capypray",
       "supportsTablet": true,
       "infoPlist": {
-        "NSUserTrackingUsageDescription": ""
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.looplab.capyprayer",
+      "package": "com.looplab.capypray",
       "adaptiveIcon": {
-        "backgroundColor": "#FFF3DC"
-      }
+        "foregroundImage": "./assets/brand/icon.png",
+        "backgroundColor": "#79BDA7"
+      },
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "allowBackup": false
     },
     "plugins": [
       "expo-router",
       "expo-asset",
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundRecording": false,
+          "enableBackgroundPlayback": false
+        }
+      ],
       "expo-notifications",
       "expo-status-bar",
       "expo-font",
@@ -37,6 +56,7 @@
     },
     "extra": {
       "packId": "christian-us-en-v1"
-    }
+    },
+    "icon": "./assets/brand/icon.png"
   }
 }

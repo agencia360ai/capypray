@@ -22,7 +22,7 @@ export default function GateScreen() {
     setHolding(true);
     timer.current = setTimeout(() => {
       gate.open();
-      router.replace(`/parent/${next}` as never);
+      router.replace(`/parent/${["corner", "paywall", "onboarding"].includes(next) ? next : "corner"}` as never);
     }, HOLD_MS);
   };
   const stopHold = () => {

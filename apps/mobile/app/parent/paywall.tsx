@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
-import { router } from "expo-router";
+import { Alert, Linking, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
+import { Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
@@ -8,19 +8,32 @@ import { useAvatar } from "@/avatar/AvatarView";
 import * as haptics from "@/ui/haptics";
 import { T } from "@/ui/theme";
 import { P } from "@/parent/strings";
-import { PURCHASES_SANDBOX, restorePurchases, startTrial, type Plan } from "@/entitlements/purchase";
+import { PURCHASES_SANDBOX, restorePurchases, startTrial, loadPlans, type StorePlans, type Plan } from "@/entitlements/purchase";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { feelingArt, storyCover } from "@/ui/illustrations";
 import { backgroundFor } from "@/ui/backgrounds";
 import { formatHour } from "@/i18n";
 import { speak, stopSpeaking } from "@/audio/voice";
 
+import { gate } from "@/parent/gate";
+import { legalURLs } from "@/parent/legal";
+
 // Parent-only offer. Prices remain explicit beside the action; Expo Go uses the existing sandbox adapter.
 export default function Paywall() {
+  if (!gate.isOpen()) return <Redirect href="/parent/gate?next=paywall" />;
+  return <ParentOffer />;
+}
+function ParentOffer() {
   const pack = getPack(), kid = useKid(), copy = P.paywall, avatar = useAvatar(), insets = useSafeAreaInsets();
   const [plan, setPlan] = useState<Plan>("annual");
   const [details, setDetails] = useState(false), [busy, setBusy] = useState(false);
-  const done = () => router.replace("/");
+  const [plans, setPlans] = useState<StorePlans>({});
+  const [loading, setLoading] = useState(!PURCHASES_SANDBOX);
+  const [storeError, setStoreError] = useState(false);
+  const done = () => { gate.close(); router.replace("/"); };
+  useEffect(() => { let alive = true; loadPlans().then(p => { if (alive) setPlans(p); }).catch(() => { if (alive) setStoreError(true); }).finally(() => { if (alive) setLoading(false); }); return () => { alive = false; }; }, []);
+  const ready = PURCHASES_SANDBOX || !!plans[plan];
+  const billing = PURCHASES_SANDBOX ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) : plans[plan] ? copy.storeBilling(plans[plan]!.product.priceString, plan === "annual" ? copy.annualPeriod : copy.monthlyPeriod) : copy.storeUnavailable;
   const name = kid.kidName || P.onboarding.yourChild;
   useEffect(() => {
     stopSpeaking(); avatar.send({ type: "idle" });
@@ -31,7 +44,7 @@ export default function Paywall() {
   const purchase = async () => {
     if (busy) return;
     setBusy(true);
-    try { await startTrial(plan); void haptics.success(); done(); }
+    try { if (await startTrial(plan)) { void haptics.success(); done(); } }
     catch { Alert.alert(copy.errorTitle, copy.errorBody); }
     finally { setBusy(false); }
   };
@@ -61,8 +74,8 @@ export default function Paywall() {
       </View>
       <View style={s.planHeading}><Text style={s.heading}>{copy.choosePlan}</Text><Text style={s.small}>{copy.gentlePace}</Text></View>
       <View accessibilityRole="radiogroup" accessibilityLabel={copy.choosePlan} style={s.plans}>
-        <PlanOption id="annual" selected={plan === "annual"} disabled={busy} onPress={() => pick("annual")} title={copy.annualTitle} price={copy.annualPrice} period={copy.annualPeriod} note={copy.annualNote} badge={copy.bestValue} />
-        <PlanOption id="monthly" selected={plan === "monthly"} disabled={busy} onPress={() => pick("monthly")} title={copy.monthlyTitle} price={copy.monthlyPrice} period={copy.monthlyPeriod} note={copy.monthlyNote} />
+        <PlanOption id="annual" selected={plan === "annual"} disabled={busy || (!PURCHASES_SANDBOX && !plans.annual)} onPress={() => pick("annual")} title={copy.annualTitle} price={PURCHASES_SANDBOX ? copy.annualPrice : plans.annual?.product.priceString ?? "—"} period={copy.annualPeriod} note={PURCHASES_SANDBOX ? copy.annualNote : copy.storeAnnualNote} badge={PURCHASES_SANDBOX ? copy.bestValue : undefined} />
+        <PlanOption id="monthly" selected={plan === "monthly"} disabled={busy || (!PURCHASES_SANDBOX && !plans.monthly)} onPress={() => pick("monthly")} title={copy.monthlyTitle} price={PURCHASES_SANDBOX ? copy.monthlyPrice : plans.monthly?.product.priceString ?? "—"} period={copy.monthlyPeriod} note={copy.monthlyNote} />
       </View>
       <View style={s.included}>
         <Text style={s.heading}>{copy.included}</Text>
@@ -70,20 +83,24 @@ export default function Paywall() {
         <Benefit icon="heart" text={copy.recap.people(kid.people.map(p => p.label))} />
         <Benefit icon="moon" text={copy.recap.bedtime(formatHour(kid.profile.bedtimeHour, pack.locale))} />
       </View>
-      <View style={s.details}>
+      {PURCHASES_SANDBOX && <View style={s.details}>
         <Pressable accessibilityRole="button" accessibilityLabel={copy.trialDetails} accessibilityState={{ expanded: details }} aria-expanded={details} onPress={() => setDetails(v => !v)} style={s.detailsToggle}>
           <Text style={s.heading}>{copy.trialDetails}</Text><Text style={s.plus}>{details ? "−" : "+"}</Text>
         </Pressable>
         {details && <View style={s.timeline}>{copy.timeline.map((step,i) => <View key={step.title} style={s.step}><View style={s.stepIcon}><Icon name={step.icon} size={22} /></View><View style={s.stepText}><Text style={s.stepTitle}>{step.title}</Text><Text style={s.small}>{i === 2 ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) + ". " + step.body : step.body}</Text></View></View>)}</View>}
       </View>
+      }
+      {!PURCHASES_SANDBOX && <Text style={s.small}>{copy.storeTerms}</Text>}
       <Text style={s.trust}>{copy.trust}</Text>
       <Pressable accessibilityRole="button" disabled={busy} onPress={() => void restore()} style={s.restore}><Text style={s.restoreText}>{copy.restore}</Text></Pressable>
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 20 }}>{Object.entries(legalURLs).filter(([,url]) => !!url).map(([key,url]) => <Pressable key={key} accessibilityRole="link" onPress={() => { if (gate.isOpen()) void Linking.openURL(url); else router.replace("/parent/gate?next=paywall"); }} style={{ minHeight: 44, justifyContent: "center" }}><Text style={s.restoreText}>{copy.legal[key as keyof typeof legalURLs]}</Text></Pressable>)}</View>
     </ScrollView>
     <View style={[s.footer, { paddingBottom: Math.max(insets.bottom, 10) }]}>
-      <Text style={s.billing} testID="paywall-billing">{plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly}</Text>
-      <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy, busy }} disabled={busy} onPress={() => void purchase()} style={({ pressed }) => [s.cta, pressed && s.pressed, busy && { opacity: 0.65 }]} testID="paywall-continue">
-        <Text style={s.ctaText}>{busy ? copy.busy : copy.cta}</Text><Icon name="arrow" color="#FFFFFF" size={22} />
+      <Text style={s.billing} testID="paywall-billing">{loading ? copy.busy : billing}</Text>
+      <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy || !ready || loading, busy }} disabled={busy || !ready || loading} onPress={() => void purchase()} style={({ pressed }) => [s.cta, pressed && s.pressed, busy && { opacity: 0.65 }]} testID="paywall-continue">
+        <Text style={s.ctaText}>{busy || loading ? copy.busy : PURCHASES_SANDBOX ? copy.cta : copy.storeCTA}</Text><Icon name="arrow" color="#FFFFFF" size={22} />
       </Pressable>
+      {storeError && <Text style={s.previewNote}>{copy.storeUnavailable}</Text>}
       {PURCHASES_SANDBOX && <Text style={s.previewNote}>{copy.sandboxNotice}</Text>}
       <Pressable accessibilityRole="button" onPress={done} style={s.later} testID="paywall-free"><Text style={s.laterText}>{copy.later}</Text></Pressable>
     </View>

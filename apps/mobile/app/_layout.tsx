@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { AppState, View } from "react-native";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black } from "@expo-google-fonts/nunito";
 import { AvatarProvider } from "@/avatar/AvatarView";
 import { useKid } from "@/store/kid";
+
+import { refreshPurchases } from "@/entitlements/purchase";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -23,6 +25,12 @@ export default function RootLayout() {
   useEffect(() => {
     if ((loaded || error) && hydrated) SplashScreen.hideAsync().catch(() => {});
   }, [loaded, error, hydrated]);
+  useEffect(() => {
+    if (!hydrated) return;
+    void refreshPurchases();
+    const subscription = AppState.addEventListener("change", state => { if (state === "active") void refreshPurchases(); });
+    return () => subscription.remove();
+  }, [hydrated]);
   if ((!loaded && !error) || !hydrated) return null;
   return (
     <View style={{ flex: 1, backgroundColor: "#E5E9DB", alignItems: "center" }}><View style={{ flex: 1, width: "100%", maxWidth: 600, overflow: "hidden" }}><AvatarProvider>

@@ -37,5 +37,5 @@ export function NarrativeSymbol({ name, size = 48 }: { name: VisualCue["symbol"]
     case "wheat": drawing = <><Path d="M24 44V10m0 25C9 34 8 25 10 23c11 0 15 6 14 12Zm0-9C9 25 8 16 10 14c11 0 15 6 14 12Zm0 9c15-1 16-10 14-12-11 0-15 6-14 12Zm0-9c15-1 16-10 14-12-11 0-15 6-14 12ZM24 13c-8-3-7-10 0-12 7 3 8 9 0 12Z" fill="#ECD394" /></>; break;
     default: drawing = null;
   }
-  return <Svg width={size} height={size} viewBox="0 0 48 48" accessible={false}><G stroke="#4D7062" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" fill="none">{drawing}</G></Svg>;
+  return <Svg width={size} height={size} viewBox="0 0 48 48" aria-hidden={true}><G stroke="#4D7062" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" fill="none">{drawing}</G></Svg>;
 }
