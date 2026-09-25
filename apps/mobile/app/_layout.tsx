@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Slot } from "expo-router";
+import { Slot, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black } from "@expo-google-fonts/nunito";
 import { AvatarProvider } from "@/avatar/AvatarView";
 import { useKid } from "@/store/kid";
+import { logEvent, logScreen, setUserProps } from "@/analytics/ga4";
+import { initPurchases } from "@/entitlements/purchase";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -23,6 +25,15 @@ export default function RootLayout() {
   useEffect(() => {
     if ((loaded || error) && hydrated) SplashScreen.hideAsync().catch(() => {});
   }, [loaded, error, hydrated]);
+  useEffect(() => {
+    if (!hydrated) return;
+    const k = useKid.getState();
+    setUserProps({ premium: k.premium, onboarded: k.onboarded, age_band: k.profile.ageBand });
+    void logEvent("app_launch", { lessons_done: Object.keys(k.completed).length, streak: k.streak.current });
+    void initPurchases();
+  }, [hydrated]);
+  const path = usePathname();
+  useEffect(() => { if (hydrated) logScreen(path); }, [path, hydrated]);
   if ((!loaded && !error) || !hydrated) return null;
   return (
     <View style={{ flex: 1, backgroundColor: "#E5E9DB", alignItems: "center" }}><View style={{ flex: 1, width: "100%", maxWidth: 600, overflow: "hidden" }}><AvatarProvider>

@@ -22,3 +22,5 @@ apps/mobile/assets/audio/
 apps/mobile/src/audio/manifest.ts
 apps/mobile/public/avatar/
 apps/mobile/dist-native/
+apps/mobile/android/
+apps/mobile/ios/

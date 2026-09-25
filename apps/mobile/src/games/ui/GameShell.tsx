@@ -14,6 +14,7 @@ import { Confetti } from "@/ui/Confetti";
 import { Pop } from "@/ui/motion";
 import * as haptics from "@/ui/haptics";
 import { T } from "@/ui/theme";
+import { track } from "@/backend/events";
 
 export type GameId = "sort" | "blocks" | "tiles" | "memory";
 /** Capy explains each game once per session, not at the start of every level. */
@@ -59,6 +60,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   useEffect(() => {
     setStage({ dark: false, night: false });
     avatar.send({ type: "mood", value: "happy" });
+    void track("game_open", { game, level });
     if (explained.has(game)) return;
     const t = setTimeout(() => { explained.add(game); say(item.howTo, "talk_a"); }, 500);
     return () => clearTimeout(t);
@@ -66,6 +68,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   }, [avatar, game]);
   useEffect(() => {
     if (!won) return;
+    void track("game_level_win", { game, level });
     void haptics.success();
     setBurst((b) => b + 1);
     say(winLine, "celebrate");
@@ -73,6 +76,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   }, [won]);
   useEffect(() => {
     if (!lost) return;
+    void track("game_level_lose", { game, level });
     void haptics.nope();
     say(copy.again_, "think");
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -312,7 +312,7 @@ Gating: entitlement `premium` (RevenueCat) → mirror en Supabase vía webhook �
 - **Apple Kids Category (6–8):** sin links externos ni compras fuera de parental gate; **sin analytics ni ads de terceros**; sin enviar PII/device info a terceros. Google Play: "Designed for Families" equivalente.
 - **RevenueCat en Kids apps:** configurar SIN identificadores de dispositivo (no llamar `collectDeviceIdentifiers`, sin IDFA/GAID), app user ID anónimo generado por nosotros. Verificar con RC docs antes de submit.
 - **COPPA (regla FTC 2025 en vigor):** cuenta = padre (email). Del niño solo nickname + edad-banda + progreso. **Sin fotos, sin grabación de voz, sin chat, sin ubicación** en v1 (audio/foto/video del niño = personal information). Privacy policy específica + "Parental Corner" con borrar datos del niño en 1 tap.
-- **Analytics:** eventos propios → Supabase (`events`). Dashboards por SQL/Metabase. Nada de Firebase/Amplitude/Mixpanel/Meta SDK dentro del app.
+- **Analytics:** (decisión 2026-09-25, v1 sin backend) GA4 vía Measurement Protocol — HTTPS directo, sin SDK, ID anónimo por instalación, sin IDFA/AAID ni datos del dispositivo ni PII del niño (`apps/mobile/src/analytics/ga4.ts`). Supabase `events` queda opcional. Nada de Firebase/Amplitude/Mixpanel/Meta SDK dentro del app; Meta Pixel + GA4 web solo en la landing de padres.
 - **Parental gate:** operación matemática + hold 3s, requerida antes de: paywall, settings, links, Parent Corner.
 - **Contenido bíblico:** WEB/KJV (PD) o licencia. Música: original o libre de regalías con licencia comercial.
 - **Age rating:** 4+. Sin LLM generativo hablando con el niño en v1 (riesgo de contenido + COPPA). Posible v2 "Ask Capy" con guardrails y opt-in del padre.

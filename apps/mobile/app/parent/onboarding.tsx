@@ -12,6 +12,7 @@ import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { Bouncy, Pop, Reveal } from "@/ui/motion";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { T } from "@/ui/theme";
+import { track } from "@/backend/events";
 
 export default function Onboarding() {
   const onboarded = useKid(s => s.onboarded);
@@ -35,6 +36,7 @@ function Welcome() {
   // (GDD §11), and never before the first prayer (docs/companion-design.md).
   const LAST = 2;
   const next = () => {
+    void track("parent_onboarding_step", { step, last: step === LAST });
     if (step < LAST) { setStep(step + 1); return; }
     kid.setKidName(name); kid.setProfile({ ageBand: pack.ageBand, tradition: pack.tradition, bedtimeHour: hour }); kid.finishOnboarding(); gate.close();
     router.replace({ pathname: "/parent/gate", params: { next: "paywall" } });

@@ -3,40 +3,74 @@
     "name": "Capy Prayer",
     "slug": "capy-prayer",
     "scheme": "capyprayer",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
+      "image": "./assets/brand/splash-icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#FFF3DC"
     },
     "ios": {
       "bundleIdentifier": "com.looplab.capyprayer",
       "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "infoPlist": {
-        "NSUserTrackingUsageDescription": ""
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.looplab.capyprayer",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/brand/adaptive-icon.png",
         "backgroundColor": "#FFF3DC"
-      }
+      },
+      "blockedPermissions": [
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
     "plugins": [
       "expo-router",
       "expo-asset",
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
+        }
+      ],
       "expo-notifications",
       "expo-status-bar",
       "expo-font",
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/brand/splash-icon.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFF3DC"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "packId": "christian-us-en-v1"
-    }
+    },
+    "icon": "./assets/brand/icon.png"
   }
 }

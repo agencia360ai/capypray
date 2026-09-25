@@ -1,14 +1,13 @@
-# RevenueCat adapter (dev build step)
+# RevenueCat
 
-`react-native-purchases` is a native module and is not in Expo Go, so it is wired only when we move to dev builds (EAS).
+Wired in `purchase.ts` with `react-native-purchases`. In Expo Go, on web, or without `EXPO_PUBLIC_RC_IOS_KEY` /
+`EXPO_PUBLIC_RC_ANDROID_KEY` the app uses the sandbox (Parent Corner switch, "Preview mode" note on the paywall).
 
-Kids Category rules (GDD §11) for the configuration:
+Kids Category rules (GDD §11):
 
-- `Purchases.configure({ apiKey, appUserID: parentId })` with our own anonymous parent UUID. Never call `collectDeviceIdentifiers()`; no IDFA/GAID.
-- Products: `capy_monthly` $7.99, `capy_annual` $49.99 (default, "$4.17/mo · save 48%"), 7-day trial via Offerings intro offer.
-- Entitlement id: `premium`. Offering `default` with a Paywall template.
-- On `customerInfo` updates: `useKid.getState().setPremium(!!info.entitlements.active.premium)`.
-- Paywall is only reachable behind the parental gate (`app/parent/gate.tsx` → `app/parent/paywall.tsx`).
-- Webhook → `supabase/functions/rc-webhook` mirrors into `entitlements` for the parent dashboard and weekly report.
-
-Until then, Parent Corner has a "Premium (sandbox)" switch that flips the same store flag.
+- `Purchases.configure({ apiKey })` with RevenueCat's own anonymous app user id. Never call `collectDeviceIdentifiers()`,
+  never set subscriber attributes, no ad-network or attribution integrations in the RevenueCat dashboard.
+- Products: `capy_monthly` $7.99, `capy_annual` $49.99, each with a 7-day free-trial introductory offer.
+- Entitlement `premium`; offering `default` (current) with the `$rc_monthly` and `$rc_annual` packages.
+- `customerInfo` updates flip `useKid().premium`; the paywall reads live localized prices from the current offering.
+- The paywall is only reachable behind the parental gate and links Terms of Use + Privacy Policy (`src/parent/legal.ts`).
