@@ -71,11 +71,12 @@ export function speak(text: string, opts: Opts = {}): SpeakHandle {
     if (file) {
       try {
         if (!modeSet) {
-          modeSet = true;
           await setAudioModeAsync({ playsInSilentMode: true });
+          modeSet = true;
         }
         if (my !== token) return;
         const p = ensurePlayer(file);
+        p.muted = false;
         onFinish = done;
         opts.onStart?.();
         p.play();

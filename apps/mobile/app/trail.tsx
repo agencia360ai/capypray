@@ -1,3 +1,4 @@
+import { getCopy } from "@/i18n";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { Link, Redirect, router } from "expo-router";
@@ -109,7 +110,8 @@ function TrailLobby() {
         <JourneyTrail view={view} copy={copy} worldTitle={world?.title ?? ""} onContinue={go} compact={sceneHeight < 400} layer="front" />
       </View>
       <View style={[s.top, { paddingTop: insets.top + 14 }]}>
-        <View>
+        <Pressable accessibilityRole="button" accessibilityLabel={copy.back} onPress={() => router.replace("/")} style={s.parent}><Icon name="back" size={23} /></Pressable>
+        <View style={{ flex: 1 }}>
           <Text style={s.brand}>{copy.journey}</Text>
           <Text style={s.tagline}>{interpolate(copy.progress, { count: String(view.doneCount), total: String(view.total) })}</Text>
         </View>
@@ -138,7 +140,7 @@ function TrailLobby() {
           {/* a quick prayer and bedtime stay one tap away, including after today's curriculum step */}
           {!collapsed && <Reveal delay={70}>
             <View style={s.row}>
-              <Quick icon="heart" label={copy.moments} onPress={() => router.push("/moments")} />
+              <Quick icon="book" label={getCopy().playRewards.pathMap} onPress={() => router.push("/journey")} />
               <Quick icon="moon" label={copy.bedtime} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: pack.routines.bedtime.lessonId!, from: "trail" } })} />
             </View>
           </Reveal>}

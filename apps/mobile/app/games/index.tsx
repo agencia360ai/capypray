@@ -1,5 +1,6 @@
+import { getCopy } from "@/i18n";
 import { useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Redirect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
@@ -25,6 +26,8 @@ export default function Games() {
 
 function Corner() {
   const pack = getPack(), copy = pack.companion.games!;
+  const rewards = getCopy().playRewards;
+  const wins = useKid(s => s.gameWins);
   const levels = useKid((s) => s.gameLevels);
   const insets = useSafeAreaInsets();
   const avatar = useAvatar(), { setStage } = useStage();
@@ -45,7 +48,7 @@ function Corner() {
         </Pressable>
       </View>
       <View style={s.stage} pointerEvents="none" />
-      <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]} onLayout={onLayout}>
+      <ScrollView contentContainerStyle={{ gap: 4 }} style={[s.sheet, { paddingBottom: Math.max(insets.bottom, 18) }]} onLayout={onLayout}>
         <Text accessibilityRole="header" style={s.title}>{copy.title}</Text>
         <Text style={s.subtitle}>{copy.subtitle}</Text>
         <View style={s.grid}>
@@ -55,12 +58,13 @@ function Corner() {
                 <Text style={s.glyph}>{glyph(g.icon)}</Text>
                 <Text style={s.cardTitle}>{g.title}</Text>
                 <Text style={s.hint}>{g.hint}</Text>
+                <Text style={s.hint}>{[1, 5, 10].filter(n => Object.keys(wins).filter(k => k.startsWith(`${g.id}:`)).length >= n).map(n => `🏅 ${n === 1 ? rewards.first : n === 5 ? rewards.five : rewards.ten}`).join(" · ") || rewards.empty}</Text>
                 <Text style={s.level}>{interpolate(copy.level, { n: String(levels[g.id] ?? 1) })}</Text>
               </Pressable>
             </Pop>
           ))}
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -70,7 +74,7 @@ const s = StyleSheet.create({
   top: { paddingHorizontal: 18, flexDirection: "row" },
   round: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF9EAEF", alignItems: "center", justifyContent: "center" },
   stage: { flex: 1, minHeight: 150 },
-  sheet: { backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingTop: 20, paddingHorizontal: 18, gap: 4, ...T.shadow },
+  sheet: { maxHeight: "64%", backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingTop: 20, paddingHorizontal: 18, gap: 4, ...T.shadow },
   title: { fontFamily: T.font.black, fontSize: 26, color: T.color.ink, textAlign: "center" },
   subtitle: { fontFamily: T.font.regular, fontSize: 13, color: T.color.brown, textAlign: "center", marginBottom: 12 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },

@@ -1,20 +1,28 @@
 import { describe, expect, it } from "vitest";
-import { CAP, isSorted, pour, pourable, solvable, sortLevel, sortShape } from "./sort";
+import { CAP, hasMove, isSorted, pour, pourable, solvable, sortLevel, sortShape } from "./sort";
 import { SIZE, deal, emptyBoard, fits, fitsAnywhere, place, target } from "./blocks";
 import { TRAY, isFree, take, tilesLevel, tilesLost, tilesShape, tilesWon, type Tile } from "./tiles";
 import { memoryLevel, memoryPairs } from "./memory";
 
 describe("Color Sort", () => {
+  it("recognizes a blocked board and keeps history snapshots immutable", () => {
+    expect(hasMove([[0, 1, 0, 1], [1, 0, 1, 0]])).toBe(false);
+    const start = [[0, 1], [1], []];
+    const next = pour(start, 0, 1);
+    expect(start).toEqual([[0, 1], [1], []]);
+    expect(next).toEqual([[0], [1, 1], []]);
+  });
   it("grows from two colors to seven", () => {
-    expect(sortShape(1)).toEqual({ colors: 2, empty: 1 });
+    expect(sortShape(1)).toEqual({ colors: 2, empty: 2 });
     expect(sortShape(10).colors).toBe(5);
     expect(sortShape(500).colors).toBe(7);
   });
   it("hands out only boards the solver can finish, the same board every time", () => {
-    for (const level of [1, 2, 5, 9, 14, 20]) {
+    for (const level of Array.from({ length: 100 }, (_, i) => i + 1)) {
       const a = sortLevel(level), b = sortLevel(level);
       expect(a).toEqual(b);
       expect(isSorted(a.jars)).toBe(false);
+      expect(hasMove(a.jars)).toBe(true);
       expect(solvable(a.jars)).toBe(true);
       expect(a.jars.flat()).toHaveLength(a.colors * CAP);
     }

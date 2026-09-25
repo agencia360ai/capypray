@@ -11,7 +11,7 @@ export type SortLevel = { jars: Jar[]; colors: number };
 /** How big level n is: two colors to start, one more every three levels, up to seven. */
 export function sortShape(level: number) {
   const colors = Math.min(7, 2 + Math.floor((level - 1) / 3));
-  return { colors, empty: colors <= 3 ? 1 : 2 };
+  return { colors, empty: 2 };
 }
 
 const top = (j: Jar) => j[j.length - 1];
@@ -60,16 +60,19 @@ export function solvable(jars: Jar[], cap = 40000): boolean {
 
 export function sortLevel(level: number): SortLevel {
   const { colors, empty } = sortShape(level);
-  for (let attempt = 0; attempt < 50; attempt++) {
+  for (let attempt = 0; attempt < 8; attempt++) {
     const r = rng(seedFor("sort", level) + attempt);
     const units = shuffle(r, Array.from({ length: colors * CAP }, (_, i) => i % colors));
     const jars: Jar[] = Array.from({ length: colors }, (_, i) => units.slice(i * CAP, (i + 1) * CAP));
     for (let i = 0; i < empty; i++) jars.push([]);
     if (jars.some((j) => j.length === CAP && new Set(j).size === 1)) continue; // no jar may start already done
-    if (solvable(jars)) return { jars, colors };
+    if (solvable(jars, 6000)) return { jars, colors };
   }
-  // unreachable in practice; a sorted board rotated one jar is still a fair, trivial level
-  const jars: Jar[] = Array.from({ length: colors }, (_, c) => Array(CAP).fill(c));
-  jars.push([]);
+  // A known solvable, unfinished fallback, never an already-won board.
+  const jars: Jar[] = [[0, 1, 1, 1], [1, 0, 0, 0]];
+  for (let c = 2; c < colors; c++) jars.push(Array(CAP).fill(c));
+  jars.push([], []);
   return { jars, colors };
 }
+
+export const hasMove = (jars: Jar[]) => jars.some((_, a) => jars.some((_, b) => pourable(jars, a, b) > 0));
