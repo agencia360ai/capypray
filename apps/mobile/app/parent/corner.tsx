@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { Redirect, router } from "expo-router";
 import { getPack } from "@/content/pack";
 import { useKid } from "@/store/kid";
@@ -10,6 +10,9 @@ import { listAudio } from "@capy/content";
 import { cancelBedtimeReminder, scheduleBedtimeReminder } from "@/notifications/bedtime";
 import { BackupCard } from "@/parent/BackupCard";
 import { formatHour } from "@/i18n";
+
+import { PURCHASES_SANDBOX, subscriptionManagementURL } from "@/entitlements/purchase";
+import { legalURLs } from "@/parent/legal";
 
 // Parent Corner v1 (GDD §9, §11): bedtime, prayer people + notes, delete data, sandbox premium.
 export default function ParentCorner() {
@@ -109,13 +112,13 @@ function Corner() {
         </Pressable>
       </View>
 
-      <BackupCard />
+      {__DEV__ && <BackupCard />}
 
-      <View style={styles.rowBetween}>
+      {PURCHASES_SANDBOX && <View style={styles.rowBetween}>
         <Text style={styles.label}>{P.corner.premium}</Text>
         <Switch value={kid.premium} onValueChange={kid.setPremium} trackColor={{ true: "#FFB84D" }} />
-      </View>
-      <Pressable accessibilityRole="button" onPress={() => router.push("/trail")} style={styles.row}>
+      </View>}
+      {__DEV__ && <><Pressable accessibilityRole="button" onPress={() => router.push("/trail")} style={styles.row}>
         <Text style={styles.label}>{P.corner.trail}</Text>
         <Text style={styles.label}>›</Text>
       </Pressable>
@@ -129,7 +132,9 @@ function Corner() {
         <Text style={styles.label}>{P.corner.freePlay}</Text>
         <Switch value={kid.freePlay} onValueChange={kid.setFreePlay} trackColor={{ true: "#FFB84D" }} />
       </View>
-      <Text style={styles.hint}>{P.corner.premiumHint}</Text>
+      <Text style={styles.hint}>{P.corner.premiumHint}</Text></>}
+      <Pressable style={styles.back} onPress={async () => { try { const url = await subscriptionManagementURL(); if (url) await Linking.openURL(url); else router.push("/parent/paywall"); } catch { Alert.alert(P.paywall.errorTitle, P.paywall.errorBody); } }}><Text style={styles.backText}>{P.paywall.manage}</Text></Pressable>
+      {Object.entries(legalURLs).filter(([,url]) => !!url).map(([key,url]) => <Pressable key={key} style={{ minHeight: 44, justifyContent: "center" }} accessibilityRole="link" onPress={() => { if (gate.isOpen()) void Linking.openURL(url); else router.replace("/parent/gate?next=corner"); }}><Text>{P.paywall.legal[key as keyof typeof legalURLs]}</Text></Pressable>)}
 
       <Text style={styles.hint}>{P.corner.privacy}</Text>
       <Text style={styles.hint}>

@@ -24,6 +24,7 @@ async function save() {
 }
 
 export async function track(name: string, props: Record<string, unknown> = {}, kidId?: string) {
+  if (!__DEV__) return;
   const q = await load();
   q.push({ name, props, ts: new Date().toISOString(), kid_id: kidId });
   await save();

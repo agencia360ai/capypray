@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-25",
+  "sourceCommit": "d272d47",
+  "decision": "NOT_READY_TO_SUBMIT",
+  "tests": {
+    "mobile": 77,
+    "content": 26,
+    "audioInventory": 2,
+    "total": 105,
+    "typecheck": "passed",
+    "avatarBuild": "passed",
+    "productionHermesExport": {
+      "ios": "passed",
+      "android": "passed"
+    },
+    "expoDependencyCheck": "passed against offline bundled map; online validation not performed"
+  },
+  "audio": {
+    "voice": "Capy Pirate",
+    "downloaded": 465,
+    "failed": 0
+  },
+  "storeMetadata": "character limits passed",
+  "parentGate": "direct paywall navigation redirected to gate",
+  "signedBuilds": "not produced",
+  "realStoreTransactions": "not tested",
+  "screenshots": "web previews, not native device captures"
+}

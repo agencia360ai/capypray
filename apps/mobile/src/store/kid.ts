@@ -133,6 +133,7 @@ export const useKid = create<KidState>()(
       name: "kid",
       storage,
       version: 4,
+      merge: (persisted, current) => ({ ...current, ...(persisted as Partial<KidState>), ...(!__DEV__ ? { premium: false, freePlay: false } : {}) }),
       // v3: person ids were Date.now() and could collide; regenerate duplicates once.
       // v4: the trail arrival walk. Everything already completed counts as celebrated, so upgrading in the middle
       //     of the curriculum never replays a walk for a lesson prayed weeks ago.

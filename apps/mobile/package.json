@@ -11,7 +11,8 @@
     "pretypecheck": "node ../../tools/audio-manifest.mjs",
     "typecheck": "tsc --noEmit",
     "pretest": "node ../../tools/audio-manifest.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eas-build-post-install": "node ../../tools/release-prepare.mjs"
   },
   "dependencies": {
     "@capy/content": "workspace:*",
@@ -37,6 +38,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-purchases": "^10.10.2",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.2",
     "react-native-svg": "15.15.4",
