@@ -27,7 +27,7 @@ Source reviewed: `d272d47` (latest origin/main at review start): four new puzzle
 
 ## Verification evidence
 
-- 70 existing mobile tests passed; 7 new native-adapter mocked tests passed (77 total).
+- 84 mobile tests passed after the settings follow-up, including native-adapter mocked tests and notification failure tests.
 - 26 content tests and 2 audio inventory tests passed.
 - Mobile TypeScript check passed.
 - Content schema: 52 lessons, 43 prayers, 25 lesson minigames, 457 pack audio references. 465 bundled recordings include 8 parent lines. Validator's pack-local audio warning does not inspect the separate bundled mobile audio folder.
@@ -46,10 +46,18 @@ Source reviewed: `d272d47` (latest origin/main at review start): four new puzzle
 5. **Native QA**: signed Android internal-test AAB and iOS TestFlight build; fresh install, relaunch, offline mode, notifications allowed/denied, purchase, canceled/pending purchase, restore, renewal, expiry/billing retry, erase local data, interruption/background audio, Android back button, small screens, iPad, screen reader and large fonts.
 6. **Final screenshots**: native iPhone and iPad captures and Android captures from the exact submitted build. Existing candidates are web previews. No native safe-area or platform chrome certification.
 7. **Ownership/content**: confirm distribution rights for the 3D source, illustrations and cloned voice; listen to representative current voice lines and approve suitability for young children.
-8. **Accessibility follow-up**: Color Pour's jars and Block Garden cells lack descriptive spoken labels; test all games with VoiceOver/TalkBack before claiming accessibility support. Do not mark store accessibility features as supported without verification.
+8. **Accessibility follow-up**: Color Pour jar contents, Block Garden cells and selectable pieces now have localizable spoken labels and accessibility actions. Test them on actual VoiceOver/TalkBack devices before claiming accessibility support. Do not mark store accessibility features as supported without verification.
 
 ## Before submission
 
 Run `node tools/release-check.mjs --strict` after configuring the EAS environment. Today its missing-key/project/legal failures are expected and deliberate. Re-run native and store tests after configuration. Do not deploy the legacy Supabase RevenueCat webhook: it expects a parent UUID while this adapter uses anonymous IDs and its event-based billing logic needs revision.
 
 No false green-light: the app has a release preparation package, not a completed store release.
+
+## Settings follow-up
+
+Closed in code: direct Restore purchases button, verified subscription status with retry/unknown states, serialized parent actions, expired-gate checks for sensitive actions, localized notification permission/error guidance and a device-settings shortcut. Reminder changes no longer cancel the old reminder before replacement succeeds, and cancellation errors are surfaced. Removed narration diagnostics; added app version and an explicit local-only progress explanation. Added labels for profile, people, bedtime controls and two puzzle games.
+
+Validated 84 mobile tests and TypeScript, then re-exported production iOS/Android Hermes bundles successfully. The unchanged content/audio suites contribute another 28 previously passing tests (112 total). Browser checked at 390px and 320px, including bedtime changes and subscription section; no horizontal document overflow. A temporary local QA route opened the parent gate for this inspection and was removed before the final export. This is not a native notification, store transaction, or screen-reader test. The development server still displayed its old startup version (0.1.0); release config remains 1.0.0.
+
+Remaining release blockers above still apply. Cloud backup and GA4 in the child app are not part of this first production scope. Do not merge this review branch as a claim of store readiness.

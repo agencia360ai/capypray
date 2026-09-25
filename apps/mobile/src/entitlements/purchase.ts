@@ -72,3 +72,11 @@ export async function subscriptionManagementURL(): Promise<string | null> {
   if (PURCHASES_SANDBOX) return null;
   return (await (await sdk()).getCustomerInfo()).managementURL;
 }
+
+/** Read verified store access without treating a network failure as a free plan. */
+export async function subscriptionStatus(): Promise<"premium" | "free" | "preview"> {
+  requireParent();
+  if (PURCHASES_SANDBOX) return "preview";
+  if (await AsyncStorage.getItem(ACTIVATED) !== "1") return "free";
+  return apply(await (await sdk()).getCustomerInfo()) ? "premium" : "free";
+}

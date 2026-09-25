@@ -7,32 +7,17 @@ const BEDTIME_ID = "bedtime";
 // which would take down any route that imports this file. Load it lazily instead: in Expo Go the
 // reminder simply reports "unavailable"; in a development build it works normally.
 type NotificationsModule = typeof import("expo-notifications");
-let mod: NotificationsModule | null | undefined;
-
-function notifications(): NotificationsModule | null {
-  if (mod === undefined) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      mod = require("expo-notifications") as NotificationsModule;
-    } catch (e) {
-      console.warn("[notifications] unavailable here (Expo Go?) — use a development build:", e);
-      mod = null;
-    }
-  }
-  return mod;
-}
-
-/** False in Expo Go: the UI can disable the bedtime toggle instead of failing silently. */
-export function bedtimeRemindersAvailable(): boolean {
-  return notifications() !== null;
+let mod: Promise<NotificationsModule | null> | undefined;
+function notifications(): Promise<NotificationsModule | null> {
+  return mod ??= import("expo-notifications").catch(() => null);
 }
 
 export async function scheduleBedtimeReminder(pack: Pack, hour = pack.routines.bedtime.defaultHour, minute = 0): Promise<boolean> {
-  const N = notifications();
+  const N = await notifications();
   if (!N) return false;
   const { status } = await N.requestPermissionsAsync();
   if (status !== "granted") return false;
-  await N.cancelScheduledNotificationAsync(BEDTIME_ID).catch(() => {});
+  // Reusing the identifier replaces the reminder without canceling it before scheduling succeeds.
   await N.scheduleNotificationAsync({
     identifier: BEDTIME_ID,
     content: { title: pack.avatar.id === "capy-default" ? "Capy" : pack.avatar.id, body: pack.routines.bedtime.notificationText ?? "", sound: false },
@@ -42,7 +27,7 @@ export async function scheduleBedtimeReminder(pack: Pack, hour = pack.routines.b
 }
 
 export async function cancelBedtimeReminder() {
-  const N = notifications();
+  const N = await notifications();
   if (!N) return;
-  await N.cancelScheduledNotificationAsync(BEDTIME_ID).catch(() => {});
+  await N.cancelScheduledNotificationAsync(BEDTIME_ID);
 }

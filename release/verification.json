@@ -3,10 +3,10 @@
   "sourceCommit": "d272d47",
   "decision": "NOT_READY_TO_SUBMIT",
   "tests": {
-    "mobile": 77,
+    "mobile": 84,
     "content": 26,
     "audioInventory": 2,
-    "total": 105,
+    "total": 112,
     "typecheck": "passed",
     "avatarBuild": "passed",
     "productionHermesExport": {
@@ -24,5 +24,12 @@
   "parentGate": "direct paywall navigation redirected to gate",
   "signedBuilds": "not produced",
   "realStoreTransactions": "not tested",
-  "screenshots": "web previews, not native device captures"
+  "screenshots": "web previews, not native device captures",
+  "settingsFollowup": {
+    "mobileRegression": "84 passed; includes 4 notification failure tests and 3 added subscription status tests",
+    "typecheck": "passed",
+    "exports": "iOS and Android Hermes exports passed again after removing the temporary QA route",
+    "browser": "Parent Corner at 390px and 320px; bedtime forward/back, subscription/restore controls, legal/local-data copy, no horizontal document overflow",
+    "limitations": "Web preview with a temporary development-only parent-gate fixture, removed before final export. Native notification dialogs, real purchases and screen readers remain unverified."
+  }
 }

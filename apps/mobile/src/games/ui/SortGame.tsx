@@ -1,3 +1,4 @@
+import { getCopy, formatCopy } from "@/i18n";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { CAP, isSorted, pour, pourable, sortLevel, type Jar } from "../sort";
@@ -5,6 +6,7 @@ import { GameShell, PALETTE, useCheer } from "./GameShell";
 import * as haptics from "@/ui/haptics";
 
 export function SortGame({ level, onWin }: { level: number; onWin: () => void }) {
+  const a11y = getCopy().gameAccessibility;
   const start = useMemo(() => sortLevel(level).jars, [level]);
   const [jars, setJars] = useState<Jar[]>(start);
   const [held, setHeld] = useState<number | null>(null);
@@ -39,7 +41,7 @@ export function SortGame({ level, onWin }: { level: number; onWin: () => void })
     <GameShell game="sort" level={level} won={won} lost={false} onNext={onWin} onRetry={() => { setJars(start); setHeld(null); }}>
       <View style={[s.jars, { width }]}>
         {jars.map((jar, i) => (
-          <Pressable key={i} onPress={() => tapJar(i)} accessibilityRole="button" testID={`jar-${i}`} style={[s.jar, { width: jarW, height: unit * CAP + 18, transform: [{ translateY: held === i ? -16 : 0 }] }, held === i && s.held]}>
+          <Pressable key={i} onPress={() => tapJar(i)} accessibilityRole="button" accessibilityLabel={formatCopy(a11y.jar, { number: i + 1, contents: jar.length ? [...jar].reverse().map(c => a11y.colors[c]).join(", ") : a11y.empty })} accessibilityHint={a11y.jarHint} accessibilityState={{ selected: held === i, disabled: won }} disabled={won} testID={`jar-${i}`} style={[s.jar, { width: jarW, height: unit * CAP + 18, transform: [{ translateY: held === i ? -16 : 0 }] }, held === i && s.held]}>
             {jar.map((c, k) => (
               <View key={k} style={[s.unit, { height: unit - 4, backgroundColor: PALETTE[c], borderBottomLeftRadius: k === 0 ? 16 : 8, borderBottomRightRadius: k === 0 ? 16 : 8 }]} />
             ))}

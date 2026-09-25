@@ -24,3 +24,18 @@ describe("store entitlement boundary", () => {
   it("does not start the SDK on a new child launch", async () => { const p = await adapter(false); await p.refreshPurchases(); expect(mocks.configure).not.toHaveBeenCalled(); expect(mocks.setPremium).toHaveBeenCalledWith(false); });
   it("refreshes prior parent purchases and revokes expired access", async () => { await (await import("@/store/persistence")).default.setItem("parent-purchases-activated", "1"); mocks.getCustomerInfo.mockResolvedValue(info(false)); const p = await adapter(false); await p.refreshPurchases(); expect(mocks.getCustomerInfo).toHaveBeenCalled(); expect(mocks.setPremium).toHaveBeenCalledWith(false); });
 });
+
+describe("parent subscription status", () => {
+  it("does not initialize purchases just to show a new free profile", async () => {
+    const p = await adapter(); expect(await p.subscriptionStatus()).toBe("free"); expect(mocks.configure).not.toHaveBeenCalled();
+  });
+  it("shows verified premium and never guesses on a service error", async () => {
+    const p = await adapter();
+    await (await import("@/store/persistence")).default.setItem("parent-purchases-activated", "1");
+    mocks.getCustomerInfo.mockResolvedValue(info(true)); expect(await p.subscriptionStatus()).toBe("premium");
+    mocks.getCustomerInfo.mockRejectedValue(new Error("offline")); await expect(p.subscriptionStatus()).rejects.toThrow("offline");
+  });
+  it("requires the parent gate for status and restore", async () => {
+    const p = await adapter(false); await expect(p.subscriptionStatus()).rejects.toThrow("Parent gate"); await expect(p.restorePurchases()).rejects.toThrow("Parent gate");
+  });
+});
