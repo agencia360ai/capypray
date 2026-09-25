@@ -44,5 +44,23 @@
     "cellHint": "Select a piece first, then choose its top-left cell.",
     "piece": "{color} piece with {count} squares. Positions: {positions}.",
     "pieceHint": "Activate to select this piece, then choose a garden cell."
+  },
+  "playRewards": {
+    "title": "My play badges",
+    "earned": "Badge earned!",
+    "progress": "{count} / {target} different levels",
+    "first": "First discovery",
+    "five": "Curious explorer",
+    "ten": "Puzzle friend",
+    "star": "A new level completed!",
+    "saved": "Your progress is saved.",
+    "done": "Back to games",
+    "undo": "Undo",
+    "stuck": "No pours left. Undo a move or start again.",
+    "selected": "Choose a glowing jar to pour into.",
+    "invalid": "Try an empty jar or the same color with room on top.",
+    "replay": "Hear Capy again",
+    "pathMap": "See the whole path",
+    "empty": "Win a level to earn your first badge."
   }
 }

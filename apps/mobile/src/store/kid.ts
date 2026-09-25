@@ -45,6 +45,8 @@ type KidState = {
   revealed: Record<string, true>;
   /** "Play with me": the level each little game is on. Never feeds lanterns, beacons or anything else. */
   gameLevels: Record<string, number>;
+  gameWins: Record<string, true>;
+  recordGameWin: (game: string, level: number) => void;
   lanterns: number;
   beacons: number;
   streak: { current: number; best: number; lastActive?: string; graceUsedWeek: number; weekStart?: string };
@@ -85,6 +87,7 @@ const initial = {
   celebrated: {} as KidState["celebrated"],
   revealed: {} as KidState["revealed"],
   gameLevels: {} as KidState["gameLevels"],
+  gameWins: {} as Record<string, true>,
   lanterns: 0,
   beacons: 0,
   streak: { current: 0, best: 0, graceUsedWeek: 0 },
@@ -123,6 +126,11 @@ export const useKid = create<KidState>()(
       },
       /** The arrival walk has played for this completion. Marked after the fact, so an interruption replays it at
        *  most once more and never touches lanterns, beacons or the completion itself. */
+      recordGameWin: (game, level) => set(s => {
+        if (!["sort", "blocks", "tiles", "memory"].includes(game) || !Number.isInteger(level) || level < 1) return s;
+        const key = `${game}:${level}`;
+        return s.gameWins[key] ? s : { gameWins: { ...s.gameWins, [key]: true }, gameLevels: { ...s.gameLevels, [game]: Math.max(s.gameLevels[game] ?? 1, level + 1) } };
+      }),
       setGameLevel: (game, level) => set((s) => ({ gameLevels: { ...s.gameLevels, [game]: Math.max(1, Math.floor(level)) } })),
       markRevealed: (ids) => set((s) => (ids.every((id) => s.revealed[id]) ? s : { revealed: { ...s.revealed, ...Object.fromEntries(ids.map((id) => [id, true as const])) } })),
       markCelebrated: (key) => set((s) => (s.celebrated[key] ? s : { celebrated: { ...s.celebrated, [key]: true } })),

@@ -1,5 +1,7 @@
+import { getCopy, formatCopy } from "@/i18n";
+import { useKid } from "@/store/kid";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { interpolate } from "@capy/content";
@@ -49,6 +51,11 @@ export function useCheer() {
  */
 export function GameShell({ game, level, won, lost, onNext, onRetry, status, children }: { game: GameId; level: number; won: boolean; lost: boolean; onNext: () => void; onRetry: () => void; status?: ReactNode; children: ReactNode }) {
   const pack = getPack(), copy = pack.companion.games!, item = copy.items.find((i) => i.id === game)!;
+  const rewards = getCopy().playRewards;
+  const wins = useKid(s => s.gameWins);
+  const count = Object.keys(wins).filter(key => key.startsWith(`${game}:`)).length;
+  const nextBadge = [1, 5, 10].find(n => n > count);
+  const [alreadyWon] = useState(() => !!useKid.getState().gameWins[`${game}:${level}`]);
   const insets = useSafeAreaInsets();
   const { setStage } = useStage();
   const avatar = useAvatar();
@@ -69,6 +76,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   useEffect(() => {
     if (!won) return;
     void track("game_level_win", { game, level });
+    useKid.getState().recordGameWin(game, level);
     void haptics.success();
     setBurst((b) => b + 1);
     say(winLine, "celebrate");
@@ -98,16 +106,25 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
       </View>
       <View style={s.stage} pointerEvents="none" />
       <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, 14) }]} onLayout={onLayout}>
+        <ScrollView contentContainerStyle={{ gap: 8 }} showsVerticalScrollIndicator={false}>
         <Text style={s.howTo}>{item.howTo.text}</Text>
+        <Pressable accessibilityRole="button" onPress={() => say(item.howTo)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={s.howTo}>♫ {rewards.replay}</Text></Pressable>
         {status}
         <View style={s.board}>{children}</View>
+        </ScrollView>
       </View>
       <Confetti trigger={burst} />
       {(won || lost) && (
         <View style={s.overlay} pointerEvents="box-none">
           <Pop style={s.card}>
             <Text style={s.cardTitle}>{won ? winLine.text : copy.again_.text}</Text>
+            {won && <View style={{ alignItems: "center", gap: 8 }}>
+              <Text style={{ fontSize: 44 }}>🏅</Text>
+              <Text style={s.howTo}>{!alreadyWon && [1, 5, 10].includes(count) ? `${rewards.earned} ${count === 1 ? rewards.first : count === 5 ? rewards.five : rewards.ten}` : rewards.saved}</Text>
+              {nextBadge && <Text style={s.howTo}>{formatCopy(rewards.progress, { count, target: nextBadge })}</Text>}
+            </View>}
             <BigButton label={won ? copy.next : copy.again} onPress={won ? onNext : onRetry} />
+            {won && <Pressable accessibilityRole="button" onPress={() => router.replace("/games")} style={{ minHeight: 44, justifyContent: "center" }}><Text style={s.howTo}>{rewards.done}</Text></Pressable>}
           </Pop>
         </View>
       )}
@@ -126,8 +143,8 @@ const s = StyleSheet.create({
   titleBox: { flex: 1, alignItems: "center", backgroundColor: "#FFF9EAEF", borderRadius: 18, paddingVertical: 5 },
   title: { fontFamily: T.font.black, fontSize: 18, color: T.color.ink },
   level: { fontFamily: T.font.bold, fontSize: 12, color: T.color.brown },
-  stage: { flex: 1, minHeight: 120 },
-  sheet: { backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingTop: 14, paddingHorizontal: 16, gap: 10, ...T.shadow },
+  stage: { flex: 1, minHeight: 72 },
+  sheet: { maxHeight: "78%", flexShrink: 1, backgroundColor: "#FFFBF2", borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingTop: 14, paddingHorizontal: 16, gap: 10, ...T.shadow },
   howTo: { fontFamily: T.font.bold, fontSize: 13, lineHeight: 18, color: T.color.brown, textAlign: "center", paddingHorizontal: 12 },
   board: { alignItems: "center" },
   overlay: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, justifyContent: "flex-end", padding: 18, paddingBottom: 40 },

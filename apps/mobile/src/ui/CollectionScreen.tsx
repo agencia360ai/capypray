@@ -11,7 +11,7 @@ export function CollectionScreen({ title, subtitle, children }: PropsWithChildre
   const insets = useSafeAreaInsets();
   useEffect(() => { stopSpeaking(); }, []);
   return <View style={styles.root}><ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 30 }]}>
-    <Pressable accessibilityRole="button" style={styles.back} onPress={() => router.replace("/")}><CompanionIcon name="back" size={24} /><Text style={styles.backText}>{getPack().companion.ui.back}</Text></Pressable>
+    <Pressable accessibilityRole="button" style={styles.back} onPress={() => router.canGoBack() ? router.back() : router.replace("/")}><CompanionIcon name="back" size={24} /><Text style={styles.backText}>{getPack().companion.ui.back}</Text></Pressable>
     <Text accessibilityRole="header" style={styles.title}>{title}</Text><Text style={styles.subtitle}>{subtitle}</Text>{children}
   </ScrollView></View>;
 }
