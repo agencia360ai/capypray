@@ -19,12 +19,25 @@ export function StageDecor({ night, extraLit = 0 }: { night?: boolean; extraLit?
     <View pointerEvents="none" style={styles.layer}>
       {slots.map((x, i) => (
         <Float key={i} x={x} y={lanternSlot(i).y} delay={i * 380} amp={5 + (i % 2) * 3}>
-          <Lantern size={22 + (i % 2) * 4} lit={i < lit} />
+          <Bloom delay={i * 70}><Lantern size={22 + (i % 2) * 4} lit={i < lit} /></Bloom>
         </Float>
       ))}
       {night && [0.12, 0.35, 0.6, 0.8, 0.25, 0.7].map((x, i) => <Firefly key={`f${i}`} x={x} top={40 + i * 36} delay={i * 700} />)}
     </View>
   );
+}
+
+/** Soft arrival for a prop: fades and grows into place instead of popping in with the screen. */
+function Bloom({ children, delay }: { children: React.ReactNode; delay: number }) {
+  const reduced = useReducedMotion();
+  const v = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (reduced) { v.setValue(1); return; }
+    const a = Animated.timing(v, { toValue: 1, duration: 320, delay, easing: Easing.out(Easing.quad), useNativeDriver: true });
+    a.start();
+    return () => a.stop();
+  }, [v, delay, reduced]);
+  return <Animated.View style={{ opacity: v, transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }] }}>{children}</Animated.View>;
 }
 
 function Float({ children, x, y, delay, amp }: { children: React.ReactNode; x: number; y: number; delay: number; amp: number }) {

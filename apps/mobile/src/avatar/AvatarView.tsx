@@ -1,9 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren, type ReactNode } from "react";
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, ImageBackground, LayoutAnimation, Platform, StyleSheet, Text, UIManager, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import { Asset } from "expo-asset";
 import { AvatarEvents, type AvatarCommand, type AvatarEvent, type IAvatarRenderer } from "./IAvatarRenderer";
 import { backgroundFor, backgroundHeight } from "@/ui/backgrounds";
+import { useReducedMotion } from "@/ui/motion";
+
+if (Platform.OS === "android") UIManager.setLayoutAnimationEnabledExperimental?.(true);
 
 // Built by `pnpm --filter @capy/avatar-web build`: one HTML with the viewer and the GLB embedded (base64),
 // so the page never fetches anything. Loaded from its file:// URL (no subresources → no WKWebView restrictions).
@@ -107,11 +110,11 @@ export function AvatarProvider({ children }: PropsWithChildren) {
     <Ctx.Provider value={renderer}>
       <StageCtx.Provider value={{ stage, setStage }}>
         <View style={styles.stage} pointerEvents="none">
-          <ImageBackground source={backgroundFor(stage.biome, stage.night)} style={styles.bg} imageStyle={{ width: "100%", height: stage.sceneHeight ?? backgroundHeight(stage.biome) }} resizeMode="cover">
-            {stage.night && stage.biome !== "meadow" && !stage.dark && <View style={styles.nightTint} />}
-            {stage.dark && <View style={styles.dim} />}
-            {stage.underlay}
-            {uri && (
+          <StageBackdrop biome={stage.biome} night={stage.night} sceneHeight={stage.sceneHeight} />
+          <FadeOverlay visible={stage.night && stage.biome !== "meadow" && !stage.dark} style={styles.nightTint} />
+          <FadeOverlay visible={stage.dark} style={styles.dim} duration={500} />
+          <UnderlayFade node={stage.underlay} />
+          {uri && (
               <WebView
                 ref={webview}
                 source={{ uri }}
@@ -143,8 +146,7 @@ export function AvatarProvider({ children }: PropsWithChildren) {
                 style={styles.webview}
                 containerStyle={styles.webview}
               />
-            )}
-          </ImageBackground>
+          )}
         </View>
         {children}
         {__DEV__ && status !== "ready" && (
@@ -155,6 +157,95 @@ export function AvatarProvider({ children }: PropsWithChildren) {
       </StageCtx.Provider>
     </Ctx.Provider>
   );
+}
+
+type Layer = { id: number; key: string; night: boolean; source: ImageSourcePropType; height: number | `${number}%`; fade: Animated.Value; zoom: Animated.Value; entering: boolean };
+let layerSeq = 0;
+
+/**
+ * The scenery behind Capy. Scene changes crossfade under a half-strength wash: the wash mutes the contrast so two
+ * busy prop-filled scenes never visibly double-expose, but it stays translucent so nothing reads as a flash. The
+ * wash is warm paper between day scenes and a dusk tone whenever night is involved, and it only lifts once the
+ * incoming bitmap is decoded and settled from a slight zoom.
+ */
+function StageBackdrop({ biome, night, sceneHeight }: { biome: string; night: boolean; sceneHeight?: number }) {
+  const reduced = useReducedMotion();
+  const key = `${biome}|${night ? "n" : "d"}|${sceneHeight ?? ""}`;
+  const make = (entering: boolean): Layer => ({ id: ++layerSeq, key, night, source: backgroundFor(biome, night), height: sceneHeight ?? backgroundHeight(biome), fade: new Animated.Value(entering ? 0 : 1), zoom: new Animated.Value(1), entering });
+  const [layers, setLayers] = useState<Layer[]>(() => [make(false)]);
+  const live = useRef<Layer[]>([]);
+  const veil = useRef(new Animated.Value(0)).current;
+  const [veilColor, setVeilColor] = useState("#FFF3DC");
+  live.current = layers;
+  useEffect(() => {
+    const last = live.current[live.current.length - 1]!;
+    if (last.key === key) return;
+    const next = make(!reduced);
+    // Same picture (screens re-asserting the stage, or only the visible height moving with a sheet): adopt in
+    // place, no transition — the wash is for actual scene changes, not the camera breathing.
+    if (last.source === next.source) {
+      // Adopt in place, keeping the layer's React identity (`id`) so the image never remounts or re-decodes;
+      // an eased LayoutAnimation makes the frame glide with the sheet instead of snapping.
+      if (last.height !== next.height && !reduced) LayoutAnimation.configureNext({ duration: 320, update: { type: "easeInEaseOut" } });
+      setLayers((ls) => ls.map((l) => (l === last ? { ...l, key, height: next.height } : l)));
+      return;
+    }
+    if (reduced) { setLayers([make(false)]); return; }
+    setVeilColor(last.night || night ? "#332E52" : "#FFF3DC");
+    Animated.timing(veil, { toValue: 0.55, duration: 260, easing: Easing.inOut(Easing.quad), useNativeDriver: true }).start();
+    setLayers([...live.current.slice(-1), next]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, reduced]);
+  const reveal = (layer: Layer) => {
+    layer.zoom.setValue(1.03);
+    Animated.timing(layer.zoom, { toValue: 1, duration: 700, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
+    Animated.timing(layer.fade, { toValue: 1, duration: 380, easing: Easing.inOut(Easing.quad), useNativeDriver: true }).start(({ finished }) => {
+      if (!finished) return;
+      setLayers((ls) => (ls[ls.length - 1]!.key === layer.key ? [layer] : ls));
+      Animated.timing(veil, { toValue: 0, duration: 500, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
+    });
+  };
+  return (
+    <View style={StyleSheet.absoluteFill}>
+      {layers.map((l) => (
+        <Animated.View key={l.id} style={[StyleSheet.absoluteFill, { opacity: l.fade, transform: [{ scale: l.zoom }] }]}>
+          <ImageBackground source={l.source} style={styles.bg} imageStyle={{ width: "100%", height: l.height }} resizeMode="cover" onLoadEnd={() => { if (l.entering && !reduced) reveal(l); }} />
+        </Animated.View>
+      ))}
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: veilColor, opacity: veil }]} />
+    </View>
+  );
+}
+
+/** Holds the screen's scenery layer and fades it in and out, so props never pop when a screen mounts or leaves. */
+function UnderlayFade({ node }: { node?: ReactNode }) {
+  const reduced = useReducedMotion();
+  const held = useRef<ReactNode>(node);
+  const [, bump] = useState(0);
+  const op = useRef(new Animated.Value(node ? 1 : 0)).current;
+  if (node) held.current = node; // while visible, always show the freshest scenery
+  const visible = !!node;
+  useEffect(() => {
+    if (reduced) { op.setValue(visible ? 1 : 0); if (!visible) { held.current = null; bump((n) => n + 1); } return; }
+    const a = Animated.timing(op, { toValue: visible ? 1 : 0, duration: visible ? 420 : 240, easing: Easing.inOut(Easing.quad), useNativeDriver: true });
+    a.start(({ finished }) => { if (finished && !visible) { held.current = null; bump((n) => n + 1); } });
+    return () => a.stop();
+  }, [visible, reduced, op]);
+  if (!held.current) return null;
+  return <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: op }]}>{held.current}</Animated.View>;
+}
+
+/** A tint that eases in and out instead of snapping (night wash, lights-out dim). Always mounted, opacity-driven. */
+function FadeOverlay({ visible, style, duration = 360 }: { visible: boolean; style: StyleProp<ViewStyle>; duration?: number }) {
+  const reduced = useReducedMotion();
+  const op = useRef(new Animated.Value(visible ? 1 : 0)).current;
+  useEffect(() => {
+    if (reduced) { op.setValue(visible ? 1 : 0); return; }
+    const a = Animated.timing(op, { toValue: visible ? 1 : 0, duration, easing: Easing.inOut(Easing.quad), useNativeDriver: true });
+    a.start();
+    return () => a.stop();
+  }, [visible, reduced, duration, op]);
+  return <Animated.View pointerEvents="none" style={[style, { opacity: op }]} />;
 }
 
 const styles = StyleSheet.create({
