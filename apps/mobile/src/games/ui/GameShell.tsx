@@ -1,6 +1,6 @@
 import { getCopy, formatCopy } from "@/i18n";
 import { useKid } from "@/store/kid";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,6 +19,10 @@ import { T } from "@/ui/theme";
 import { track } from "@/backend/events";
 
 export type GameId = "sort" | "blocks" | "tiles" | "memory";
+/** While a drag gesture owns the finger, the sheet's ScrollView must not fight it for vertical movement. */
+const ScrollLockCtx = createContext<(locked: boolean) => void>(() => {});
+export const useScrollLock = () => useContext(ScrollLockCtx);
+
 /** Capy explains each game once per session, not at the start of every level. */
 const explained = new Set<string>();
 
@@ -49,7 +53,7 @@ export function useCheer() {
  * the stage keeps him on the grass — see useStageInsets), the how-to line he says on arrival, and the end-of-level
  * card with his reaction. A level that is won saves the next one; a lost one replays the same board.
  */
-export function GameShell({ game, level, won, lost, onNext, onRetry, status, children }: { game: GameId; level: number; won: boolean; lost: boolean; onNext: () => void; onRetry: () => void; status?: ReactNode; children: ReactNode }) {
+export function GameShell({ game, level, won, lost, onNext, onRetry, status, scroll = true, children }: { game: GameId; level: number; won: boolean; lost: boolean; onNext: () => void; onRetry: () => void; status?: ReactNode; scroll?: boolean; children: ReactNode }) {
   const pack = getPack(), copy = pack.companion.games!, item = copy.items.find((i) => i.id === game)!;
   const rewards = getCopy().playRewards;
   const wins = useKid(s => s.gameWins);
@@ -62,6 +66,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   const say = useCapyLine();
   const onLayout = useStageInsets(0.1);
   const [burst, setBurst] = useState(0);
+  const [scrollLocked, setScrollLocked] = useState(false);
   const [winLine] = useState(() => copy.win[Math.floor(Math.random() * copy.win.length)]!);
 
   useEffect(() => {
@@ -91,6 +96,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
   }, [lost]);
 
   return (
+    <ScrollLockCtx.Provider value={setScrollLocked}>
     <View style={s.root}>
       <View style={[s.top, { paddingTop: insets.top + 10 }]}>
         <Pressable accessibilityRole="button" accessibilityLabel={pack.companion.ui.back} onPress={() => { stopSpeaking(); router.replace("/games"); }} style={s.round} hitSlop={6}>
@@ -106,7 +112,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
       </View>
       <View style={s.stage} pointerEvents="none" />
       <View style={[s.sheet, { paddingBottom: Math.max(insets.bottom, 14) }]} onLayout={onLayout}>
-        <ScrollView contentContainerStyle={{ gap: 8 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ gap: 8 }} showsVerticalScrollIndicator={false} scrollEnabled={scroll && !scrollLocked}>
         <Text style={s.howTo}>{item.howTo.text}</Text>
         <Pressable accessibilityRole="button" onPress={() => say(item.howTo)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={s.howTo}>♫ {rewards.replay}</Text></Pressable>
         {status}
@@ -129,6 +135,7 @@ export function GameShell({ game, level, won, lost, onNext, onRetry, status, chi
         </View>
       )}
     </View>
+    </ScrollLockCtx.Provider>
   );
 }
 
