@@ -5,7 +5,7 @@ See `release/setup-and-submission.md` for platform products, entitlement, offeri
 Native builds now use react-native-purchases. Expo Go/web development retains an explicitly labeled preview; release builds cannot grant Premium through that preview. Live keys and store validation are still required.
 
 - `default` offering, annual/monthly packages, `premium` entitlement.
-- Store-localized prices in native paywall; system sheet shows eligible trial terms.
+- Store-localized prices in native paywall; system sheet shows eligible trial terms. Intro offers: 3-day free trial on `capy_monthly`, 7-day on `capy_annual`, configured in the stores; `TRIAL_DAYS` mirrors them for the sandbox preview copy.
 - Purchases/restore require an active parent gate; cancellation does not grant access.
 - Anonymous RevenueCat identity, no child subscriber attributes, automatic device identifier collection disabled.
 - Existing customers refresh on app foreground; the SDK is not initialized for a new child until an adult opens the offer.

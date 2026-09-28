@@ -8,7 +8,7 @@ import { useAvatar } from "@/avatar/AvatarView";
 import * as haptics from "@/ui/haptics";
 import { T } from "@/ui/theme";
 import { P } from "@/parent/strings";
-import { PURCHASES_SANDBOX, restorePurchases, startTrial, loadPlans, type StorePlans, type Plan } from "@/entitlements/purchase";
+import { PURCHASES_SANDBOX, TRIAL_DAYS, freeDays, restorePurchases, startTrial, loadPlans, type StorePlans, type Plan } from "@/entitlements/purchase";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
 import { feelingArt, storyCover } from "@/ui/illustrations";
 import { backgroundFor } from "@/ui/backgrounds";
@@ -33,7 +33,8 @@ function ParentOffer() {
   const done = () => { gate.close(); router.replace("/"); };
   useEffect(() => { let alive = true; loadPlans().then(p => { if (alive) setPlans(p); }).catch(() => { if (alive) setStoreError(true); }).finally(() => { if (alive) setLoading(false); }); return () => { alive = false; }; }, []);
   const ready = PURCHASES_SANDBOX || !!plans[plan];
-  const billing = PURCHASES_SANDBOX ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) : plans[plan] ? copy.storeBilling(plans[plan]!.product.priceString, plan === "annual" ? copy.annualPeriod : copy.monthlyPeriod) : copy.storeUnavailable;
+  const storeDays = freeDays(plans[plan]);
+  const billing = PURCHASES_SANDBOX ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) : plans[plan] ? (storeDays ? `${copy.storeFreeDays(storeDays)} · ` : "") + copy.storeBilling(plans[plan]!.product.priceString, plan === "annual" ? copy.annualPeriod : copy.monthlyPeriod) : copy.storeUnavailable;
   const name = kid.kidName || P.onboarding.yourChild;
   useEffect(() => {
     stopSpeaking(); avatar.send({ type: "idle" });
@@ -87,7 +88,7 @@ function ParentOffer() {
         <Pressable accessibilityRole="button" accessibilityLabel={copy.trialDetails} accessibilityState={{ expanded: details }} aria-expanded={details} onPress={() => setDetails(v => !v)} style={s.detailsToggle}>
           <Text style={s.heading}>{copy.trialDetails}</Text><Text style={s.plus}>{details ? "−" : "+"}</Text>
         </Pressable>
-        {details && <View style={s.timeline}>{copy.timeline.map((step,i) => <View key={step.title} style={s.step}><View style={s.stepIcon}><Icon name={step.icon} size={22} /></View><View style={s.stepText}><Text style={s.stepTitle}>{step.title}</Text><Text style={s.small}>{i === 2 ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) + ". " + step.body : step.body}</Text></View></View>)}</View>}
+        {details && <View style={s.timeline}>{copy.timeline(TRIAL_DAYS[plan]).map((step,i) => <View key={step.title} style={s.step}><View style={s.stepIcon}><Icon name={step.icon} size={22} /></View><View style={s.stepText}><Text style={s.stepTitle}>{step.title}</Text><Text style={s.small}>{i === 2 ? (plan === "annual" ? copy.ctaSubAnnual : copy.ctaSubMonthly) + ". " + step.body : step.body}</Text></View></View>)}</View>}
       </View>
       }
       {!PURCHASES_SANDBOX && <Text style={s.small}>{copy.storeTerms}</Text>}
@@ -98,7 +99,7 @@ function ParentOffer() {
     <View style={[s.footer, { paddingBottom: Math.max(insets.bottom, 10) }]}>
       <Text style={s.billing} testID="paywall-billing">{loading ? copy.busy : billing}</Text>
       <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy || !ready || loading, busy }} disabled={busy || !ready || loading} onPress={() => void purchase()} style={({ pressed }) => [s.cta, pressed && s.pressed, busy && { opacity: 0.65 }]} testID="paywall-continue">
-        <Text style={s.ctaText}>{busy || loading ? copy.busy : PURCHASES_SANDBOX ? copy.cta : copy.storeCTA}</Text><Icon name="arrow" color="#FFFFFF" size={22} />
+        <Text style={s.ctaText}>{busy || loading ? copy.busy : PURCHASES_SANDBOX ? copy.cta(TRIAL_DAYS[plan]) : copy.storeCTA}</Text><Icon name="arrow" color="#FFFFFF" size={22} />
       </Pressable>
       {storeError && <Text style={s.previewNote}>{copy.storeUnavailable}</Text>}
       {PURCHASES_SANDBOX && <Text style={s.previewNote}>{copy.sandboxNotice}</Text>}

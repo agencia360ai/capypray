@@ -8,6 +8,17 @@ import { gate } from "@/parent/gate";
 export const PURCHASES_SANDBOX = __DEV__ && (Platform.OS === "web" || Constants.appOwnership === "expo");
 export type Plan = "annual" | "monthly";
 export type StorePlans = Partial<Record<Plan, PurchasesPackage>>;
+/** Intended intro offers, mirrored in the store config (see release/setup-and-submission.md): the sandbox preview
+ * and its copy use these; native builds show the store's own terms via `freeDays`. */
+export const TRIAL_DAYS: Record<Plan, number> = { monthly: 3, annual: 7 };
+const UNIT_DAYS: Record<string, number> = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 };
+/** Length in days of a package's free trial as the store reports it, or null when there is none. */
+export function freeDays(pkg: PurchasesPackage | undefined): number | null {
+  const intro = pkg?.product.introPrice;
+  if (!intro || intro.price !== 0) return null;
+  const days = intro.periodNumberOfUnits * (UNIT_DAYS[intro.periodUnit] ?? 0) * Math.max(1, intro.cycles);
+  return days > 0 ? days : null;
+}
 const ACTIVATED = "parent-purchases-activated";
 let initializing: Promise<typeof import("react-native-purchases").default> | undefined;
 
