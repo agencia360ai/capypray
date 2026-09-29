@@ -4,11 +4,11 @@ Application ID (both stores): `com.looplab.capypray`. Display name: CapyPray. Ve
 
 ## RevenueCat
 
-SDK adapter is implemented. It is NOT connected until the real project/platform keys and store products are configured.
+SDK adapter is implemented. Configured 2026-09-29 in project CapyPray (`projeaa8b335`): apps `CapyPray iOS` (`appe7e338a6c3`) and `CapyPray Android` (`appf36f4e256f`), entitlement `premium`, offering `default` with `$rc_monthly`/`$rc_annual` attached to both platforms' products, and the public keys set as EAS variables in development/preview/production. Still missing: store products themselves and the App Store Connect / Play service-account credentials in the RevenueCat dashboard.
 
 1. Create/select project CapyPray. Add App Store and Google Play apps, each with the exact ID above.
 2. Apple: create auto-renewing subscriptions `capy_monthly` and `capy_annual` in one subscription group. Intended US prices $7.99/month and $49.99/year. Configure introductory free trials matching `TRIAL_DAYS` in `apps/mobile/src/entitlements/purchase.ts`: 3 days on `capy_monthly`, 7 days on `capy_annual` (eligibility per store rules).
-3. Google: create subscription products `capy_monthly` and `capy_annual`, with monthly/annual auto-renewing base plans. Add eligible trial offers matching `TRIAL_DAYS`: 3-day free trial on the monthly base plan, 7-day on the annual. Use the exact imported product/base-plan identifiers in RevenueCat.
+3. Google: create subscription products `capy_monthly` and `capy_annual`, with monthly/annual auto-renewing base plans. Add eligible trial offers matching `TRIAL_DAYS`: 3-day free trial on the monthly base plan, 7-day on the annual. Base plan IDs must be `monthly` (on `capy_monthly`) and `annual` (on `capy_annual`): RevenueCat is configured with `capy_monthly:monthly` and `capy_annual:annual`. Play only unlocks subscription creation after an AAB with the billing permission is uploaded to a testing track.
 4. Create entitlement `premium`; attach both platforms' monthly and annual products.
 5. Create offering with identifier `default`, packages `$rc_monthly` and `$rc_annual`; attach matching products for EACH platform.
 6. Connect App Store Connect purchase credentials and Google service-account credentials with the roles RevenueCat requires. Keep private keys in those provider dashboards, never in this repository/chat.
