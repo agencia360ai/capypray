@@ -60,7 +60,10 @@ stories appear with a "New!" chip and Capy announces the path. `node tools/ui-sm
 
 ## 5. Play with me
 
-The fifth door on the home, open after W1D1 (Free play on and finishing W1D1 gets you there). Four puzzles with
+The fifth door on the home, open after W1D1 (Free play on and finishing W1D1 gets you there). It is a premium door,
+like Story time, places and the pond (`premium` in `companion.home`): without the entitlement it shows a lock and
+"Ask a grown-up", and the door or any direct route goes to the parental gate and the offer. In dev builds turn on
+Parent Corner → Premium (sandbox) to go through; smoke scripts seed the same flag (`tools/smoke-premium.cjs`). Four puzzles with
 endless generated levels — Color Pour (water sort), Block Garden (block blast), Triple Tiles (tile match) and Memory
 Pond — each keeps its own level. Every Color Pour board is checked by a solver before it is dealt and every Triple
 Tiles board is built backwards so it can be finished; `apps/mobile/src/games/games.test.ts` holds both. The games

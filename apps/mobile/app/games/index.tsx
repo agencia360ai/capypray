@@ -14,11 +14,12 @@ import { glyph } from "@/ui/icons";
 import { Pop } from "@/ui/motion";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { T } from "@/ui/theme";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 const TINT: Record<string, string> = { sort: "#E3F1EE", blocks: "#FBEBD8", tiles: "#FFF3CF", memory: "#E8EFDE" };
 
 /** "Play with me": four little puzzles, each on its own level. A break next to prayer; nothing here earns lanterns. */
-export default function Games() {
+function Games() {
   const games = getPack().companion.games;
   if (!games) return <Redirect href="/" />;
   return <Corner />;
@@ -86,3 +87,5 @@ const s = StyleSheet.create({
   hint: { fontFamily: T.font.regular, fontSize: 12, lineHeight: 16, color: T.color.brown },
   level: { marginTop: "auto", paddingTop: 8, fontFamily: T.font.bold, fontSize: 11, letterSpacing: 0.5, color: "#476D58" },
 });
+
+export default premiumOnly("games", Games);

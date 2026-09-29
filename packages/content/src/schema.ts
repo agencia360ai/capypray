@@ -300,7 +300,10 @@ export const Companion = z.object({
   }),
   /**
    * The home opens up one door at a time. Sections appear in this order once their unlock is met (the same
-   * progress-only rule as rewards: never money) and Capy says the reveal line the first time the child sees one.
+   * progress-only rule as rewards: money never makes a door appear) and Capy says the reveal line the first time the
+   * child sees one. A `premium` door still appears with progress, but only the `premium` entitlement goes through it;
+   * without it the door wears a lock and leads to the parental gate. Prayers stay free (GDD §10.1): the curriculum
+   * is gated per lesson with `free`, and today, bedtime, feelings and moments cannot be premium.
    * Omitted, the home shows everything, as it did before.
    */
   home: z
@@ -309,6 +312,7 @@ export const Companion = z.object({
         id: z.enum(["today", "bedtime", "journey", "stories", "feelings", "moments", "places", "pond", "memories", "games"]),
         unlock: z.object({ lessonId: ID.optional(), beacons: z.number().int().min(0).optional() }).default({}),
         reveal: z.object({ text: z.string().max(140), audio: Audio.optional() }).optional(),
+        premium: z.boolean().optional(),
       }),
     )
     .min(1)

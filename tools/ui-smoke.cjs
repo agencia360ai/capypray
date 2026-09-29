@@ -16,6 +16,7 @@ const path = require('node:path');
   };
   page.on('pageerror', error => errors.push(String(error)));
   const pack = require('../packages/content/packs/christian-us-en-v1/pack.json');
+  const { unlockPremium } = require('./smoke-premium.cjs');
   const tap = (text) => page.getByText(text, { exact: true }).last().click({ force: true }); // the hint hand keeps buttons moving
   await page.goto('http://127.0.0.1:8081');
   // Capy first: the opening is only him, tapped through line by line (no beads, no close)
@@ -62,6 +63,10 @@ const path = require('node:path');
   await tap(pack.ui.yay);
   await tap(pack.ui.next);
   await page.getByText('Hi, Mia.',{exact:true}).waitFor();
+  // stories, play, places and the pond are premium: a free family meets the grown-up gate first
+  await page.goto('http://127.0.0.1:8081/stories');
+  await page.getByText('Press and hold', { exact: true }).waitFor();
+  await unlockPremium(page);
   await page.goto('http://127.0.0.1:8081/stories');
   await page.getByText('The Lost Sheep',{exact:true}).click();
   await page.getByText(pack.ui.next,{exact:true}).click();

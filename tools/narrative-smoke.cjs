@@ -2,12 +2,14 @@ const {createRequire}=require('node:module');
 const path=require('node:path'),fs=require('node:fs'),assert=require('node:assert/strict');
 const {chromium}=createRequire(path.resolve(__dirname,'../packages/avatar-web/package.json'))('playwright');
 const pack=require('../packages/content/packs/christian-us-en-v1/pack.json');
+const {unlockPremium}=require('./smoke-premium.cjs');
 (async()=>{
  const out=process.env.CAPY_SCREENSHOTS||path.resolve(__dirname,'../test-results/narrative');fs.mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined,headless:true,args:['--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
  try {
   const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+  await unlockPremium(page);
   await page.goto('http://127.0.0.1:8081/places');await page.getByText(pack.ui.placesTitle,{exact:true}).waitFor();
   // Isolated browser profile; unlock the existing story shelf through lesson completion.
   await page.evaluate(async ids=>{

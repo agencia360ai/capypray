@@ -6,10 +6,11 @@ import { SortGame } from "@/games/ui/SortGame";
 import { BlocksGame } from "@/games/ui/BlocksGame";
 import { TilesGame } from "@/games/ui/TilesGame";
 import { MemoryGame } from "@/games/ui/MemoryGame";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 const GAMES = { sort: SortGame, blocks: BlocksGame, tiles: TilesGame, memory: MemoryGame } as const;
 
-export default function Game() {
+function Game() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [level, advance] = useState(() => {
     const s = useKid.getState();
@@ -22,3 +23,5 @@ export default function Game() {
   // keyed by level: a new level is a fresh board, and the one just won is never shown again
   return <Play key={`${id}-${level}`} level={level} onWin={() => { setLevel(id!, level + 1); advance(level + 1); }} />;
 }
+
+export default premiumOnly("games", Game);

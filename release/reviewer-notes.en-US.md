@@ -4,7 +4,7 @@ CapyPray is an English-language Christian prayer companion for children ages 4�
 
 On first launch, tap Next through Capy's introduction, then complete the three short prayer lines, lantern reward, and grown-up handoff. The adult enters a local nickname and bedtime preference, then solves an arithmetic question and holds the button for three seconds to open the parent offer. The answer changes for each gate. No fixed review PIN is required.
 
-You can dismiss the offer and use the free prayers. Bedtime prayer remains free. Premium subscriptions unlock the guided curriculum; artwork/cosmetic rewards still require progress. Purchases, restore, management and external links are in the grown-up area. Prices and any introductory offer come from the store, and purchase eligibility is determined by the store account.
+You can dismiss the offer and use the free prayers. Free: the first prayer, the first daily Prayer Moment, the nightly bedtime prayer and the feelings/moments prayers. Premium subscriptions unlock the rest of the guided curriculum plus Play with me (puzzles), Story time, places and Capy's pond; without a subscription those doors show a lock and open the parental gate. Artwork/cosmetic rewards still require progress. Purchases, restore, management and external links are in the grown-up area. Prices and any introductory offer come from the store, and purchase eligibility is determined by the store account.
 
 To restore: pass the parental gate and select Restore purchases on the offer. To manage/cancel: Parent Corner → Manage subscription. To erase local child progress: Parent Corner → Delete my child's data. This does not cancel a store subscription.
 

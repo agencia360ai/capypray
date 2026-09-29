@@ -8,9 +8,10 @@ import { LockBadge } from "@/ui/LockBadge";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { backgroundFor } from "@/ui/backgrounds";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 // Places: everywhere Capy has learned to pray. Tap one to go there and say that place's prayer.
-export default function Places() {
+function Places() {
   const pack = getPack();
   const { beacons, completed } = useKid();
   const onBottomLayout = useStageInsets();
@@ -64,3 +65,5 @@ const styles = StyleSheet.create({
   cardTitle: { fontFamily: T.font.bold, fontSize: 13, color: T.color.ink, textAlign: "center" },
   soon: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown },
 });
+
+export default premiumOnly("places", Places);

@@ -11,9 +11,10 @@ import { speak, stopSpeaking } from "@/audio/voice";
 import { estimateMs } from "@/engine/lessonRunner";
 import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
-import { isLessonLocked, useEntitlement } from "@/entitlements";
+import { UNLOCK_HREF, isLessonLocked, isSectionLocked, useEntitlement } from "@/entitlements";
 import { CapyTapZone } from "@/ui/CapyTapZone";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
+import { LockBadge } from "@/ui/LockBadge";
 import { Reveal } from "@/ui/motion";
 import { FeelingArt } from "@/ui/FeelingArt";
 import { T } from "@/ui/theme";
@@ -48,7 +49,8 @@ function KidHome() {
     const ids = freshSections(pack, kid, kid.revealed).map((sct) => sct.id);
     return new Set(first ? [] : ids); // the first visit ever (or an upgrade mid-curriculum) is not "new", it is the baseline
   });
-  const [reveal] = useState(() => pendingReveal(pack, kid, kid.revealed));
+  // Capy never invites the child through a locked door: that would be a purchase nudge (GDD §9 anti-patterns)
+  const [reveal] = useState(() => { const r = pendingReveal(pack, kid, kid.revealed); return r && !isSectionLocked(pack, r.id, premium) ? r : undefined; });
   useEffect(() => {
     setStage({ dark: false, night: false, biome: biomeFor(pack, kid) });
     avatar.send({ type: "skin", id: kid.skinId });
@@ -68,10 +70,11 @@ function KidHome() {
   const rest = open.has("moments") ? { label: copy.moments, href: "/moments" as const } : open.has("journey") ? { label: copy.journey, href: "/trail" as const } : { label: copy.bedtime, href: { pathname: "/lesson/[id]" as const, params: { id: pack.routines.bedtime.lessonId! } } };
   const pray = () => {
     if (!next || doneToday) { router.push(rest.href); return; }
-    router.push(isLessonLocked(next, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: next.id } });
+    router.push(isLessonLocked(next, premium) ? UNLOCK_HREF : { pathname: "/lesson/[id]", params: { id: next.id } });
   };
   const chip = (id: HomeSectionId) => (fresh.has(id) && copy.newDoor ? <Text style={s.newChip}>{copy.newDoor}</Text> : null);
   const doors = (["games", "stories", "places", "pond", "moments"] as const).filter((id) => open.has(id));
+  const locked = (id: HomeSectionId) => isSectionLocked(pack, id, premium);
   return <View style={s.root}>
     <View style={[s.top, { paddingTop: insets.top + 14 }]}>
       <View><Text style={s.brand}>{copy.brand}</Text><Text style={s.tagline}>{copy.tagline}</Text></View>
@@ -93,10 +96,10 @@ function KidHome() {
       {doors.length > 0 && <>
       <Text style={s.eyebrow}>{copy.explore}</Text>
       <View style={s.doors}>
-        {doors.includes("games") && pack.companion.games && <Door href="/games" icon="play" title={pack.companion.games.title} subtitle={pack.companion.games.subtitle} color="#E3F1EE" chip={chip("games")} />}
-        {doors.includes("stories") && <Door href="/stories" icon="book" title={copy.stories} subtitle={copy.storiesHint} color="#FAEAD8" chip={chip("stories")} />}
-        {doors.includes("places") && <Door href="/places" icon="garden" title={copy.places} subtitle={copy.placesHint} color="#E8EFDE" chip={chip("places")} />}
-        {doors.includes("pond") && <Door href="/pond" icon="lantern" title={copy.pond} subtitle={copy.pondHint} color="#F9EFCF" chip={chip("pond")} />}
+        {doors.includes("games") && pack.companion.games && <Door href="/games" icon="play" title={pack.companion.games.title} subtitle={pack.companion.games.subtitle} color="#E3F1EE" chip={chip("games")} locked={locked("games")} />}
+        {doors.includes("stories") && <Door href="/stories" icon="book" title={copy.stories} subtitle={copy.storiesHint} color="#FAEAD8" chip={chip("stories")} locked={locked("stories")} />}
+        {doors.includes("places") && <Door href="/places" icon="garden" title={copy.places} subtitle={copy.placesHint} color="#E8EFDE" chip={chip("places")} locked={locked("places")} />}
+        {doors.includes("pond") && <Door href="/pond" icon="lantern" title={copy.pond} subtitle={copy.pondHint} color="#F9EFCF" chip={chip("pond")} locked={locked("pond")} />}
         {doors.includes("moments") && <Door href="/moments" icon="heart" title={copy.moments} subtitle={copy.momentsHint} color="#F7E6DF" chip={chip("moments")} />}
       </View></>}
       {open.has("memories") && <Link href="/journey" asChild><Pressable accessibilityRole="button" style={s.journey}><View style={s.titleRow}><Text style={s.sectionTitle}>{copy.journeyHistory ?? copy.journey}</Text>{chip("memories")}<Icon name="arrow" size={20} /></View><View style={s.track}><View style={[s.fill, { width: `${curriculum.length ? doneCount / curriculum.length * 100 : 0}%` }]} /></View><Text style={s.description}>{interpolate(copy.progress, { count: String(doneCount), total: String(curriculum.length) })}</Text></Pressable></Link>}
@@ -104,8 +107,9 @@ function KidHome() {
     </ScrollView></View>
   </View>;
 }
-function Door({ href, icon, title, subtitle, color, chip }: { href: React.ComponentProps<typeof Link>["href"]; icon: string; title: string; subtitle: string; color: string; chip?: React.ReactNode }) {
-  return <Pressable onPress={() => router.push(href)} accessibilityRole="button" style={({ pressed }) => [s.door, { backgroundColor: color }, pressed && s.pressed]}><View style={s.titleRow}><Icon name={icon} size={35} />{chip}</View><Text style={s.doorTitle}>{title}</Text><Text style={s.doorHint}>{subtitle}</Text></Pressable>;
+function Door({ href, icon, title, subtitle, color, chip, locked }: { href: React.ComponentProps<typeof Link>["href"]; icon: string; title: string; subtitle: string; color: string; chip?: React.ReactNode; locked?: boolean }) {
+  const hint = locked ? getPack().companion.ui.grownUpUnlock ?? subtitle : subtitle;
+  return <Pressable onPress={() => router.push(locked ? UNLOCK_HREF : href)} accessibilityRole="button" style={({ pressed }) => [s.door, { backgroundColor: color }, pressed && s.pressed]}><View style={s.titleRow}><Icon name={icon} size={35} />{chip}</View><Text style={s.doorTitle}>{title}</Text><Text style={s.doorHint}>{hint}</Text>{locked && <LockBadge small />}</Pressable>;
 }
 const s = StyleSheet.create({
   root: { flex: 1 }, top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24 }, brand: { fontFamily: T.font.black, fontSize: 21, color: T.color.ink }, tagline: { fontFamily: T.font.regular, fontSize: 11, color: T.color.brown }, parent: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF9EAEF", alignItems: "center", justifyContent: "center" },

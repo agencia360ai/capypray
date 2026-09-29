@@ -23,6 +23,16 @@ describe("companion content", () => {
     paid.lessons.find(l => l.id === paid.companion.feelings[0]!.lessonId)!.free = false;
     expect(validatePack(paid).issues.some(i => i.path.startsWith("companion."))).toBe(true);
   });
+  it("keeps prayer doors free and puts play, stories, places and the pond behind premium", () => {
+    const { pack } = validatePack(raw);
+    const premium = pack!.companion.home!.filter(s => s.premium).map(s => s.id);
+    expect(premium.sort()).toEqual(["games", "places", "pond", "stories"]);
+    for (const id of ["today", "bedtime", "feelings", "moments"] as const) {
+      const gated = structuredClone(raw);
+      Object.assign(gated.companion.home.find(s => s.id === id)!, { premium: true });
+      expect(validatePack(gated).issues.some(i => i.path.endsWith(".premium"))).toBe(true);
+    }
+  });
   it("exports locale-specific audio refs for the new content pipeline", () => {
     const { pack } = validatePack(raw);
     expect(listAudio(pack!)).toContain("moment_worried_prayer_v08_1.mp3");

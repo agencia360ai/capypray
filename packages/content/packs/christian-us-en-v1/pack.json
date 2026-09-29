@@ -1,6 +1,6 @@
 {
   "id": "christian-us-en-v1",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "locale": "en-US",
   "tradition": "christian",
   "ageBand": "4-8",
@@ -6656,7 +6656,8 @@
         "reveal": {
           "text": "Story time is open! I have some favorites to tell you.",
           "audio": "home_reveal_stories.mp3"
-        }
+        },
+        "premium": true
       },
       {
         "id": "games",
@@ -6666,7 +6667,8 @@
         "reveal": {
           "text": "I made some games for us! Tap Play with me when you want a break.",
           "audio": "home_reveal_games.mp3"
-        }
+        },
+        "premium": true
       },
       {
         "id": "feelings",
@@ -6692,7 +6694,8 @@
         "reveal": {
           "text": "We can explore new places together. God is with us everywhere!",
           "audio": "home_reveal_places.mp3"
-        }
+        },
+        "premium": true
       },
       {
         "id": "pond",
@@ -6702,7 +6705,8 @@
         "reveal": {
           "text": "Come see our pond! Every little light you made is glowing there.",
           "audio": "home_reveal_pond.mp3"
-        }
+        },
+        "premium": true
       },
       {
         "id": "memories",

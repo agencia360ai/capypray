@@ -49,7 +49,7 @@ MADE WITH FAMILIES IN MIND
 • Progress stored on your device
 
 FREE AND PREMIUM
-Start with free prayer moments, including bedtime prayer. An optional monthly or annual subscription unlocks the full guided prayer curriculum. Prices, billing periods, and any eligible introductory offer appear before purchase. Subscriptions renew automatically unless canceled in your store account before renewal. You can restore an active subscription using the same store account.
+Start with free prayer moments, including bedtime prayer. An optional monthly or annual subscription unlocks the full guided prayer curriculum, Bible stories, puzzle games, places to pray and Capy's pond. Prices, billing periods, and any eligible introductory offer appear before purchase. Subscriptions renew automatically unless canceled in your store account before renewal. You can restore an active subscription using the same store account.
 
 For younger children, we encourage a grown-up to join the experience.
 

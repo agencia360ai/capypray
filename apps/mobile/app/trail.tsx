@@ -9,8 +9,9 @@ import { useKid } from "@/store/kid";
 import { journeyView, pendingArrival } from "@/store/journey";
 import { lessonDoneToday } from "@/store/scenes";
 import { useAvatar, useStage } from "@/avatar/AvatarView";
-import { isLessonLocked, useEntitlement } from "@/entitlements";
+import { UNLOCK_HREF, isLessonLocked, isSectionLocked, useEntitlement } from "@/entitlements";
 import { CompanionIcon as Icon } from "@/ui/CompanionIcon";
+import { LockBadge } from "@/ui/LockBadge";
 import { JourneyTrail, stoneStageX } from "@/ui/JourneyTrail";
 import { Reveal, useReducedMotion } from "@/ui/motion";
 import { SheetHandle } from "@/ui/SheetHandle";
@@ -99,9 +100,13 @@ function TrailLobby() {
 
   const next = view.next;
   const nextLesson = next ? pack.lessons.find((l) => l.id === next.id) : undefined;
+  const door = (id: "stories" | "places" | "pond", href: "/stories" | "/places" | "/pond") => {
+    const locked = isSectionLocked(pack, id, premium);
+    return { locked, onPress: () => router.push(locked ? UNLOCK_HREF : href) };
+  };
   const go = () => {
     if (!nextLesson || doneToday) { router.push("/moments"); return; }
-    router.push(isLessonLocked(nextLesson, premium) ? { pathname: "/parent/gate", params: { next: "paywall" } } : { pathname: "/lesson/[id]", params: { id: nextLesson.id, from: "trail" } });
+    router.push(isLessonLocked(nextLesson, premium) ? UNLOCK_HREF : { pathname: "/lesson/[id]", params: { id: nextLesson.id, from: "trail" } });
   };
 
   return (
@@ -150,9 +155,9 @@ function TrailLobby() {
               <Text style={s.chevron} accessibilityElementsHidden importantForAccessibility="no">{exploring ? "−" : "+"}</Text>
             </Pressable>
             {exploring && <View style={s.row}>
-              <Quick icon="book" label={copy.stories} onPress={() => router.push("/stories")} />
-              <Quick icon="garden" label={copy.places} onPress={() => router.push("/places")} />
-              <Quick icon="lantern" label={copy.pond} onPress={() => router.push("/pond")} />
+              <Quick icon="book" label={copy.stories} {...door("stories", "/stories")} />
+              <Quick icon="garden" label={copy.places} {...door("places", "/places")} />
+              <Quick icon="lantern" label={copy.pond} {...door("pond", "/pond")} />
             </View>}
           </Reveal>}
         </ScrollView>
@@ -161,11 +166,13 @@ function TrailLobby() {
   );
 }
 
-function Quick({ icon, label, onPress }: { icon: string; label: string; onPress: () => void }) {
+function Quick({ icon, label, onPress, locked }: { icon: string; label: string; onPress: () => void; locked?: boolean }) {
+  const hint = locked ? getPack().companion.ui.grownUpUnlock : undefined;
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [s.quick, pressed && s.pressed]}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={hint ? `${label}, ${hint}` : label} style={({ pressed }) => [s.quick, pressed && s.pressed]}>
       <Icon name={icon} size={27} />
       <Text style={s.quickLabel}>{label}</Text>
+      {locked && <LockBadge small style={s.quickLock} />}
     </Pressable>
   );
 }
@@ -187,6 +194,7 @@ const s = StyleSheet.create({
   hint: { fontFamily: T.font.regular, fontSize: 12, lineHeight: 18, color: "#727666", marginTop: 8 },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
   row: { flexDirection: "row", gap: 10 },
+  quickLock: { top: 5, bottom: "auto" },
   quick: { flex: 1, minWidth: 0, minHeight: 64, borderRadius: 18, backgroundColor: "#F5EEDE", alignItems: "center", justifyContent: "center", gap: 6, padding: 10 },
   exploreToggle: { minHeight: 44, flexDirection: "row", alignItems: "center", gap: 9 },
   exploreLabel: { flex: 1, fontFamily: T.font.bold, fontSize: 10, letterSpacing: 1, color: T.color.brown },

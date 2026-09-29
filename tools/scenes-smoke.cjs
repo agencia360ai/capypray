@@ -4,6 +4,7 @@ const {chromium}=createRequire(path.resolve(__dirname,'../packages/avatar-web/pa
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const pack=require('../packages/content/packs/christian-us-en-v1/pack.json');
+const {unlockPremium}=require('./smoke-premium.cjs');
 (async()=>{
  const out=process.env.CAPY_SCREENSHOTS||path.resolve(__dirname,'../test-results/scenes');fs.mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined,headless:true,args:['--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
@@ -11,6 +12,7 @@ const pack=require('../packages/content/packs/christian-us-en-v1/pack.json');
   const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.clock.setFixedTime(new Date('2026-09-10T12:00:00'));
+  await unlockPremium(page);
   for(const id of ['kitchen','garden','park','city','school','car']){
    await page.goto('http://127.0.0.1:8081/place/'+id);
    await page.getByText(pack.scenes.find(s=>s.id===id).title,{exact:true}).waitFor();

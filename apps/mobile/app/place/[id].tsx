@@ -14,9 +14,10 @@ import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
 import { stopSpeaking } from "@/audio/voice";
 import { track } from "@/backend/events";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 // Visit a place: Capy goes there (background + day/night) and prays that place's prayer with the kid.
-export default function PlaceScreen() {
+function PlaceScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const pack = getPack();
   const scene = sceneById(pack, id);
@@ -96,3 +97,5 @@ const styles = StyleSheet.create({
   close: { position: "absolute", top: 52, right: 20, zIndex: 2, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.85)", alignItems: "center", justifyContent: "center" },
   closeText: { fontSize: 26, color: T.color.brown, lineHeight: 30 },
 });
+
+export default premiumOnly("places", PlaceScreen);

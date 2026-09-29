@@ -5,6 +5,9 @@ export * from "./visuals";
 
 export type ValidationIssue = { path: string; message: string };
 
+/** Doors into prayers; GDD §10.1 keeps them free, so they cannot be marked premium. */
+const FREE_SECTIONS = new Set(["today", "bedtime", "feelings", "moments"]);
+
 /** Structural (Zod) + referential validation. Returns [] when the pack is valid. */
 export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIssue[] } {
   const parsed = Pack.safeParse(raw);
@@ -24,6 +27,7 @@ export function validatePack(raw: unknown): { pack?: PackT; issues: ValidationIs
     homeIds.add(section.id);
     if (section.unlock.lessonId && !lessons.has(section.unlock.lessonId)) issues.push({ path: `${at}.unlock`, message: `unknown lesson "${section.unlock.lessonId}"` });
     if (section.reveal && countWords(section.reveal.text) > 20) issues.push({ path: `${at}.reveal`, message: "reveal text > 20 words; Capy says it in one breath" });
+    if (section.premium && FREE_SECTIONS.has(section.id)) issues.push({ path: `${at}.premium`, message: `"${section.id}" is a prayer door and stays free; gate curriculum lessons with \`free\` instead` });
   }
   const games = pack.companion.games;
   if (games && new Set(games.items.map((i) => i.id)).size !== 4) issues.push({ path: "companion.games.items", message: "each of the four games appears once" });

@@ -1,10 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 
 /** A translucent badge leaves the collectible or cover readable underneath. */
-export function LockBadge({ small = false }: { small?: boolean }) {
+export function LockBadge({ small = false, style }: { small?: boolean; style?: StyleProp<ViewStyle> }) {
   const size = small ? 27 : 36;
-  return <View pointerEvents="none" style={[s.badge, { width: size, height: size, borderRadius: size / 2 }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+  return <View pointerEvents="none" style={[s.badge, { width: size, height: size, borderRadius: size / 2 }, style]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
     <Svg width={size * 0.63} height={size * 0.63} viewBox="0 0 32 32" aria-hidden>
       <Path d="M9 14V9a7 7 0 0 1 14 0v5" fill="none" stroke="#6B7F72" strokeWidth="3.5" strokeLinecap="round" />
       <Rect x="5" y="12" width="22" height="17" rx="6" fill="#F4CE80" fillOpacity="0.85" stroke="#B18A49" strokeWidth="1.5" />

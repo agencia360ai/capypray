@@ -8,8 +8,9 @@ import { CompanionIcon } from "@/ui/CompanionIcon";
 import { LockBadge } from "@/ui/LockBadge";
 import { T } from "@/ui/theme";
 import { storyCover } from "@/ui/illustrations";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
-export default function Stories() {
+function Stories() {
   const pack = getPack(), completed = useKid(s => s.completed), copy = pack.companion.ui;
   const available = availableStoryIds(pack, completed);
   return <CollectionScreen title={copy.stories} subtitle={copy.storiesHint}>
@@ -26,3 +27,5 @@ export default function Stories() {
   </CollectionScreen>;
 }
 const styles = StyleSheet.create({ grid: { flexDirection: "row", flexWrap: "wrap", gap: 14 }, card: { width: "46%", flexGrow: 1, borderRadius: 23, overflow: "hidden", borderWidth: 1, borderColor: "#E8E6D9", backgroundColor: "white" }, cover: { width: "100%", aspectRatio: 1, backgroundColor: "#E9ECDC", alignItems: "center", justifyContent: "center" }, copy: { padding: 15, gap: 8 }, title: { fontFamily: T.font.bold, fontSize: 17, lineHeight: 22, color: T.color.ink }, hint: { fontFamily: T.font.regular, fontSize: 11, lineHeight: 17, color: "#7B806E" } });
+
+export default premiumOnly("stories", Stories);

@@ -17,9 +17,10 @@ import { Star, Lantern } from "@/ui/art";
 import { backgroundFor } from "@/ui/backgrounds";
 import { T } from "@/ui/theme";
 import { useStageInsets } from "@/ui/useStageInsets";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 // Collectibles are earned through progress; their pictures remain visible before discovery.
-export default function Pond() {
+function Pond() {
   const pack = getPack(), copy = pack.companion.ui;
   const kid = useKid(), avatar = useAvatar(), { setStage } = useStage(), insets = useSafeAreaInsets();
   const onBottomLayout = useStageInsets();
@@ -92,3 +93,5 @@ const s = StyleSheet.create({
  tileOn:{borderColor:"#8CAC79",backgroundColor:"#F0F5E7"},art:{width:"100%",height:89,borderRadius:15,backgroundColor:"#F9F4E7",alignItems:"center",justifyContent:"center",overflow:"hidden"},tileLabel:{fontFamily:T.font.bold,fontSize:12,lineHeight:16,color:T.color.ink,textAlign:"center"},tileHint:{fontFamily:T.font.regular,fontSize:10,lineHeight:14,textAlign:"center",color:"#7C816B"},hintOn:{color:"#52754E"},
  equipped:{position:"absolute",bottom:4,right:4,width:25,height:25,borderRadius:13,alignItems:"center",justifyContent:"center",backgroundColor:"#D8E8C9"},biomeArt:{width:"100%",height:"100%"},pressed:{opacity:0.82},friendCount:{flexDirection:"row",alignItems:"center",gap:2},friend:{width:"31%",alignItems:"center",gap:4,padding:9,borderRadius:18,backgroundColor:"#F3EDDD"},
 });
+
+export default premiumOnly("pond", Pond);

@@ -12,9 +12,10 @@ import { stopSpeaking } from "@/audio/voice";
 import { track } from "@/backend/events";
 import { T } from "@/ui/theme";
 import { availableStoryIds } from "@/content/stories";
+import { premiumOnly } from "@/entitlements/PremiumOnly";
 
 // Replay one story from the shelf: a tiny synthetic lesson (say → story → say) with no lantern.
-export default function StoryScreen() {
+function StoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const pack = getPack();
   const kid = useKid();
@@ -90,3 +91,4 @@ const styles = StyleSheet.create({
   closeText: { fontSize: 26, color: T.color.brown, lineHeight: 30 },
 });
 
+export default premiumOnly("stories", StoryScreen);
