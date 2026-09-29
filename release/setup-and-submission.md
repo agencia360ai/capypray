@@ -41,6 +41,19 @@ The build hook downloads the current 465 recordings and builds the avatar WebVie
 
 Build requirements checked September 25, 2026: Apple iOS/iPadOS 26 SDK or later (Xcode 26+); Google new apps/updates target Android 16/API 36 or later. Inspect actual build logs/manifest, not only app.json. Also check Play 16 KB page-size compatibility of all native libraries. Expo SDK alignment and JS typechecking are not proof of a signed binary's compliance.
 
+## Automated submission (EAS Submit)
+
+Android (configured 2026-09-29): service account `eas-submit@capypray.iam.gserviceaccount.com` is stored in EAS for submissions, with Play permissions to release to testing tracks. `npx eas-cli build --platform android --profile internal --auto-submit` builds and publishes to Play internal testing through the `internal` submit profile. `eas submit --platform android --profile internal --id <build id>` submits an existing build. Play rejects a versionCode it has already seen; the remote `autoIncrement` handles that.
+
+iOS (not configured yet; EAS has no iOS credentials, Apple team or App Store Connect key):
+
+1. The owner registers the explicit App ID `com.looplab.capypray` and creates the App Store Connect record: name CapyPray, English (U.S.), SKU `capypray-ios-001`. Apple's API cannot create app records.
+2. The owner creates an App Store Connect **team** API key with Admin access. EAS needs Admin to create the distribution certificate and provisioning profile. The key goes into the cloud environment as `ASC_API_KEY_P8` (the .p8 contents), `ASC_KEY_ID`, `ASC_ISSUER_ID` and `APPLE_TEAM_ID`. Never commit it or paste it into chat. The environment's network policy must allow `api.appstoreconnect.apple.com` and `appstoreconnect.apple.com`.
+3. The session writes the key to a temp file outside the repo and exports `EXPO_ASC_API_KEY_PATH`, `EXPO_ASC_KEY_ID`, `EXPO_ASC_ISSUER_ID`, `EXPO_APPLE_TEAM_ID` and `EXPO_APPLE_TEAM_TYPE` (`COMPANY_OR_ORGANIZATION` or `INDIVIDUAL`). eas-cli then authenticates to Apple with the key. It only generates certificates in interactive mode, so run the first `eas credentials --platform ios` (build credentials for `internal`, then the App Store Connect key for EAS Submit) under a pseudo-terminal and accept generation of the distribution certificate and provisioning profile.
+4. Add `submit.internal.ios.ascAppId`, the numeric Apple ID of the App Store Connect app, to `eas.json`. After that, `eas build --platform ios --profile internal --auto-submit --non-interactive` uploads to TestFlight; `--platform all` does both stores.
+
+RevenueCat iOS still needs the subscriptions in App Store Connect and the in-app purchase key in the RevenueCat dashboard before purchases work on TestFlight.
+
 ## Store consoles
 
 - Apple: register explicit bundle ID; App Store Connect record, SKU `capypray-ios-001`; English US primary language; categories Education / Kids, primary age band 6–8; complete age-rating questionnaire truthfully. Complete tax/banking/paid-apps agreements, subscriptions and review notes.
