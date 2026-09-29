@@ -2,6 +2,7 @@
   "expo": {
     "name": "CapyPray",
     "slug": "capy-prayer",
+    "owner": "looplabgg",
     "scheme": "capyprayer",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -55,7 +56,11 @@
       "typedRoutes": true
     },
     "extra": {
-      "packId": "christian-us-en-v1"
+      "packId": "christian-us-en-v1",
+      "router": {},
+      "eas": {
+        "projectId": "aba8d137-9133-4610-b687-70a36c7602c6"
+      }
     },
     "icon": "./assets/brand/icon.png"
   }

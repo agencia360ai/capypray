@@ -28,10 +28,11 @@ npx eas-cli login
 npx eas-cli init
 ```
 
-Put the resulting EAS project UUID in `EXPO_PUBLIC_EAS_PROJECT_ID`; configure the two public SDK keys for preview and production. Review and publish the CapyPray legal addendum, then set `CAPY_LEGAL_APPROVED=1` for the production build environment. Do not set that flag until the public pages actually cover this app.
+EAS project: `@looplabgg/capy-prayer` (`aba8d137-9133-4610-b687-70a36c7602c6`, also in `app.json`). Put the EAS project UUID in `EXPO_PUBLIC_EAS_PROJECT_ID`; configure the two public SDK keys for preview and production. Review and publish the CapyPray legal addendum, then set `CAPY_LEGAL_APPROVED=1` for the production build environment. Do not set that flag until the public pages actually cover this app.
 
 ```
 npx eas-cli build --platform android --profile preview
+npx eas-cli build --platform android --profile internal   # signed AAB for Play internal testing; no strict release check, purchases need live RC keys
 npx eas-cli build --platform ios --profile ios-simulator
 npx eas-cli build --platform all --profile production
 ```
