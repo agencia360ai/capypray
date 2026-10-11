@@ -7,9 +7,10 @@ import { useFonts, Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nuni
 import { AvatarProvider } from "@/avatar/AvatarView";
 import { useKid } from "@/store/kid";
 
-import { refreshPurchases } from "@/entitlements/purchase";
+import { configurePurchases, refreshPurchases } from "@/entitlements/purchase";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+configurePurchases();
 
 // Slot instead of a native Stack: native screens on iOS paint an opaque background over the stage
 // (meadow + Capy WebView) that lives under the navigator. Plain views keep the stage visible and

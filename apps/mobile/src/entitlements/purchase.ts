@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 import Constants from "expo-constants";
-import AsyncStorage from "@/store/persistence";
 import type { CustomerInfo, PurchasesPackage } from "react-native-purchases";
 import { useKid } from "@/store/kid";
 import { gate } from "@/parent/gate";
@@ -19,14 +18,16 @@ export function freeDays(pkg: PurchasesPackage | undefined): number | null {
   const days = intro.periodNumberOfUnits * (UNIT_DAYS[intro.periodUnit] ?? 0) * Math.max(1, intro.cycles);
   return days > 0 ? days : null;
 }
-const ACTIVATED = "parent-purchases-activated";
 let initializing: Promise<typeof import("react-native-purchases").default> | undefined;
 
 function apply(info: CustomerInfo) {
   const active = !!info.entitlements.active.premium;
-  useKid.getState().setPremium(active);
+  // The SDK starts before saved progress loads, and a store write then would replace that progress on disk.
+  // app/_layout.tsx re-reads access right after hydration.
+  if (useKid.persist.hasHydrated()) useKid.getState().setPremium(active);
   return active;
 }
+/** Configures RevenueCat once; later calls reuse it. Anonymous app user ID and no device identifiers (Kids Category). */
 function sdk() {
   if (!initializing) initializing = (async () => {
     const apiKey = Platform.OS === "ios" ? process.env.EXPO_PUBLIC_RC_IOS_KEY : process.env.EXPO_PUBLIC_RC_ANDROID_KEY;
@@ -34,10 +35,18 @@ function sdk() {
     const Purchases = (await import("react-native-purchases")).default;
     Purchases.configure({ apiKey, automaticDeviceIdentifierCollectionEnabled: false });
     Purchases.addCustomerInfoUpdateListener(apply);
-    await AsyncStorage.setItem(ACTIVATED, "1");
     return Purchases;
   })().catch(error => { initializing = undefined; throw error; });
   return initializing;
+}
+/**
+ * Called once when the app starts (app/_layout.tsx), as RevenueCat recommends: the SDK can then finish purchases that
+ * complete outside the paywall (pending payments, Play Store promo codes; Play refunds unacknowledged ones after three
+ * days) and keep Premium current. Web and Expo Go have no store; the paywall reports that when opened.
+ */
+export function configurePurchases() {
+  if (PURCHASES_SANDBOX) return;
+  sdk().catch(() => {});
 }
 function requireParent() {
   if (!gate.isOpen()) throw new Error("Parent gate required");
@@ -69,13 +78,10 @@ export async function restorePurchases(): Promise<boolean> {
   if (PURCHASES_SANDBOX) return useKid.getState().premium;
   return apply(await (await sdk()).restorePurchases());
 }
-/** Only reconnect after a parent has previously opened purchases. */
+/** Re-reads verified access after launch and on foreground. No answer from the store means no Premium. */
 export async function refreshPurchases() {
   if (PURCHASES_SANDBOX) return;
-  try {
-    if (await AsyncStorage.getItem(ACTIVATED) !== "1") { useKid.getState().setPremium(false); return; }
-    apply(await (await sdk()).getCustomerInfo());
-  }
+  try { apply(await (await sdk()).getCustomerInfo()); }
   catch { useKid.getState().setPremium(false); }
 }
 export async function subscriptionManagementURL(): Promise<string | null> {
@@ -88,6 +94,5 @@ export async function subscriptionManagementURL(): Promise<string | null> {
 export async function subscriptionStatus(): Promise<"premium" | "free" | "preview"> {
   requireParent();
   if (PURCHASES_SANDBOX) return "preview";
-  if (await AsyncStorage.getItem(ACTIVATED) !== "1") return "free";
   return apply(await (await sdk()).getCustomerInfo()) ? "premium" : "free";
 }
